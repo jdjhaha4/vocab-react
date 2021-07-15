@@ -117,7 +117,7 @@ const AuthForm = ({
   }, [error]);
 
   useEffect(() => {
-    if (validationError.status == true) {
+    if (type === 'register' && validationError.status == true) {
       const nextState = produce(modal, (draft) => {
         draft['type'] = validationError.type;
         draft['visible'] = true;
