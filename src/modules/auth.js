@@ -1,18 +1,25 @@
 import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
-import {takeLatest} from 'redux-saga/effects';
-import createRequestSaga,{ createRequestActionTypes } from '../lib/createRequestSaga';
+import { takeLatest } from 'redux-saga/effects';
+import createRequestSaga, {
+  createRequestActionTypes,
+} from '../lib/createRequestSaga';
 import * as authAPI from '../lib/api/auth';
 
 const CHANGE_FIELD = 'auth/CHANGE_FIELD';
 const INITIALIZE_FORM = 'auth/INITIALIZE_FORM';
-const LOGOUT='auth/LOGOUT';
+const LOGOUT = 'auth/LOGOUT';
 
 const [REGISTER, REGISTER_SUCCESS, REGISTER_FAILURE] =
   createRequestActionTypes('auth/REGISTER');
 
 const [LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE] =
   createRequestActionTypes('auth/LOGIN');
+
+const [ID_DUPL_CHECK, ID_DUPL_CHECK_SUCCESS, ID_DUPL_CHECK_FAILURE] =
+  createRequestActionTypes('auth/ID_DUPL_CHECK');
+
+const ID_DUPL_INIT = 'auth/ID_DUPL_INIT';
 
 export const changeField = createAction(
   CHANGE_FIELD,
@@ -25,28 +32,40 @@ export const changeField = createAction(
 export const initializeForm = createAction(INITIALIZE_FORM, (form) => form); // register, login
 export const authLogout = createAction(LOGOUT);
 
-export const register = createAction(REGISTER, ({ id, password }) => ({
+export const register = createAction(
+  REGISTER,
+  ({ id, nickname, password }) => ({
+    id,
+    nickname,
+    password,
+  }),
+);
+
+export const login = createAction(LOGIN, ({ id, password }) => ({
   id,
   password,
 }));
 
-export const login = createAction(LOGIN, ({id, password})=>({
-  id,
-  password,
-}));
+export const idDuplCheck = createAction(ID_DUPL_CHECK, ({id})=>({id,}));
+export const idDuplInit = createAction(ID_DUPL_INIT);
 
 //사가 생성
 const registerSaga = createRequestSaga(REGISTER, authAPI.register);
 const loginSaga = createRequestSaga(LOGIN, authAPI.login);
-export function* authSaga(){
+const idDuplCheckSaga = createRequestSaga(ID_DUPL_CHECK, authAPI.idDuplCheck);
+
+export function* authSaga() {
   yield takeLatest(REGISTER, registerSaga);
   yield takeLatest(LOGIN, loginSaga);
+  yield takeLatest(ID_DUPL_CHECK, idDuplCheckSaga);
 }
 
 const initialState = {
   register: {
     id: '',
-    nickname:'',
+    idDuplCheck: null,
+    idDuplCheckError: null,
+    nickname: '',
     password: '',
     passwordConfirm: '',
   },
@@ -55,7 +74,7 @@ const initialState = {
     password: '',
   },
   auth: null,
-  authError:null,
+  authError: null,
 };
 
 const auth = handleActions(
@@ -72,29 +91,42 @@ const auth = handleActions(
     [LOGOUT]: (state, action) => ({
       ...state,
       auth: null, //jwt 제거
-      authError: null, 
+      authError: null,
     }),
     //회원가입 성공
-    [REGISTER_SUCCESS]: (state, {payload:auth})=>({
+    [REGISTER_SUCCESS]: (state, { payload: auth }) => ({
       ...state,
-      authError:null,
+      authError: null,
       auth,
     }),
     //회원가입 실패
-    [REGISTER_FAILURE]: (state,{payload: error})=>({
+    [REGISTER_FAILURE]: (state, { payload: error }) => ({
       ...state,
       authError: error,
     }),
     //로그인 성공
-    [LOGIN_SUCCESS]: (state, {payload: auth})=>({
+    [LOGIN_SUCCESS]: (state, { payload: auth }) => ({
       ...state,
-      authError:null,
+      authError: null,
       auth,
     }),
     //로그인 실패
-    [LOGIN_FAILURE]:(state, {payload:error})=>({
+    [LOGIN_FAILURE]: (state, { payload: error }) => ({
       ...state,
       authError: error,
+    }),
+    //아이디 중복체크 성공
+    [ID_DUPL_CHECK_SUCCESS]: (state, { payload: idDuplCheck }) => produce(state, (draft) => {
+      draft["register"]["idDuplCheck"] = idDuplCheck;
+      draft["register"]["idDuplCheckError"] = null;
+    }),
+    //아이디 중복체크 실패
+    [ID_DUPL_CHECK_FAILURE]: (state, { payload: error }) => produce(state, (draft) => {
+      draft["register"]["idDuplCheckError"] = error;
+    }),
+    //아이디 중복체크 초기화
+    [ID_DUPL_INIT]: (state, { payload: init }) => produce(state, (draft) => {
+      draft["register"]["idDuplCheck"] = null;
     }),
   },
   initialState,

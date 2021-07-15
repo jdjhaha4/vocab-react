@@ -5,6 +5,7 @@ import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
 import { useState, useEffect } from 'react';
 import AuthAlertModal from './AuthAlertModal';
+import produce from 'immer';
 
 /**
  * 회원가입 또는 로그인 폼을 보여줍니다.
@@ -56,23 +57,89 @@ const ButtonWithMarginTop = styled(Button)`
   margin-top: 1rem;
 `;
 
+const IdAvailableMessageBlock = styled.div`
+  margin: 5px 0 10px 0;
+  color: #2f9d27;
+`;
+
+const IdDuplMessageBlock = styled.div`
+  margin: 5px 0 10px 0;
+  color: red;
+`;
+
 const textMap = {
   login: '로그인',
   register: '회원가입',
 };
-const AuthForm = ({ type, form, onChange, onSubmit, error, setError }) => {
+const AuthForm = ({
+  type,
+  form,
+  onChange,
+  onSubmit,
+  error,
+  setError,
+  onIdDuplCheck,
+  onIdDuplInit,
+  validationError,
+  setValidationError,
+}) => {
   const text = textMap[type];
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState({
+    type: "login",
+    visible: false,
+    title: '로그인',
+    message: '사용자 계정 또는 비밀번호를 확인해주세요.',
+  });
   const onConfirm = () => {
-    setModal(false);
-    setError(null);
+    const nextState = produce(modal, (draft) => {
+      draft['visible'] = false;
+    });
+
+    setModal(nextState);
+    if(modal.type == "login"){
+      setError(null);
+    }else if(modal.type == validationError.type){
+      const nextState = produce(validationError, (draft) => {
+        draft['status'] = false;
+      });
+      setValidationError(nextState);
+    }
   };
 
   useEffect(() => {
-    if(error != null){
-      setModal(true);
+    if (error != null) {
+      const nextState = produce(modal, (draft) => {
+        draft['visible'] = true;
+      });
+
+      setModal(nextState);
     }
   }, [error]);
+
+  useEffect(() => {
+    if (validationError.status == true) {
+      const nextState = produce(modal, (draft) => {
+        draft['type'] = validationError.type;
+        draft['visible'] = true;
+        draft['title'] = validationError.title;
+        draft['message'] =validationError.message;
+      });
+
+      setModal(nextState);
+    }
+  }, [validationError]);
+
+  useEffect(() => {
+    if (type === 'register' && form.id != '') {
+      onIdDuplCheck();
+    } 
+  }, [form.id]);
+
+  useEffect(() => {
+    if (type === 'register' && form.id == '') {
+      onIdDuplInit();
+    }
+  }, [form.idDuplCheck]);
 
   return (
     <>
@@ -80,12 +147,25 @@ const AuthForm = ({ type, form, onChange, onSubmit, error, setError }) => {
         <h3>{text}</h3>
         <form onSubmit={onSubmit}>
           <StyledInput
-            autoComplete="id"
             name="id"
             placeholder="아이디"
             onChange={onChange}
             value={form.id}
           />
+          {type === 'register' &&
+            form.idDuplCheck &&
+            form.idDuplCheck.available && (
+              <IdAvailableMessageBlock>
+                사용 가능한 아이디 입니다.
+              </IdAvailableMessageBlock>
+            )}
+          {type === 'register' &&
+            form.idDuplCheck &&
+            !form.idDuplCheck.available && (
+              <IdDuplMessageBlock>
+                이미 사용중인 아이디 입니다.
+              </IdDuplMessageBlock>
+            )}
           {type === 'register' && (
             <StyledInput
               autoComplete="nickname"
@@ -126,10 +206,10 @@ const AuthForm = ({ type, form, onChange, onSubmit, error, setError }) => {
         </Footer>
       </AuthFormBlock>
       <AuthAlertModal
-        visible={modal}
+        visible={modal.visible}
         onConfirm={onConfirm}
-        title="로그인"
-        message="사용자 계정 또는 비밀번호를 확인해주세요."
+        title={modal.title}
+        message={modal.message}
       />
     </>
   );

@@ -4,8 +4,10 @@ import client from "./client";
 export const login = ({id, password}) =>
    client.post('/api/auth/login',{id, password});
 
-export const register = ({id, password}) =>
-  client.post('/api/auth/register', {id, password});
+export const register = ({id, nickname, password}) =>
+  client.post('/api/auth/register', {id, nickname, password});
+
+export const idDuplCheck = ({id}) => client.post('/api/auth/idDupleCheck',{id});
 
 export const check = ()=> client.get('/api/auth/check');
 
