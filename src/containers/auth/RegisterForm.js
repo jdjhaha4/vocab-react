@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
@@ -17,7 +17,6 @@ import {check} from '../../modules/user';
 const RegisterForm = ({history}) => {
   const [error, setError] = useState(null);
 
-  const [passwordConfirmError, setPasswordConfirmError] = useState(false);
   const [validationError, setValidationError] = useState({
     type: 'passwordConfirm',
     status: false,
@@ -47,7 +46,6 @@ const RegisterForm = ({history}) => {
     e.preventDefault();
     const { id, idDuplCheck, nickname, password, passwordConfirm } = form;
     if (password !== passwordConfirm) {
-      setPasswordConfirmError(true);
       const nextState = produce(validationError, (draft) => {
         draft['type'] = 'passwordConfirm';
         draft['status'] = true;
@@ -76,6 +74,14 @@ const RegisterForm = ({history}) => {
     const { id } = form;
     dispatch(idDuplCheck({ id }));
   };
+
+  const onIdDuplInit = useCallback(
+    () => {
+      dispatch(idDuplInit());
+    },
+    [form.idDuplCheck]
+  );
+
   //컴포넌트가 처음 렌더링될 때 form을 초기화함
   useEffect(() => {
     dispatch(initializeForm('register'));
@@ -121,9 +127,7 @@ const RegisterForm = ({history}) => {
       onChange={onChange}
       onSubmit={onSubmit}
       onIdDuplCheck={onIdDuplCheck}
-      onIdDuplInit={() => {
-        dispatch(idDuplInit());
-      }}
+      onIdDuplInit={onIdDuplInit}
       validationError={validationError}
       setValidationError={setValidationError}
     />

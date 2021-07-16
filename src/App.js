@@ -3,6 +3,7 @@ import {Route} from 'react-router-dom';
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import MainPage from "./pages/MainPage";
+import VocabStudyPage from "./pages/VocabStudyPage";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Route component={MainPage} path={['/@:username','/']} exact />
       <Route component={LoginPage} path="/login" />
       <Route component={RegisterPage} path="/register"/>
+      <Route component={VocabStudyPage} path="/vocab"/>
     </>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useCallback} from 'react';
 import Button from '../components/common/Button';
 import HeaderContainer from '../containers/common/HeaderContainer';
-import Navigation from '../components/common/Navigation';
+import NavigationContainer from '../containers/common/NavigationContainer';
 import styled from 'styled-components';
 import Responsive from '../components/common/Responsive';
 import palette from '../lib/styles/palette';
@@ -66,7 +66,7 @@ const MainPage = () => {
     <>
       <PageWrapper>
         <HeaderContainer />
-        <Navigation />
+        <NavigationContainer />
         <Wrapper>
           <div className="section_area">
             <div className="recent_item_area">최근 항목</div>

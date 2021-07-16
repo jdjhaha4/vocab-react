@@ -4,6 +4,7 @@ import { takeLatest } from 'redux-saga/effects';
 import createRequestSaga, {
   createRequestActionTypes,
 } from '../lib/createRequestSaga';
+import createDelayRequestSaga from '../lib/createDelayRequestSaga';
 import * as authAPI from '../lib/api/auth';
 
 const CHANGE_FIELD = 'auth/CHANGE_FIELD';
@@ -52,7 +53,7 @@ export const idDuplInit = createAction(ID_DUPL_INIT);
 //사가 생성
 const registerSaga = createRequestSaga(REGISTER, authAPI.register);
 const loginSaga = createRequestSaga(LOGIN, authAPI.login);
-const idDuplCheckSaga = createRequestSaga(ID_DUPL_CHECK, authAPI.idDuplCheck);
+const idDuplCheckSaga = createDelayRequestSaga(ID_DUPL_CHECK, authAPI.idDuplCheck);
 
 export function* authSaga() {
   yield takeLatest(REGISTER, registerSaga);

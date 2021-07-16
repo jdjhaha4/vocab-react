@@ -96,9 +96,9 @@ const AuthForm = ({
     });
 
     setModal(nextState);
-    if(modal.type == "login"){
+    if(modal.type === "login"){
       setError(null);
-    }else if(modal.type == validationError.type){
+    }else if(modal.type === validationError.type){
       const nextState = produce(validationError, (draft) => {
         draft['status'] = false;
       });
@@ -117,7 +117,7 @@ const AuthForm = ({
   }, [error]);
 
   useEffect(() => {
-    if (type === 'register' && validationError.status == true) {
+    if (type === 'register' && validationError.status === true) {
       const nextState = produce(modal, (draft) => {
         draft['type'] = validationError.type;
         draft['visible'] = true;
@@ -130,13 +130,13 @@ const AuthForm = ({
   }, [validationError]);
 
   useEffect(() => {
-    if (type === 'register' && form.id != '') {
+    if (type === 'register' && form.id !== '') {
       onIdDuplCheck();
     } 
   }, [form.id]);
 
   useEffect(() => {
-    if (type === 'register' && form.id == '') {
+    if (type === 'register' && form.id === '') {
       onIdDuplInit();
     }
   }, [form.idDuplCheck]);
