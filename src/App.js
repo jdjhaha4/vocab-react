@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import MainPage from "./pages/MainPage";
 import VocabStudyPage from "./pages/VocabStudyPage";
+import './App.css';
 
 function App() {
   return (
