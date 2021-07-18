@@ -5,7 +5,7 @@ import { changeNaviMenu } from '../../modules/navigation';
 
 const NavigationContainer = ({ pageMenuId }) => {
   const dispatch = useDispatch();
-  
+
   const { menu_id } = useSelector(({ navigation }) => ({
     menu_id: navigation.menu_id,
   }));
@@ -17,7 +17,13 @@ const NavigationContainer = ({ pageMenuId }) => {
     [menu_id],
   );
 
-  return <Navigation menuId={menu_id} onChangeMenuId={onChangeMenuId} pageMenuId={pageMenuId}/>;
+  return (
+    <Navigation
+      menuId={menu_id}
+      onChangeMenuId={onChangeMenuId}
+      pageMenuId={pageMenuId}
+    />
+  );
 };
 
 export default NavigationContainer;

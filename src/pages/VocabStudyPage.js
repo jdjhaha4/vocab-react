@@ -4,7 +4,7 @@ import NavigationContainer from '../containers/common/NavigationContainer';
 import styled from 'styled-components';
 import Responsive from '../components/common/Responsive';
 import { Route, Link } from 'react-router-dom';
-import VocabList from '../components/vocab/VocabList';
+import VocabListContainer from '../containers/vocab/VocabListContainer';
 import GroupList from '../components/vocab/GroupList';
 import palette from '../lib/styles/palette';
 
@@ -62,7 +62,7 @@ const VocabStudyPage = () => {
           </LnbItem>
         </div>
         <div className="page-contents">
-          <Route path="/vocab" component={VocabList} exact={true} />
+          <Route path="/vocab" component={VocabListContainer} exact={true} />
           <Route path="/vocab/group" component={GroupList} />
         </div>
       </Wrapper>
