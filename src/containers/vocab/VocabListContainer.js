@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import { useEffect } from 'react';
+import React, { useCallback ,useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import VocabList from '../../components/vocab/VocabList';
 import { changeField, addVocab, getVocabList } from '../../modules/vocab';
@@ -25,6 +24,21 @@ const VocabListContainer = () => {
     );
   };
 
+  const onFocusComplete = () => {
+    dispatch(
+      changeField({
+        key: "vocabFocus",
+        value: false,
+      }),
+    );
+  };
+
+  const onKeyUp = (e) => {
+    if(e.key === "Enter"){
+      onAddVocab();
+    }
+  }
+
   const onAddVocab = useCallback(() => {
     const { vocab, mean } = form;
     dispatch(addVocab({ vocab, mean }));
@@ -47,8 +61,10 @@ const VocabListContainer = () => {
       vocabList={vocabList}
       vocabError={vocabError}
       onChange={onChange}
+      onKeyUp={onKeyUp}
       onAddVocab={onAddVocab}
       getVocabList={getVocabList}
+      onFocusComplete={onFocusComplete}
     />
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
@@ -51,13 +51,13 @@ const StyledInput = styled.input`
     props.vocab &&
     css`
       float:left;
-      width: 30%;
+      width: 27%;
     `};
   ${(props) =>
     props.mean &&
     css`
       float:left;
-      width: 60%;
+      width: 58%;
     `};
   height: calc(1.5em + 0.75rem + 2px);
   padding: 0.375rem 0.75rem;
@@ -87,6 +87,7 @@ const StyledButton = styled(Button)`
   float: right;
   height: 38px;
   margin-top: 10px;
+  margin-right: 10px;
 `;
 
 const VocabList = ({
@@ -94,14 +95,28 @@ const VocabList = ({
   vocabList,
   vocabError,
   onChange,
+  onKeyUp,
   onAddVocab,
   getVocabList,
+  onFocusComplete,
 }) => {
+  const vocabInputEl = useRef(null);
+  const vocabInputElFocus = ()=>{
+    vocabInputEl.current.focus();
+  }
+  //vocabListReload 가 트루로 변경될 때
+  useEffect(() => {
+    if(form.vocabFocus){
+      vocabInputElFocus();
+      onFocusComplete();
+    }
+  }, [form.vocabFocus]);
   return (
     <VocabListBlock>
       <label>단어 등록</label>
       <div className="add">
         <StyledInput
+          ref={vocabInputEl}
           vocab="true"
           name="vocab"
           type="text"
@@ -116,6 +131,7 @@ const VocabList = ({
           placeholder="한글 뜻"
           value={form.mean}
           onChange={onChange}
+          onKeyUp={onKeyUp}
         />
         <StyledButton onClick={onAddVocab}>+</StyledButton>
       </div>

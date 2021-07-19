@@ -38,6 +38,7 @@ const initialState = {
     id:0,
     vocab: '',
     mean: '',
+    vocabFocus: false,
   },
   vocabList: [],
   vocabError: null,
@@ -55,6 +56,7 @@ const vocab = handleActions(
       const newState = produce(state, (draft) => {
         draft["form"]["vocab"] = '';
         draft["form"]["mean"] = '';
+        draft["form"]["vocabFocus"] = true;
         draft["vocabListReload"] = true;
       });
       return newState;
