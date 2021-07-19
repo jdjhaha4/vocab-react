@@ -25,19 +25,23 @@ export const addVocab = createAction(ADD_VOCAB, ({ vocab, mean }) => ({
   mean,
 }));
 
+const vocabGetListSaga = createRequestSaga(GET_VOCAB_LIST, vocabAPI.getVocabList);
 const vocabAddSaga = createRequestSaga(ADD_VOCAB, vocabAPI.addVocab);
 
 export function* vocabSaga() {
   yield takeLatest(ADD_VOCAB, vocabAddSaga);
+  yield takeLatest(GET_VOCAB_LIST, vocabGetListSaga);
 }
 
 const initialState = {
   form: {
+    id:0,
     vocab: '',
     mean: '',
   },
   vocabList: [],
   vocabError: null,
+  vocabListReload: false,
 };
 
 const vocab = handleActions(
@@ -46,14 +50,35 @@ const vocab = handleActions(
       produce(state, (draft) => {
         draft["form"][key] = value; //예: state.register.username 을 바꾼다
       }),
-    [ADD_VOCAB_SUCCESS]: (state, { payload: { vocabItem } }) =>
-      produce(state, (draft) => {
-        draft['vocabList'].push(vocabItem);
-      }),
-    [ADD_VOCAB_FAILURE]: (state, { payload: { vocabError } }) =>
-      produce(state, (draft) => {
-        draft['vocabError'] = vocabError;
-      }),
+    [ADD_VOCAB_SUCCESS]: (state, { payload: resultCnt }) =>{
+      console.log(resultCnt);
+      const newState = produce(state, (draft) => {
+        draft["form"]["vocab"] = '';
+        draft["form"]["mean"] = '';
+        draft["vocabListReload"] = true;
+      });
+      return newState;
+    },
+    [ADD_VOCAB_FAILURE]: (state, { payload: error }) =>{
+      console.log(error);
+      return state;
+    },
+    [GET_VOCAB_LIST_SUCCESS]: (state, { payload: resultVocabList }) =>{
+      const newState = produce(state, (draft) => {
+        draft["vocabList"] = [];
+        draft["vocabListReload"] = false;
+        resultVocabList.map((vocabItem) =>{
+          const vocaJsonObj = JSON.parse(vocabItem["voca_json"]);
+          vocaJsonObj['id'] = vocabItem['id'];
+          draft["vocabList"].push(vocaJsonObj);
+        });
+      });
+      return newState;
+    },
+    [GET_VOCAB_LIST_FAILURE]: (state, { payload: error }) =>{
+      console.log(error);
+      return state;
+    },
   },
   initialState,
 );
