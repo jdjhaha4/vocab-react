@@ -123,6 +123,7 @@ const VocabList = ({
           placeholder="영어 단어"
           value={form.vocab}
           onChange={onChange}
+          autoComplete = "off"
         />
         <StyledInput
           mean="true"
@@ -132,6 +133,7 @@ const VocabList = ({
           value={form.mean}
           onChange={onChange}
           onKeyUp={onKeyUp}
+          autoComplete = "off"
         />
         <StyledButton onClick={onAddVocab}>+</StyledButton>
       </div>
