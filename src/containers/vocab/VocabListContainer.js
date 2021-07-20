@@ -41,6 +41,10 @@ const VocabListContainer = () => {
 
   const onAddVocab = useCallback(() => {
     const { vocab, mean } = form;
+    if(vocab.trim() ==='' || mean.trim() ===''){
+      
+      return;
+    }
     dispatch(addVocab({ vocab, mean }));
   }, [form]);
 

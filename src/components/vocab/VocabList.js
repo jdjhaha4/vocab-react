@@ -26,12 +26,13 @@ const VocabListItem = styled.div`
   .vocab {
     float: left;
     display: block;
-    width: 30%;
+    width: 28%;
   }
   .mean {
-    float: right;
+    float: left;
     display: block;
-    width: 65%;
+    width: 62%;
+    margin-left: 20px;
   }
   .horizontal_line {
     float: left;
@@ -90,6 +91,11 @@ const StyledButton = styled(Button)`
   margin-right: 10px;
 `;
 
+const StyledButton2 = styled(Button)`
+  float: right;
+  height: 30px;
+`;
+
 const VocabList = ({
   form,
   vocabList,
@@ -104,7 +110,7 @@ const VocabList = ({
   const vocabInputElFocus = ()=>{
     vocabInputEl.current.focus();
   }
-  //vocabListReload 가 트루로 변경될 때
+  //vocabFocus 가 트루로 변경될 때
   useEffect(() => {
     if(form.vocabFocus){
       vocabInputElFocus();
@@ -143,6 +149,7 @@ const VocabList = ({
             <span className="vocab">{vocabItem.vocab}</span>
             <span className="horizontal_line"></span>
             <span className="mean">{vocabItem.mean}</span>
+            <StyledButton2 >-</StyledButton2>
           </VocabListItem>
         ))}
       </div>
