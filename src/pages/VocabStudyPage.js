@@ -5,9 +5,13 @@ import styled from 'styled-components';
 import Responsive from '../components/common/Responsive';
 import { Route, Link } from 'react-router-dom';
 import VocabListContainer from '../containers/vocab/VocabListContainer';
-import GroupList from '../components/vocab/GroupList';
 import palette from '../lib/styles/palette';
+import VocabGroupListContainer from '../containers/vocab/VocabGroupListContainer';
+import VocabGroupMappingList from '../components/vocab/VocabGroupMappingList';
 
+const PageWrapper = styled.div`
+position: relative;
+`;
 const Wrapper = styled(Responsive)`
   position: relative;
   margin-top: 15px;
@@ -49,7 +53,7 @@ const StyledLink = styled(Link)`
 
 const VocabStudyPage = () => {
   return (
-    <>
+    <PageWrapper>
       <HeaderContainer />
       <NavigationContainer pageMenuId="vocab" />
       <Wrapper>
@@ -60,13 +64,17 @@ const VocabStudyPage = () => {
           <LnbItem>
             <StyledLink to="/vocab/group">그룹 목록</StyledLink>
           </LnbItem>
+          <LnbItem>
+            <StyledLink to="/vocab/group/mapping">단어 그룹화</StyledLink>
+          </LnbItem>
         </div>
         <div className="page-contents">
           <Route path="/vocab" component={VocabListContainer} exact={true} />
-          <Route path="/vocab/group" component={GroupList} />
+          <Route path="/vocab/group" component={VocabGroupListContainer} exact={true} />
+          <Route path="/vocab/group/mapping" component={VocabGroupMappingList} />
         </div>
       </Wrapper>
-    </>
+    </PageWrapper>
   );
 };
 

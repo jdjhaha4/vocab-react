@@ -1,7 +1,7 @@
 import React, { useCallback ,useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import VocabList from '../../components/vocab/VocabList';
-import { changeField, addVocab, getVocabList } from '../../modules/vocab';
+import { changeField, addVocab, getVocabList, removeVocab } from '../../modules/vocab';
 
 const VocabListContainer = () => {
   const dispatch = useDispatch();
@@ -48,6 +48,10 @@ const VocabListContainer = () => {
     dispatch(addVocab({ vocab, mean }));
   }, [form]);
 
+  const onRemoveVocab = useCallback((id) => {
+    dispatch(removeVocab({ id }));
+  }, []);
+
   //컴포넌트가 처음 렌더링될 때
   useEffect(() => {
     dispatch(getVocabList({groupCode:''}));
@@ -69,6 +73,7 @@ const VocabListContainer = () => {
       onAddVocab={onAddVocab}
       getVocabList={getVocabList}
       onFocusComplete={onFocusComplete}
+      onRemoveVocab={onRemoveVocab}
     />
   );
 };

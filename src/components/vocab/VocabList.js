@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, forwardRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
@@ -51,13 +51,13 @@ const StyledInput = styled.input`
   ${(props) =>
     props.vocab &&
     css`
-      float:left;
+      float: left;
       width: 27%;
     `};
   ${(props) =>
     props.mean &&
     css`
-      float:left;
+      float: left;
       width: 58%;
     `};
   height: calc(1.5em + 0.75rem + 2px);
@@ -79,8 +79,8 @@ const StyledInput = styled.input`
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgb(78 115 223 / 25%);
   }
-  &+&{
-    margin-left:10px;
+  & + & {
+    margin-left: 10px;
   }
 `;
 
@@ -99,20 +99,19 @@ const StyledButton2 = styled(Button)`
 const VocabList = ({
   form,
   vocabList,
-  vocabError,
   onChange,
   onKeyUp,
   onAddVocab,
-  getVocabList,
   onFocusComplete,
+  onRemoveVocab,
 }) => {
   const vocabInputEl = useRef(null);
-  const vocabInputElFocus = ()=>{
+  const vocabInputElFocus = () => {
     vocabInputEl.current.focus();
-  }
+  };
   //vocabFocus 가 트루로 변경될 때
   useEffect(() => {
-    if(form.vocabFocus){
+    if (form.vocabFocus) {
       vocabInputElFocus();
       onFocusComplete();
     }
@@ -129,7 +128,7 @@ const VocabList = ({
           placeholder="영어 단어"
           value={form.vocab}
           onChange={onChange}
-          autoComplete = "off"
+          autoComplete="off"
         />
         <StyledInput
           mean="true"
@@ -139,7 +138,7 @@ const VocabList = ({
           value={form.mean}
           onChange={onChange}
           onKeyUp={onKeyUp}
-          autoComplete = "off"
+          autoComplete="off"
         />
         <StyledButton onClick={onAddVocab}>+</StyledButton>
       </div>
@@ -149,7 +148,9 @@ const VocabList = ({
             <span className="vocab">{vocabItem.vocab}</span>
             <span className="horizontal_line"></span>
             <span className="mean">{vocabItem.mean}</span>
-            <StyledButton2 >-</StyledButton2>
+            <StyledButton2 onClick={() => onRemoveVocab(vocabItem.id)}>
+              -
+            </StyledButton2>
           </VocabListItem>
         ))}
       </div>
