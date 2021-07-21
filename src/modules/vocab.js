@@ -63,7 +63,6 @@ const vocab = handleActions(
         draft['form'][key] = value; //예: state.register.username 을 바꾼다
       }),
     [ADD_VOCAB_SUCCESS]: (state, { payload: resultCnt }) => {
-      console.log(resultCnt);
       const newState = produce(state, (draft) => {
         draft['form']['vocab'] = '';
         draft['form']['mean'] = '';
@@ -93,7 +92,6 @@ const vocab = handleActions(
       return state;
     },
     [REMOVE_VOCAB_SUCCESS]: (state, { payload: removedId }) => {
-      console.log(removedId);
       const newState = produce(state, (draft) => {
         const removedIdIndex = draft['vocabList'].findIndex(
           (vocabItem) => vocabItem.id === removedId,

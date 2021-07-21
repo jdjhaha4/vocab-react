@@ -76,7 +76,6 @@ const vocab_group = handleActions(
         draft['form'][key] = value; 
       }),
     [ADD_VOCAB_GROUP_SUCCESS]: (state, { payload: resultCnt }) => {
-      console.log(resultCnt);
       const newState = produce(state, (draft) => {
         draft['form']['group_name'] = '';
         draft['form']['groupNameFocus'] = true;
@@ -103,7 +102,6 @@ const vocab_group = handleActions(
       return state;
     },
     [REMOVE_VOCAB_GROUP_SUCCESS]: (state, { payload: removedGroupCode }) => {
-      console.log(removedGroupCode);
       const newState = produce(state, (draft) => {
         const removedGroupCodeIndex = draft['vocabGroupList'].findIndex(
           (vocabGroupItem) => vocabGroupItem.group_code === removedGroupCode,
