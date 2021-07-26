@@ -27,6 +27,9 @@ const VocabListItem = styled.div`
     float: left;
     display: block;
     width: 28%;
+    color: #003399;
+    font-size: 1.2rem;
+    font-weight: 600;
   }
   .mean {
     float: left;

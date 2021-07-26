@@ -4,20 +4,21 @@ import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
 
 const VocabGroupMappingListBlock = styled.div`
-  background-color: ${palette.cyan[0]};
   overflow: hidden;
 
   .group_area {
     float: left;
     width: 25%;
     height: 500px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    background-color: ${palette.cyan[0]};
   }
   .group_vocab_area {
     float: left;
     width: 35%;
     height: 500px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    background-color: ${palette.cyan[1]};
   }
   .group_vocab_area .title {
     font-weight: 600;
@@ -30,12 +31,14 @@ const VocabGroupMappingListBlock = styled.div`
     float: left;
     width: 5%;
     height: 500px;
+    background-color: ${palette.cyan[2]};
   }
   .vocab_area {
     float: left;
     width: 35%;
     height: 500px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    background-color: ${palette.cyan[3]};
   }
 `;
 
