@@ -7,7 +7,7 @@ import { Route, Link } from 'react-router-dom';
 import VocabListContainer from '../containers/vocab/VocabListContainer';
 import palette from '../lib/styles/palette';
 import VocabGroupListContainer from '../containers/vocab/VocabGroupListContainer';
-import VocabGroupMappingList from '../components/vocab/VocabGroupMappingList';
+import VocabGroupMappingListContainers from '../containers/vocab/VocabGroupMappingListContainers';
 
 const PageWrapper = styled.div`
 position: relative;
@@ -71,7 +71,7 @@ const VocabStudyPage = () => {
         <div className="page-contents">
           <Route path="/vocab" component={VocabListContainer} exact={true} />
           <Route path="/vocab/group" component={VocabGroupListContainer} exact={true} />
-          <Route path="/vocab/group/mapping" component={VocabGroupMappingList} />
+          <Route path="/vocab/group/mapping" component={VocabGroupMappingListContainers} />
         </div>
       </Wrapper>
     </PageWrapper>

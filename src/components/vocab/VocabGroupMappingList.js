@@ -77,54 +77,78 @@ const GroupVocabListItem = styled.div`
 const VocabListItem = styled.div`
   margin: 10px;
   padding: 5px;
-  border: 1px solid #A566FF;
+  border: 1px solid #a566ff;
   border-radius: 8px;
-  background: #A566FF;
+  background: #a566ff;
   color: white;
   font-weight: 600;
   cursor: pointer;
 
   &:hover {
-    border: 1px solid #8041D9;
-    background: #8041D9;
+    border: 1px solid #8041d9;
+    background: #8041d9;
   }
 `;
 
-const VocabGroupMappingList = () => {
+const VocabGroupMappingList = ({
+  vocabGroupList,
+  vocabList,
+  vocabGroupMappingList,
+  selectedGroupCode,
+  selectedGroupName,
+  onChangeGroupCode,
+  onAddVocabGroupMapping,
+  onRemoveVocabGroupMapping,
+}) => {
   return (
     <VocabGroupMappingListBlock>
       <div className="group_area">
-        <GroupListItem>DAY 01</GroupListItem>
-        <GroupListItem>DAY 02</GroupListItem>
-        <GroupListItem>DAY 03</GroupListItem>
-        <GroupListItem>DAY 04</GroupListItem>
-        <GroupListItem>DAY 05</GroupListItem>
+        {vocabGroupList == null
+          ? null
+          : vocabGroupList.map((vocabGroupItem) => (
+              <GroupListItem
+                key={vocabGroupItem.group_code}
+                onClick={() => onChangeGroupCode(vocabGroupItem.group_code)}
+              >
+                {vocabGroupItem.group_name}
+              </GroupListItem>
+            ))}
       </div>
       <div className="group_vocab_area">
-        <div className="title">DAY 01</div>
-        <GroupVocabListItem>hold</GroupVocabListItem>
-        <GroupVocabListItem>create</GroupVocabListItem>
-        <GroupVocabListItem>enhance</GroupVocabListItem>
-        <GroupVocabListItem>develop</GroupVocabListItem>
+        {selectedGroupCode === '' ? (
+          <div className="title">그룹을 선택해 주세요.</div>
+        ) : (
+          <div className="title">{selectedGroupName}</div>
+        )}
+        {vocabGroupMappingList == null || vocabGroupMappingList.length === 0 ? (
+          <div>단어를 매핑 시켜 주세요.</div>
+        ) : (
+          vocabGroupMappingList.map((vocabGroupMappingItem) => (
+            <GroupVocabListItem
+              key={
+                vocabGroupMappingItem.group_code +
+                '' +
+                vocabGroupMappingItem.vocab_id
+              }
+              onClick={()=>onRemoveVocabGroupMapping(vocabGroupMappingItem.vocab_id)}
+            >
+              {vocabGroupMappingItem.vocab}({vocabGroupMappingItem.mean})
+            </GroupVocabListItem>
+          ))
+        )}
       </div>
       <div className="arrow_area"></div>
       <div className="vocab_area">
-        <VocabListItem>hold</VocabListItem>
-        <VocabListItem>create</VocabListItem>
-        <VocabListItem>enhance</VocabListItem>
-        <VocabListItem>develop</VocabListItem>
-        <VocabListItem>hold</VocabListItem>
-        <VocabListItem>create</VocabListItem>
-        <VocabListItem>enhance</VocabListItem>
-        <VocabListItem>develop</VocabListItem>
-        <VocabListItem>hold</VocabListItem>
-        <VocabListItem>create</VocabListItem>
-        <VocabListItem>enhance</VocabListItem>
-        <VocabListItem>develop</VocabListItem>
-        <VocabListItem>hold</VocabListItem>
-        <VocabListItem>create</VocabListItem>
-        <VocabListItem>enhance</VocabListItem>
-        <VocabListItem>develop</VocabListItem>
+        {vocabList == null
+          ? null
+          : vocabList.map((vocabItem) => (
+              <VocabListItem
+                key={vocabItem.id}
+                onClick={() => onAddVocabGroupMapping(vocabItem.id)}
+              >
+                {vocabItem.vocab}({vocabItem.mean})
+              </VocabListItem>
+            ))}
       </div>
     </VocabGroupMappingListBlock>
   );

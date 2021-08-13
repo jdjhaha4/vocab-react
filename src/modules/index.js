@@ -6,6 +6,7 @@ import loading from './loading';
 import navigation from './navigation';
 import vocab,{vocabSaga} from './vocab';
 import vocab_group,{vocabGroupSaga} from './vocab_group';
+import vocab_group_mapping,{vocabGroupMappingSaga} from './vocab_mapping';
 
 const rootReducer = combineReducers({
     auth,
@@ -14,10 +15,11 @@ const rootReducer = combineReducers({
     navigation,
     vocab,
     vocab_group,
+    vocab_group_mapping,
 });
 
 export function* rootSaga(){
-    yield all([authSaga(), userSaga(), vocabSaga(), vocabGroupSaga()]);
+    yield all([authSaga(), userSaga(), vocabSaga(), vocabGroupSaga(),vocabGroupMappingSaga()]);
 }
 
 export default rootReducer;
