@@ -13,6 +13,29 @@ const VocabListBlock = styled.div`
   label {
     padding: 10px;
   }
+  .group_select_area {
+    padding: 5px;
+    width: 100%;
+
+    select {
+      width: 100%;
+      1px solid ${palette.gray[1]};
+      padding: 10px;
+      border-radius: 5px;
+
+      option {
+        margin: 3px 0;
+        border: none;
+      }
+      option:focus {
+        border: none;
+      }
+    }
+
+    select:focus {
+      1px solid ${palette.gray[3]};
+      outline: none;
+    }
 `;
 const VocabListItem = styled.div`
   background-color: white;
@@ -24,25 +47,23 @@ const VocabListItem = styled.div`
   overflow: hidden;
 
   .vocab {
-    float: left;
-    display: block;
+    display: inline-block;
     width: 28%;
     color: #003399;
     font-size: 1.2rem;
     font-weight: 600;
   }
   .mean {
-    float: left;
-    display: block;
+    display: inline-block;
     width: 62%;
     margin-left: 20px;
   }
   .horizontal_line {
-    float: left;
-    display: block;
+    display: inline-block;
     width: 2px;
     height: 1rem;
     background-color: ${palette.gray[6]};
+    vertical-align: middle;
   }
 `;
 
@@ -107,6 +128,9 @@ const VocabList = ({
   onAddVocab,
   onFocusComplete,
   onRemoveVocab,
+  vocabGroupList,
+  selectedGroupCode,
+  onChangeGroupCode,
 }) => {
   const vocabInputEl = useRef(null);
   const vocabInputElFocus = () => {
@@ -122,6 +146,22 @@ const VocabList = ({
   return (
     <VocabListBlock>
       <label>단어 등록</label>
+      <div className="group_select_area">
+        <select value={selectedGroupCode} onChange={(e)=>{onChangeGroupCode(e.target.value)}}>
+          <option value="all">모든 단어</option>
+          <option value="none">그룹이 없는 단어</option>
+          {vocabGroupList == null
+            ? null
+            : vocabGroupList.map((vocabGroupItem) => (
+                <option
+                  key={vocabGroupItem.group_code}
+                  value={vocabGroupItem.group_code}
+                >
+                  {vocabGroupItem.group_name}
+                </option>
+              ))}
+        </select>
+      </div>
       <div className="add">
         <StyledInput
           ref={vocabInputEl}

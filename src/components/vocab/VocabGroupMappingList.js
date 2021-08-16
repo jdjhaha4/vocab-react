@@ -40,6 +40,31 @@ const VocabGroupMappingListBlock = styled.div`
     overflow-y: auto;
     background-color: ${palette.cyan[3]};
   }
+
+  .group_select_area {
+    padding: 5px;
+    width: 100%;
+
+    select {
+      width: 100%;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+
+      option {
+        margin: 3px 0;
+        border: none;
+      }
+      option:focus {
+        border: none;
+      }
+    }
+
+    select:focus {
+      border: none;
+      outline: none;
+    }
+  }
 `;
 
 const GroupListItem = styled.div`
@@ -130,7 +155,9 @@ const VocabGroupMappingList = ({
                 '' +
                 vocabGroupMappingItem.vocab_id
               }
-              onClick={()=>onRemoveVocabGroupMapping(vocabGroupMappingItem.vocab_id)}
+              onClick={() =>
+                onRemoveVocabGroupMapping(vocabGroupMappingItem.vocab_id)
+              }
             >
               {vocabGroupMappingItem.vocab}({vocabGroupMappingItem.mean})
             </GroupVocabListItem>
@@ -139,6 +166,19 @@ const VocabGroupMappingList = ({
       </div>
       <div className="arrow_area"></div>
       <div className="vocab_area">
+        <div className="group_select_area">
+          <select>
+            <option value="all">모든 단어</option>
+            <option value="none">그룹이 없는 단어</option>
+            {vocabGroupList == null
+              ? null
+              : vocabGroupList.map((vocabGroupItem) => (
+                  <option key={vocabGroupItem.group_code} value={vocabGroupItem.group_code}>
+                    {vocabGroupItem.group_name}
+                  </option>
+                ))}
+          </select>
+        </div>
         {vocabList == null
           ? null
           : vocabList.map((vocabItem) => (

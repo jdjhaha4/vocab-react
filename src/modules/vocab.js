@@ -6,6 +6,7 @@ import createRequestSaga, {
 } from '../lib/createRequestSaga';
 import * as vocabAPI from '../lib/api/vocab';
 
+const CHANGE_SELECTED_GROUP_CODE='vocab/CHANGE_SELECTED_GROUP_CODE';
 const CHANGE_FIELD = 'vocab/CHANGE_FIELD';
 const [GET_VOCAB_LIST, GET_VOCAB_LIST_SUCCESS, GET_VOCAB_LIST_FAILURE] =
   createRequestActionTypes('vocab/GET_VOCAB_LIST');
@@ -14,6 +15,9 @@ const [ADD_VOCAB, ADD_VOCAB_SUCCESS, ADD_VOCAB_FAILURE] =
 const [REMOVE_VOCAB, REMOVE_VOCAB_SUCCESS, REMOVE_VOCAB_FAILURE] =
   createRequestActionTypes('vocab/REMOVE_VOCAB');
 
+export const changeSelectedGroupCode = createAction(CHANGE_SELECTED_GROUP_CODE,({groupCode})=>({
+  groupCode,
+}));
 export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
   key, // vocab, mean
   value, // 실제 바꾸려는 값
@@ -54,13 +58,18 @@ const initialState = {
   vocabList: [],
   vocabError: null,
   vocabListReload: false,
+  selectedGroupCode:'all',
 };
 
 const vocab = handleActions(
   {
+    [CHANGE_SELECTED_GROUP_CODE]: (state, { payload: { groupCode } }) =>
+      produce(state, (draft) => {
+        draft['selectedGroupCode'] = groupCode; 
+      }),
     [CHANGE_FIELD]: (state, { payload: { key, value } }) =>
       produce(state, (draft) => {
-        draft['form'][key] = value; //예: state.register.username 을 바꾼다
+        draft['form'][key] = value; 
       }),
     [ADD_VOCAB_SUCCESS]: (state, { payload: resultCnt }) => {
       const newState = produce(state, (draft) => {
