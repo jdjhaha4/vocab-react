@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import VocabGroupMappingList from '../../components/vocab/VocabGroupMappingList';
 import { getVocabGroupList } from '../../modules/vocab_group';
-import { getVocabList } from '../../modules/vocab';
+import { getVocabList, changeSelectedGroupCode } from '../../modules/vocab';
 import {
   changeGroupCode,
   getVocabGroupMappingList,
@@ -17,9 +17,13 @@ const VocabGroupMappingListContainers = () => {
     vocabGroupList: vocab_group.vocabGroupList,
   }));
 
-  const { vocabList } = useSelector(({ vocab }) => ({
-    vocabList: vocab.vocabList,
-  }));
+  const { vocabList, vocabListReload, vocabSelectedGroupCode } = useSelector(
+    ({ vocab }) => ({
+      vocabList: vocab.vocabList,
+      vocabListReload: vocab.vocabListReload,
+      vocabSelectedGroupCode: vocab.selectedGroupCode,
+    }),
+  );
 
   const {
     vocabGroupMappingList,
@@ -34,11 +38,28 @@ const VocabGroupMappingListContainers = () => {
       vocab_group_mapping.vocabGroupMappingListReload,
   }));
 
+  const onChangeVocabGroupCode = useCallback((groupCode) => {
+    dispatch(changeSelectedGroupCode({ groupCode }));
+  }, []);
+
   //컴포넌트가 처음 렌더링될 때
   useEffect(() => {
+    const ignoreVocabIdList = vocabGroupMappingList.map(elem => (
+      elem.vocab_id
+    ));
     dispatch(getVocabGroupList());
-    dispatch(getVocabList({ groupCode: '' }));
-  }, [dispatch]);
+    dispatch(getVocabList({ groupCode: vocabSelectedGroupCode, ignoreVocabIdList:ignoreVocabIdList }));
+  }, [dispatch,vocabGroupMappingList]);
+
+  //vocabListReload 가 트루로 변경될 때
+  useEffect(() => {
+    if (vocabListReload) {
+      const ignoreVocabIdList = vocabGroupMappingList.map(elem => (
+        elem.vocab_id
+      ));
+      dispatch(getVocabList({ groupCode: vocabSelectedGroupCode, ignoreVocabIdList:ignoreVocabIdList }));
+    }
+  }, [vocabListReload]);
 
   const onChangeGroupCode = useCallback(
     (groupCode) => {
@@ -79,13 +100,15 @@ const VocabGroupMappingListContainers = () => {
   return (
     <VocabGroupMappingList
       vocabGroupList={vocabGroupList}
-      vocabList={vocabList}
       vocabGroupMappingList={vocabGroupMappingList}
       selectedGroupCode={selectedGroupCode}
       selectedGroupName={selectedGroupName}
       onChangeGroupCode={onChangeGroupCode}
       onAddVocabGroupMapping={onAddVocabGroupMapping}
       onRemoveVocabGroupMapping={onRemoveVocabGroupMapping}
+      vocabList={vocabList}
+      vocabSelectedGroupCode={vocabSelectedGroupCode}
+      onChangeVocabGroupCode={onChangeVocabGroupCode}
     />
   );
 };

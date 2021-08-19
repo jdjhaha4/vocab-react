@@ -22,13 +22,20 @@ export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
   key, // vocab, mean
   value, // 실제 바꾸려는 값
 }));
-export const getVocabList = createAction(GET_VOCAB_LIST, ({ groupCode }) => ({
-  groupCode,
-}));
+export const getVocabList = createAction(GET_VOCAB_LIST, ({ groupCode, ignoreVocabIdList }) => {
+  if(ignoreVocabIdList == null){
+    ignoreVocabIdList = [];
+  }
+  return {
+    groupCode,
+    ignoreVocabIdList,
+  };
+});
 
-export const addVocab = createAction(ADD_VOCAB, ({ vocab, mean }) => ({
+export const addVocab = createAction(ADD_VOCAB, ({ vocab, mean, selectedGroupCode }) => ({
   vocab,
   mean,
+  selectedGroupCode,
 }));
 
 export const removeVocab = createAction(REMOVE_VOCAB, ({ id }) => ({
@@ -65,7 +72,8 @@ const vocab = handleActions(
   {
     [CHANGE_SELECTED_GROUP_CODE]: (state, { payload: { groupCode } }) =>
       produce(state, (draft) => {
-        draft['selectedGroupCode'] = groupCode; 
+        draft['selectedGroupCode'] = groupCode;
+        draft['vocabListReload'] = true;
       }),
     [CHANGE_FIELD]: (state, { payload: { key, value } }) =>
       produce(state, (draft) => {

@@ -6,13 +6,22 @@ import Button from '../common/Button';
 const VocabListBlock = styled.div`
   background-color: ${palette.gray[0]};
 
+  .vocab_list{
+    height: calc(100vh - 270px);
+    overflow:auto;
+  }
+
   .add {
     overflow: hidden;
   }
 
   label {
-    padding: 10px;
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 5px;
   }
+  
   .group_select_area {
     padding: 5px;
     width: 100%;
@@ -185,7 +194,7 @@ const VocabList = ({
         />
         <StyledButton onClick={onAddVocab}>+</StyledButton>
       </div>
-      <div>
+      <div className="vocab_list">
         {vocabList.map((vocabItem) => (
           <VocabListItem key={vocabItem.id}>
             <span className="vocab">{vocabItem.vocab}</span>

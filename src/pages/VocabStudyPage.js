@@ -8,6 +8,7 @@ import VocabListContainer from '../containers/vocab/VocabListContainer';
 import palette from '../lib/styles/palette';
 import VocabGroupListContainer from '../containers/vocab/VocabGroupListContainer';
 import VocabGroupMappingListContainers from '../containers/vocab/VocabGroupMappingListContainers';
+import VocabStudy from '../components/vocab/VocabStudy';
 
 const PageWrapper = styled.div`
 position: relative;
@@ -15,7 +16,7 @@ position: relative;
 const Wrapper = styled(Responsive)`
   position: relative;
   margin-top: 15px;
-  overflow: hidden;
+  overflow: auto;
 
   .lnb {
     width: 15%;
@@ -67,11 +68,15 @@ const VocabStudyPage = () => {
           <LnbItem>
             <StyledLink to="/vocab/group/mapping">단어 그룹화</StyledLink>
           </LnbItem>
+          <LnbItem>
+            <StyledLink to="/vocab/study">학습하기</StyledLink>
+          </LnbItem>
         </div>
         <div className="page-contents">
           <Route path="/vocab" component={VocabListContainer} exact={true} />
           <Route path="/vocab/group" component={VocabGroupListContainer} exact={true} />
           <Route path="/vocab/group/mapping" component={VocabGroupMappingListContainers} />
+          <Route path="/vocab/study" component={VocabStudy} />
         </div>
       </Wrapper>
     </PageWrapper>

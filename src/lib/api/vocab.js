@@ -1,7 +1,7 @@
 import client from './client';
 
-export const getVocabList = ({ groupCode }) =>
-  client.get(`/vocab/list?groupCode=${groupCode}`);
-export const addVocab = ({ vocab, mean }) =>
-  client.post('/vocab/insert', { vocab, mean });
+export const getVocabList = ({ groupCode, ignoreVocabIdList }) =>
+  client.post(`/vocab/list`,{groupCode,ignoreVocabIdList});
+export const addVocab = ({ vocab, mean, selectedGroupCode }) =>
+  client.post('/vocab/insert', { vocab, mean, selectedGroupCode });
 export const removeVocab = ({ id }) => client.post('/vocab/delete', { id });

@@ -9,36 +9,36 @@ const VocabGroupMappingListBlock = styled.div`
   .group_area {
     float: left;
     width: 25%;
-    height: 500px;
+    height: calc(100vh - 200px);
     overflow-y: auto;
-    background-color: ${palette.cyan[0]};
+    background-color: ${palette.gray[3]};
   }
   .group_vocab_area {
     float: left;
     width: 35%;
-    height: 500px;
+    height: calc(100vh - 200px);
     overflow-y: auto;
-    background-color: ${palette.cyan[1]};
+    background-color: ${palette.gray[3]};
   }
   .group_vocab_area .title {
     font-weight: 600;
     margin: 10px 0;
     padding: 5px;
     color: white;
-    background: ${palette.gray[6]};
+    background: ${palette.cyan[4]};
   }
   .arrow_area {
     float: left;
     width: 5%;
-    height: 500px;
-    background-color: ${palette.cyan[2]};
+    height: calc(100vh - 200px);
+    background-color: ${palette.gray[3]};
   }
   .vocab_area {
     float: left;
     width: 35%;
-    height: 500px;
+    height: calc(100vh - 200px);
     overflow-y: auto;
-    background-color: ${palette.cyan[3]};
+    background-color: ${palette.gray[3]};
   }
 
   .group_select_area {
@@ -84,34 +84,46 @@ const GroupListItem = styled.div`
 `;
 
 const GroupVocabListItem = styled.div`
+  background-color: white;
+  box-shadow: 0px 4px 20px rgba(204, 204, 204, 0.3);
+  border-radius: 10px;
   margin: 10px;
-  padding: 5px;
-  border: 1px solid #f361a6;
-  border-radius: 8px;
-  background: #f361a6;
-  color: white;
-  font-weight: 600;
+  border: 1px solid ${palette.gray[1]};
+  padding: 0.7rem;
+  overflow: hidden;
   cursor: pointer;
 
   &:hover {
-    border: 1px solid #d9418c;
-    background: #d9418c;
+    border: 1px solid ${palette.gray[4]};
+    background: ${palette.gray[4]};
+  }
+
+  .vocab {
+    color: #003399;
+    font-size: 1.2rem;
+    font-weight: 600;
   }
 `;
 
 const VocabListItem = styled.div`
+  background-color: white;
+  box-shadow: 0px 4px 20px rgba(204, 204, 204, 0.3);
+  border-radius: 10px;
   margin: 10px;
-  padding: 5px;
-  border: 1px solid #a566ff;
-  border-radius: 8px;
-  background: #a566ff;
-  color: white;
-  font-weight: 600;
+  border: 1px solid ${palette.gray[1]};
+  padding: 0.7rem;
+  overflow: hidden;
   cursor: pointer;
 
   &:hover {
-    border: 1px solid #8041d9;
-    background: #8041d9;
+    border: 1px solid ${palette.gray[4]};
+    background: ${palette.gray[4]};
+  }
+
+  .vocab {
+    color: #003399;
+    font-size: 1.2rem;
+    font-weight: 600;
   }
 `;
 
@@ -124,6 +136,8 @@ const VocabGroupMappingList = ({
   onChangeGroupCode,
   onAddVocabGroupMapping,
   onRemoveVocabGroupMapping,
+  vocabSelectedGroupCode,
+  onChangeVocabGroupCode,
 }) => {
   return (
     <VocabGroupMappingListBlock>
@@ -159,7 +173,8 @@ const VocabGroupMappingList = ({
                 onRemoveVocabGroupMapping(vocabGroupMappingItem.vocab_id)
               }
             >
-              {vocabGroupMappingItem.vocab}({vocabGroupMappingItem.mean})
+              <span className="vocab">{vocabGroupMappingItem.vocab}</span>(
+              {vocabGroupMappingItem.mean})
             </GroupVocabListItem>
           ))
         )}
@@ -167,13 +182,21 @@ const VocabGroupMappingList = ({
       <div className="arrow_area"></div>
       <div className="vocab_area">
         <div className="group_select_area">
-          <select>
+          <select
+            value={vocabSelectedGroupCode}
+            onChange={(e) => {
+              onChangeVocabGroupCode(e.target.value);
+            }}
+          >
             <option value="all">모든 단어</option>
             <option value="none">그룹이 없는 단어</option>
             {vocabGroupList == null
               ? null
               : vocabGroupList.map((vocabGroupItem) => (
-                  <option key={vocabGroupItem.group_code} value={vocabGroupItem.group_code}>
+                  <option
+                    key={vocabGroupItem.group_code}
+                    value={vocabGroupItem.group_code}
+                  >
                     {vocabGroupItem.group_name}
                   </option>
                 ))}
@@ -186,7 +209,7 @@ const VocabGroupMappingList = ({
                 key={vocabItem.id}
                 onClick={() => onAddVocabGroupMapping(vocabItem.id)}
               >
-                {vocabItem.vocab}({vocabItem.mean})
+                <span className="vocab">{vocabItem.vocab}</span>({vocabItem.mean})
               </VocabListItem>
             ))}
       </div>

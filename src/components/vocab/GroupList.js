@@ -5,13 +5,19 @@ import Button from '../common/Button';
 
 const GroupListBlock = styled.div`
   background-color: ${palette.gray[0]};
-
+  .group_list{
+    height: calc(100vh - 270px);
+    overflow:auto;
+  }
   .add {
     overflow: hidden;
   }
 
   label {
-    padding: 10px;
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 5px;
   }
 `;
 
@@ -114,7 +120,7 @@ const GroupList = ({
         />
         <StyledButton onClick={onAddVocabGroup}>+</StyledButton>
       </div>
-      <div>
+      <div className="group_list">
         {vocabGroupList.map((vocabGroupItem) => (
           <GroupListItem key={vocabGroupItem.group_code}>
             <span className="groupNm">{vocabGroupItem.group_name}</span>

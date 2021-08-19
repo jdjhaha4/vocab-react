@@ -62,7 +62,7 @@ const VocabListContainer = () => {
     if (vocab.trim() === '' || mean.trim() === '') {
       return;
     }
-    dispatch(addVocab({ vocab, mean }));
+    dispatch(addVocab({ vocab, mean, selectedGroupCode }));
   }, [form]);
 
   const onRemoveVocab = useCallback((id) => {
@@ -72,13 +72,13 @@ const VocabListContainer = () => {
   //컴포넌트가 처음 렌더링될 때
   useEffect(() => {
     dispatch(getVocabGroupList());
-    dispatch(getVocabList({ groupCode: '' }));
+    dispatch(getVocabList({ groupCode: selectedGroupCode }));
   }, [dispatch]);
 
   //vocabListReload 가 트루로 변경될 때
   useEffect(() => {
     if (vocabListReload) {
-      dispatch(getVocabList({ groupCode: '' }));
+      dispatch(getVocabList({ groupCode: selectedGroupCode }));
     }
   }, [vocabListReload]);
 
