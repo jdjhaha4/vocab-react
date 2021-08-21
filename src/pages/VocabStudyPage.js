@@ -8,7 +8,7 @@ import VocabListContainer from '../containers/vocab/VocabListContainer';
 import palette from '../lib/styles/palette';
 import VocabGroupListContainer from '../containers/vocab/VocabGroupListContainer';
 import VocabGroupMappingListContainers from '../containers/vocab/VocabGroupMappingListContainers';
-import VocabStudy from '../components/vocab/VocabStudy';
+import VocabStudyContainer from '../containers/vocab/VocabStudyContainer';
 
 const PageWrapper = styled.div`
 position: relative;
@@ -76,7 +76,7 @@ const VocabStudyPage = () => {
           <Route path="/vocab" component={VocabListContainer} exact={true} />
           <Route path="/vocab/group" component={VocabGroupListContainer} exact={true} />
           <Route path="/vocab/group/mapping" component={VocabGroupMappingListContainers} />
-          <Route path="/vocab/study" component={VocabStudy} />
+          <Route path="/vocab/study" component={VocabStudyContainer} />
         </div>
       </Wrapper>
     </PageWrapper>

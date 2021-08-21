@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import MainPage from "./pages/MainPage";
 import VocabStudyPage from "./pages/VocabStudyPage";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 function App() {
