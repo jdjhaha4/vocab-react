@@ -7,7 +7,7 @@ const VocabListBlock = styled.div`
   background-color: ${palette.gray[0]};
 
   .vocab_list{
-    height: calc(100vh - 270px);
+    height: calc(100vh - 280px);
     overflow:auto;
   }
 
@@ -166,7 +166,7 @@ const VocabList = ({
                   key={vocabGroupItem.group_code}
                   value={vocabGroupItem.group_code}
                 >
-                  {vocabGroupItem.group_name}
+                  {vocabGroupItem.group_name} ({vocabGroupItem.vocab_count} 단어)
                 </option>
               ))}
         </select>

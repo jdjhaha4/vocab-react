@@ -123,7 +123,7 @@ const GroupList = ({
       <div className="group_list">
         {vocabGroupList.map((vocabGroupItem) => (
           <GroupListItem key={vocabGroupItem.group_code}>
-            <span className="groupNm">{vocabGroupItem.group_name}</span>
+            <span className="groupNm">{vocabGroupItem.group_name} ({vocabGroupItem.vocab_count} 단어)</span>
             <StyledButton2
               onClick={() => onRemoveVocabGroup(vocabGroupItem.group_code)}
             >

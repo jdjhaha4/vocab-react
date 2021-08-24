@@ -149,7 +149,7 @@ const VocabGroupMappingList = ({
                 key={vocabGroupItem.group_code}
                 onClick={() => onChangeGroupCode(vocabGroupItem.group_code)}
               >
-                {vocabGroupItem.group_name}
+                {vocabGroupItem.group_name} ({vocabGroupItem.vocab_count} 단어)
               </GroupListItem>
             ))}
       </div>

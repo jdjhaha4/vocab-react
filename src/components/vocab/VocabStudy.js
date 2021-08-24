@@ -8,11 +8,11 @@ const VocabStudyBlock = styled.div`
   background-color: ${palette.gray[0]};
 
   .box {
-    height: 100px;
+    height: auto;
     background-color: white;
     box-shadow: 0px 4px 20px rgba(204, 204, 204, 0.3);
     border-radius: 10px;
-    margin: 10px;
+    margin: 10px 0;
     border: 1px solid ${palette.gray[1]};
     padding: 0.7rem;
     text-align: center;
@@ -21,6 +21,30 @@ const VocabStudyBlock = styled.div`
       background-color: ${palette.gray[2]};
       cursor: pointer;
     }
+
+    .wrap {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .group_name_box {
+    height: auto;
+  }
+  .group_name {
+    font-size: 1.2rem;
+    color: #003399;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .vocab_count {
+    margin-top: 5px;
+    font-size: 1rem;
+    color: ${palette.gray[8]};
+    font-weight: 600;
   }
 `;
 const VocabStudy = ({ vocabGroupList }) => {
@@ -32,12 +56,21 @@ const VocabStudy = ({ vocabGroupList }) => {
             ? null
             : vocabGroupList.map((vocabGroupItem) => (
                 <div
-                  className="col-3 box"
+                  className="col-3"
                   key={vocabGroupItem.group_code}
                   value={vocabGroupItem.group_code}
                 >
-                  {vocabGroupItem.group_name}
-                  <div>{vocabGroupItem.vocab_count}</div>
+                  <div className="wrap box">
+                    <div className="group_name_box">
+                      <div className="group_name">
+                        {vocabGroupItem.group_name}
+                      </div>
+                    </div>
+
+                    <div className="vocab_count">
+                      {vocabGroupItem.vocab_count} 단어
+                    </div>
+                  </div>
                 </div>
               ))}
         </div>
