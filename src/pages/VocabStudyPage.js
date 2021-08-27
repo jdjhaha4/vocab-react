@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import HeaderContainer from '../containers/common/HeaderContainer';
 import NavigationContainer from '../containers/common/NavigationContainer';
 import styled from 'styled-components';
@@ -9,9 +9,11 @@ import palette from '../lib/styles/palette';
 import VocabGroupListContainer from '../containers/vocab/VocabGroupListContainer';
 import VocabGroupMappingListContainers from '../containers/vocab/VocabGroupMappingListContainers';
 import VocabStudyContainer from '../containers/vocab/VocabStudyContainer';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeNaviSubMenu } from '../modules/navigation';
 
 const PageWrapper = styled.div`
-position: relative;
+  position: relative;
 `;
 const Wrapper = styled(Responsive)`
   position: relative;
@@ -34,7 +36,6 @@ const LnbItem = styled.div`
   width: 100%;
   display: table;
   border-collapse: collapse;
-  
 `;
 
 const StyledLink = styled(Link)`
@@ -47,12 +48,26 @@ const StyledLink = styled(Link)`
     background-color: ${palette.gray[8]};
     color: white;
   }
+  &.active {
+    background-color: ${palette.gray[8]};
+    color: white;
+  }
   font-weight: 800;
   font-size: 1rem;
-  padding:0px 10px;
+  padding: 0px 10px;
 `;
 
 const VocabStudyPage = () => {
+  const dispatch = useDispatch();
+  const { sub_menu_id } = useSelector(({ navigation }) => ({
+    sub_menu_id: navigation.sub_menu_id,
+  }));
+  const onChangeSubMenuId = useCallback(
+    (sub_menu_id) => {
+      dispatch(changeNaviSubMenu(sub_menu_id));
+    },
+    [sub_menu_id],
+  );
   return (
     <PageWrapper>
       <HeaderContainer />
@@ -60,22 +75,53 @@ const VocabStudyPage = () => {
       <Wrapper>
         <div className="lnb">
           <LnbItem>
-            <StyledLink to="/vocab">단어 목록</StyledLink>
+            <StyledLink
+              className={sub_menu_id=='vocab'?'active':''}
+              to="/vocab"
+              onClick={() => onChangeSubMenuId('vocab')}
+            >
+              단어 목록
+            </StyledLink>
           </LnbItem>
           <LnbItem>
-            <StyledLink to="/vocab/group">그룹 목록</StyledLink>
+            <StyledLink
+              className={sub_menu_id=='vocab/group'?'active':''}
+              to="/vocab/group"
+              onClick={() => onChangeSubMenuId('vocab/group')}
+            >
+              그룹 목록
+            </StyledLink>
           </LnbItem>
           <LnbItem>
-            <StyledLink to="/vocab/group/mapping">단어 그룹화</StyledLink>
+            <StyledLink
+              className={sub_menu_id=='vocab/group/mapping'?'active':''}
+              to="/vocab/group/mapping"
+              onClick={() => onChangeSubMenuId('vocab/group/mapping')}
+            >
+              단어 그룹화
+            </StyledLink>
           </LnbItem>
           <LnbItem>
-            <StyledLink to="/vocab/study">학습하기</StyledLink>
+            <StyledLink
+              className={sub_menu_id=='vocab/study'?'active':''}
+              to="/vocab/study"
+              onClick={() => onChangeSubMenuId('vocab/study')}
+            >
+              학습하기
+            </StyledLink>
           </LnbItem>
         </div>
         <div className="page-contents">
           <Route path="/vocab" component={VocabListContainer} exact={true} />
-          <Route path="/vocab/group" component={VocabGroupListContainer} exact={true} />
-          <Route path="/vocab/group/mapping" component={VocabGroupMappingListContainers} />
+          <Route
+            path="/vocab/group"
+            component={VocabGroupListContainer}
+            exact={true}
+          />
+          <Route
+            path="/vocab/group/mapping"
+            component={VocabGroupMappingListContainers}
+          />
           <Route path="/vocab/study" component={VocabStudyContainer} />
         </div>
       </Wrapper>

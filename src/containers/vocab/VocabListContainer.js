@@ -13,6 +13,10 @@ import { getVocabGroupList } from '../../modules/vocab_group';
 const VocabListContainer = () => {
   const dispatch = useDispatch();
 
+  const { sub_menu_id } = useSelector(({ navigation }) => ({
+    sub_menu_id: navigation.sub_menu_id,
+  }));
+
   const { vocabGroupList } = useSelector(({ vocab_group }) => ({
     vocabGroupList: vocab_group.vocabGroupList,
   }));
