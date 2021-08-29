@@ -11,6 +11,7 @@ import VocabGroupMappingListContainers from '../containers/vocab/VocabGroupMappi
 import VocabStudyContainer from '../containers/vocab/VocabStudyContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeNaviSubMenu } from '../modules/navigation';
+import VocabStudyTypeContainer from '../containers/vocab/VocabStudyTypeContainer';
 
 const PageWrapper = styled.div`
   position: relative;
@@ -122,7 +123,9 @@ const VocabStudyPage = () => {
             path="/vocab/group/mapping"
             component={VocabGroupMappingListContainers}
           />
-          <Route path="/vocab/study" component={VocabStudyContainer} />
+          <Route path="/vocab/study" exact component={VocabStudyContainer} />
+          <Route path="/vocab/study/type" exact render={()=><div>학습 하실 그룹을 선택해 주세요.</div>} />
+          <Route path="/vocab/study/type/:groupcode" component={VocabStudyTypeContainer} />
         </div>
       </Wrapper>
     </PageWrapper>

@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
+import { withRouter } from 'react-router-dom';
 
 const VocabStudyBlock = styled.div`
   height: calc(100vh - 150px);
@@ -47,7 +48,21 @@ const VocabStudyBlock = styled.div`
     font-weight: 600;
   }
 `;
-const VocabStudy = ({ vocabGroupList }) => {
+const VocabStudy = ({ history, vocabGroupList }) => {
+  const onClickGroup = useCallback(
+    (group_code) => {
+      const vocabGroupItem = vocabGroupList.find(
+        (item) => item.group_code === group_code,
+      );
+      if(vocabGroupItem.vocab_count === 0){
+        alert(`${vocabGroupItem.group_name} 그룹에 단어를 등록 후 선택해 주세요.`);
+        return;
+      }
+      history.push(`/vocab/study/type/${group_code}`);
+    },
+    [vocabGroupList],
+  );
+
   return (
     <VocabStudyBlock>
       <div className="container">
@@ -59,6 +74,7 @@ const VocabStudy = ({ vocabGroupList }) => {
                   className="col-3"
                   key={vocabGroupItem.group_code}
                   value={vocabGroupItem.group_code}
+                  onClick={() => onClickGroup(vocabGroupItem.group_code)}
                 >
                   <div className="wrap box">
                     <div className="group_name_box">
@@ -79,4 +95,4 @@ const VocabStudy = ({ vocabGroupList }) => {
   );
 };
 
-export default VocabStudy;
+export default withRouter(VocabStudy);
