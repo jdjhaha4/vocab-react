@@ -12,6 +12,7 @@ import VocabStudyContainer from '../containers/vocab/VocabStudyContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeNaviSubMenu } from '../modules/navigation';
 import VocabStudyTypeContainer from '../containers/vocab/VocabStudyTypeContainer';
+import VocabStudyLookContainer from '../containers/vocab/VocabStudyLookContainer';
 
 const PageWrapper = styled.div`
   position: relative;
@@ -126,6 +127,7 @@ const VocabStudyPage = () => {
           <Route path="/vocab/study" exact component={VocabStudyContainer} />
           <Route path="/vocab/study/type" exact render={()=><div>학습 하실 그룹을 선택해 주세요.</div>} />
           <Route path="/vocab/study/type/:groupcode" component={VocabStudyTypeContainer} />
+          <Route path="/vocab/study/look/:groupcode" component={VocabStudyLookContainer} />
         </div>
       </Wrapper>
     </PageWrapper>

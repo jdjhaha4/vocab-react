@@ -12,6 +12,11 @@ const [
   GET_VOCAB_GROUP_LIST_SUCCESS,
   GET_VOCAB_GROUP_LIST_FAILURE,
 ] = createRequestActionTypes('vocab_group/GET_VOCAB_GROUP_LIST');
+const [
+  GET_VOCAB_GROUP_DATA,
+  GET_VOCAB_GROUP_DATA_SUCCESS,
+  GET_VOCAB_GROUP_DATA_FAILURE,
+] = createRequestActionTypes('vocab_group/GET_VOCAB_GROUP_DATA');
 const [ADD_VOCAB_GROUP, ADD_VOCAB_GROUP_SUCCESS, ADD_VOCAB_GROUP_FAILURE] =
   createRequestActionTypes('vocab_group/ADD_VOCAB_GROUP');
 const [
@@ -25,6 +30,7 @@ export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
   value, // 실제 바꾸려는 값
 }));
 export const getVocabGroupList = createAction(GET_VOCAB_GROUP_LIST);
+export const getVocabGroupData = createAction(GET_VOCAB_GROUP_DATA);
 
 export const addVocabGroup = createAction(
   ADD_VOCAB_GROUP,
@@ -44,6 +50,10 @@ const vocabGroupGetListSaga = createRequestSaga(
   GET_VOCAB_GROUP_LIST,
   vocabGroupAPI.getVocabGroupList,
 );
+const vocabGroupGetDataSaga = createRequestSaga(
+  GET_VOCAB_GROUP_DATA,
+  vocabGroupAPI.getVocabGroupData,
+);
 const vocabGroupAddSaga = createRequestSaga(
   ADD_VOCAB_GROUP,
   vocabGroupAPI.addVocabGroup,
@@ -56,6 +66,7 @@ const vocabGroupRemoveSaga = createRequestSaga(
 export function* vocabGroupSaga() {
   yield takeLatest(ADD_VOCAB_GROUP, vocabGroupAddSaga);
   yield takeLatest(GET_VOCAB_GROUP_LIST, vocabGroupGetListSaga);
+  yield takeLatest(GET_VOCAB_GROUP_DATA, vocabGroupGetDataSaga);
   yield takeLatest(REMOVE_VOCAB_GROUP, vocabGroupRemoveSaga);
 }
 
@@ -67,6 +78,7 @@ const initialState = {
   vocabGroupList: [],
   vocabGroupError: null,
   vocabGroupListReload: false,
+  vocabGroupData: {},
 };
 
 const vocab_group = handleActions(
@@ -98,6 +110,16 @@ const vocab_group = handleActions(
       return newState;
     },
     [GET_VOCAB_GROUP_LIST_FAILURE]: (state, { payload: error }) => {
+      console.log(error);
+      return state;
+    },
+    [GET_VOCAB_GROUP_DATA_SUCCESS]: (state, { payload: resultVocabGroupData }) => {
+      const newState = produce(state, (draft) => {
+        draft['vocabGroupData'] = resultVocabGroupData;
+      });
+      return newState;
+    },
+    [GET_VOCAB_GROUP_DATA_FAILURE]: (state, { payload: error }) => {
       console.log(error);
       return state;
     },
