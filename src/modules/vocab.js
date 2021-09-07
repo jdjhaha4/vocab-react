@@ -8,6 +8,7 @@ import * as vocabAPI from '../lib/api/vocab';
 
 const CHANGE_SELECTED_GROUP_CODE='vocab/CHANGE_SELECTED_GROUP_CODE';
 const CHANGE_FIELD = 'vocab/CHANGE_FIELD';
+const SHUFFLE_VOCAB ='vocab/SHUFFLE_VOCAB';
 const [GET_VOCAB_LIST, GET_VOCAB_LIST_SUCCESS, GET_VOCAB_LIST_FAILURE] =
   createRequestActionTypes('vocab/GET_VOCAB_LIST');
 const [ADD_VOCAB, ADD_VOCAB_SUCCESS, ADD_VOCAB_FAILURE] =
@@ -22,6 +23,9 @@ export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
   key, // vocab, mean
   value, // 실제 바꾸려는 값
 }));
+
+export const shuffleVocab = createAction(SHUFFLE_VOCAB);
+
 export const getVocabList = createAction(GET_VOCAB_LIST, ({ groupCode, ignoreVocabIdList }) => {
   if(ignoreVocabIdList == null){
     ignoreVocabIdList = [];
@@ -68,6 +72,24 @@ const initialState = {
   selectedGroupCode:'all',
 };
 
+function shuffle(array) {
+  var currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
 const vocab = handleActions(
   {
     [CHANGE_SELECTED_GROUP_CODE]: (state, { payload: { groupCode } }) =>
@@ -78,6 +100,10 @@ const vocab = handleActions(
     [CHANGE_FIELD]: (state, { payload: { key, value } }) =>
       produce(state, (draft) => {
         draft['form'][key] = value; 
+      }),
+    [SHUFFLE_VOCAB]: (state, {}) =>
+      produce(state, (draft) => {
+        draft['vocabList'] = shuffle(draft['vocabList']);
       }),
     [ADD_VOCAB_SUCCESS]: (state, { payload: resultCnt }) => {
       const newState = produce(state, (draft) => {

@@ -1,4 +1,4 @@
-import React,{useCallback} from 'react';
+import React, { useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import { withRouter } from 'react-router-dom';
@@ -46,13 +46,26 @@ const VocabStudyBlock = styled.div`
     font-weight: 600;
   }
   .type_select {
-    margin-top:10px;
+    margin-top: 10px;
     background: ${palette.gray[3]};
     font-size: 1.2rem;
     font-weight: 600;
   }
+  .previous {
+    padding: 5px;
+    background: ${palette.gray[8]};
+    color: white;
+    border-radius: 10px;
+    margin-right: 10px;
+    vertical-align: middle;
+    &:hover {
+      background: ${palette.gray[6]};
+      cursor: pointer;
+      border-radius: 10px;
+    }
+  }
 `;
-const VocabStudyType = ({history, vocabGroupData }) => {
+const VocabStudyType = ({ history, vocabGroupData, onClickBack }) => {
   const onClickLook = useCallback(
     (group_code) => {
       history.push(`/vocab/study/look/${group_code}`);
@@ -65,12 +78,23 @@ const VocabStudyType = ({history, vocabGroupData }) => {
       <div className="container">
         <div className="row">
           <div className="col-12">
+            <span
+              className="previous"
+              onClick={() => onClickBack()}
+            >{`< 이전`}</span>
             <span className="group_name">{vocabGroupData.group_name}</span>
-            <span className="vocab_count">({vocabGroupData.vocab_count} 단어)</span>
+            <span className="vocab_count">
+              ({vocabGroupData.vocab_count} 단어)
+            </span>
           </div>
           <div className="col-12 type_select">학습 유형 선택</div>
           <div className="col-6">
-            <div className="box" onClick={()=>onClickLook(vocabGroupData.group_code)}>눈으로 훑어보기</div>
+            <div
+              className="box"
+              onClick={() => onClickLook(vocabGroupData.group_code)}
+            >
+              눈으로 훑어보기
+            </div>
           </div>
           <div className="col-6">
             <div className="box">
