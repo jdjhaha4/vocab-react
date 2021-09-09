@@ -53,7 +53,7 @@ export const idDuplInit = createAction(ID_DUPL_INIT);
 //사가 생성
 const registerSaga = createRequestSaga(REGISTER, authAPI.register);
 const loginSaga = createRequestSaga(LOGIN, authAPI.login);
-const idDuplCheckSaga = createDelayRequestSaga(ID_DUPL_CHECK, authAPI.idDuplCheck);
+const idDuplCheckSaga = createDelayRequestSaga(ID_DUPL_CHECK, authAPI.idDuplCheck, 500);
 
 export function* authSaga() {
   yield takeLatest(REGISTER, registerSaga);

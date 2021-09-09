@@ -72,6 +72,16 @@ const VocabStudyType = ({ history, vocabGroupData, onClickBack }) => {
     },
     [vocabGroupData],
   );
+  const onClickMultiple = useCallback(
+    (group_code) => {
+      if(vocabGroupData.vocab_count >= 5){
+        history.push(`/vocab/study/multiple/${group_code}`);
+      }else{
+        alert('5단어 이상 그룹에 할당 후 이용 부탁드립니다.');
+      }
+    },
+    [vocabGroupData],
+  );
 
   return (
     <VocabStudyBlock>
@@ -97,7 +107,10 @@ const VocabStudyType = ({ history, vocabGroupData, onClickBack }) => {
             </div>
           </div>
           <div className="col-6">
-            <div className="box">
+            <div
+              className="box"
+              onClick={() => onClickMultiple(vocabGroupData.group_code)}
+            >
               객관식 문제 맞추기
               <span className="sub_title">(영단어 보고 뜻 고르기)</span>
             </div>

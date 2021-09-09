@@ -1,8 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
-import { ReactComponent as ArrowLeftCircleIcon } from '../../resources/svg/arrow-left-circle.svg';
 
 const VocabStudyLookBlock = styled.div`
   .vocab_item {
@@ -114,12 +113,17 @@ const VocabStudyLookBlock = styled.div`
     right: 0px;
   }
   .vocab_box {
+    height: calc(100vh - 250px);
+    overflow: auto;
+  }
+  .vocab_box_list {
     position: relative;
   }
   .vocab_box_left {
     width: 42%;
     height: 100%;
     position: absolute;
+    top:0;
     display: none;
     ${(props) =>
       props.hideVocab &&
@@ -133,6 +137,7 @@ const VocabStudyLookBlock = styled.div`
     width: 58%;
     height: 100%;
     position: absolute;
+    top:0;
     display: none;
     ${(props) =>
       props.hideMean &&
@@ -222,7 +227,7 @@ const VocabStudyLook = ({
           </div>
         </div>
         <div className="row vocab_box">
-          <div className="col-12">
+          <div className="col-12 vocab_box_list">
             {vocabList.map((vocabItem, index) => (
               <div className="row vocab_item" key={vocabItem.id}>
                 <div
@@ -250,17 +255,17 @@ const VocabStudyLook = ({
                 </div>
               </div>
             ))}
+            <div
+              className="vocab_box_left"
+              onClick={(e) => onClickHideVocab(e)}
+            ></div>
+            <div
+              className="vocab_box_right"
+              onClick={(e) => {
+                onClickHideMean(e);
+              }}
+            ></div>
           </div>
-          <div
-            className="vocab_box_left"
-            onClick={(e) => onClickHideVocab(e)}
-          ></div>
-          <div
-            className="vocab_box_right"
-            onClick={(e) => {
-              onClickHideMean(e);
-            }}
-          ></div>
         </div>
       </div>
     </VocabStudyLookBlock>

@@ -145,7 +145,7 @@ const AuthForm = ({
     <>
       <AuthFormBlock>
         <h3>{text}</h3>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} autoComplete="off">
           <StyledInput
             name="id"
             placeholder="아이디"
