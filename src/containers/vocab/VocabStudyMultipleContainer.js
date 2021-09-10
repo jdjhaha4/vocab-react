@@ -23,10 +23,13 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
   const { question } = useSelector(({ vocab_study_multiple }) => ({
     question: vocab_study_multiple,
   }));
-  const { postQuestionResultLoadingFlag } = useSelector(({ loading }) => ({
-    postQuestionResultLoadingFlag:
-      loading['vocab_study_multiple/POST_QUESTION_RESULT'],
-  }));
+  const { postQuestionResultLoadingFlag, goToTheNextQuestionLoadingFlag } =
+    useSelector(({ loading }) => ({
+      postQuestionResultLoadingFlag:
+        loading['vocab_study_multiple/POST_QUESTION_RESULT'],
+      goToTheNextQuestionLoadingFlag:
+        loading['vocab_study_multiple/GO_TO_THE_NEXT_QUESTION'],
+    }));
 
   useEffect(() => {
     let group_code = groupcode;
@@ -40,6 +43,12 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
   useEffect(() => {
     dispatch(initQuestionList({ vocabList }));
   }, [vocabList]);
+
+  useEffect(() => {
+    if(question['complete']){
+      
+    }
+  }, [question['complete']]);
 
   const compareAnswer = useCallback(
     ({ id, vocab, mean }) => {
@@ -66,6 +75,8 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
             wrongAnswerVocabId: -1,
           }),
         );
+
+        dispatch(goToTheNextQuestion({ delayMillis: 500 }));
       } else {
         //해당 단어 오답임을 서버에 전달
         dispatch(
@@ -89,9 +100,8 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
             wrongAnswerVocabId: id,
           }),
         );
+        dispatch(goToTheNextQuestion({ delayMillis: 3000 })); //오답인 경우 3초 뒤에 이동
       }
-      
-      dispatch(goToTheNextQuestion());
     },
     [question],
   );
@@ -103,6 +113,7 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
       question={question}
       compareAnswer={compareAnswer}
       postQuestionResultLoadingFlag={postQuestionResultLoadingFlag}
+      goToTheNextQuestionLoadingFlag={goToTheNextQuestionLoadingFlag}
     />
   );
 };

@@ -4,18 +4,20 @@ import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
 import produce from 'immer';
 import LoadingSpinner from '../common/LoadingSpinner';
+import QuestionResultModal from '../common/QuestionResultModal';
+import { withRouter } from 'react-router-dom';
 
 const CorrectBlock = styled.div`
   color: green;
   font-size: 1.5rem;
   font-weight: 600;
-  text-align:center;
+  text-align: center;
 `;
 const WrongBlock = styled.div`
   color: red;
   font-size: 1.5rem;
   font-weight: 600;
-  text-align:center;
+  text-align: center;
 `;
 const VocabStudyMultipleBlock = styled.div`
   .previous {
@@ -50,6 +52,16 @@ const VocabStudyMultipleBlock = styled.div`
     vertical-align: middle;
     height: 60px;
     line-height: 60px;
+  }
+  .score {
+    margin-top: 10px;
+    background: ${palette.gray[3]};
+    font-size: 1.2rem;
+    font-weight: 600;
+    vertical-align: middle;
+    height: 60px;
+    line-height: 60px;
+    text-align: right;
   }
   .vocab_box {
     padding: 20px;
@@ -91,11 +103,11 @@ const VocabStudyMultipleBlock = styled.div`
   }
   .multiple_mean.correct {
     border: 2px solid green;
-    background-color: rgba(183,240,177,0.3);
+    background-color: rgba(183, 240, 177, 0.3);
   }
   .multiple_mean.wrong {
     border: 2px solid red;
-    background-color: rgba(255,167,167,0.3);
+    background-color: rgba(255, 167, 167, 0.3);
   }
   .round_char {
     margin-right: 8px;
@@ -111,11 +123,13 @@ const VocabStudyMultipleBlock = styled.div`
   }
 `;
 const VocabStudyMultiple = ({
+  history,
   vocabGroupData,
   onClickBack,
   question,
   compareAnswer,
   postQuestionResultLoadingFlag,
+  goToTheNextQuestionLoadingFlag,
 }) => {
   return (
     <VocabStudyMultipleBlock>
@@ -132,22 +146,34 @@ const VocabStudyMultiple = ({
             </span>
           </div>
           <div className="col-4 type_select">객관식 문제 맞추기</div>
-          <div className="col-8 type_select"></div>
+          <div className="col-8 score">
+            {question.index + 1} / {vocabGroupData.vocab_count}
+          </div>
         </div>
         <div className="row vocab_box">
           <div className="col-12 vocab_title">단어</div>
           <div className="col-12 vocab">{question.vocab['vocab']}</div>
-          <div className="col-12">{question.resultFlag=='T'?<CorrectBlock>정답 입니다. 다음 문제로 이동 합니다</CorrectBlock>:null}</div>
-          <div className="col-12">{question.resultFlag=='F'?<WrongBlock>오답 입니다. 다음 문제로 이동 합니다</WrongBlock>:null}</div>
+          <div className="col-12">
+            {question.resultFlag == 'T' ? (
+              <CorrectBlock>정답 입니다. 다음 문제로 이동 합니다</CorrectBlock>
+            ) : null}
+          </div>
+          <div className="col-12">
+            {question.resultFlag == 'F' ? (
+              <WrongBlock>오답 입니다. 다음 문제로 이동 합니다</WrongBlock>
+            ) : null}
+          </div>
           <div className="col-12 multiple_box multiple_title">
             일치하는 뜻 선택
           </div>
           {question.meanMultipleChoices.map((item, index) => {
-            let correctClassName = (item.id == question.answerVocabId ? ' correct' : '');
-            let wrongClassName = (question.resultFlag == 'F' &&
-            item.id == question.wrongAnswerVocabId
-              ? ' wrong'
-              : '');
+            let correctClassName =
+              item.id == question.answerVocabId ? ' correct' : '';
+            let wrongClassName =
+              question.resultFlag == 'F' &&
+              item.id == question.wrongAnswerVocabId
+                ? ' wrong'
+                : '';
             return (
               <div
                 className="col-6"
@@ -168,8 +194,16 @@ const VocabStudyMultiple = ({
         </div>
       </div>
       <LoadingSpinner visible={postQuestionResultLoadingFlag} />
+      <LoadingSpinner visible={goToTheNextQuestionLoadingFlag} />
+      <QuestionResultModal
+        title={`${vocabGroupData.group_name}(${vocabGroupData.vocab_count}단어) 테스트 완료!`}
+        description="수고하셨습니다!"
+        visible={question['complete']}
+        confirmText="학습하기로 이동"
+        onConfirm={()=>{history.push(`/vocab/study`);}}
+      />
     </VocabStudyMultipleBlock>
   );
 };
 
-export default VocabStudyMultiple;
+export default withRouter(VocabStudyMultiple);

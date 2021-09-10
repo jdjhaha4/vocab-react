@@ -42,7 +42,7 @@ export const initQuestionList = createAction(
 
 export const goToTheNextQuestion = createAction(
   GO_TO_THE_NEXT_QUESTION,
-  () => ({}),
+  ({delayMillis}) => ({delayMillis}),
 );
 
 export const postQuestionResult = createAction(
@@ -71,7 +71,7 @@ const postQuestionResultSaga = createDelayRequestSaga(
   vocabStudyMultipleAPI.postQuestionResult,
   300,
 );
-const goToTheNextQuestionSaga = createDelaySaga(GO_TO_THE_NEXT_QUESTION, 2000);
+const goToTheNextQuestionSaga = createDelaySaga(GO_TO_THE_NEXT_QUESTION);
 
 export function* vocabStudyMultipleSaga() {
   yield takeLatest(POST_QUESTION_RESULT, postQuestionResultSaga);
@@ -86,6 +86,7 @@ const initialState = {
   resultFlag: '',
   answerVocabId: -1,
   wrongAnswerVocabId: -1,
+  complete:false,
 };
 
 const vocab_study_multiple = handleActions(
@@ -102,6 +103,7 @@ const vocab_study_multiple = handleActions(
     [INIT_QUESTION_LIST]: (state, { payload: { vocabList } }) =>
       produce(state, (draft) => {
         draft['index'] = 0;
+        draft['complete'] = false;
         if (vocabList != null && vocabList.length > 0) {
           let questionList = [];
           questionList = cloneObject(vocabList);
@@ -122,11 +124,11 @@ const vocab_study_multiple = handleActions(
       }),
     [GO_TO_THE_NEXT_QUESTION_SUCCESS]: (state) =>
       produce(state, (draft) => {
-        draft['index'] += 1;
-        draft['resultFlag'] = '';
-        draft['answerVocabId'] = -1;
-        draft['wrongAnswerVocabId'] = -1;
-        if (draft['list'].length > draft['index']) {
+        if (draft['list'].length > draft['index']+1) {
+          draft['index'] += 1;
+          draft['resultFlag'] = '';
+          draft['answerVocabId'] = -1;
+          draft['wrongAnswerVocabId'] = -1;
           draft['vocab'] = draft['list'][draft['index']];
           let multipleVocab = [];
           multipleVocab = getRandom(
@@ -136,8 +138,11 @@ const vocab_study_multiple = handleActions(
           );
           multipleVocab = shuffle(multipleVocab);
           draft['meanMultipleChoices'] = multipleVocab;
-        }else{
-            //TODO: 모든 문제 순회시 종료 처리
+        } else {
+          draft['complete'] = true;
+          draft['resultFlag'] = '';
+          draft['answerVocabId'] = -1;
+          draft['wrongAnswerVocabId'] = -1;
         }
       }),
     [POST_QUESTION_RESULT_SUCCESS]: (state, { payload: result }) => {

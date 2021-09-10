@@ -10,6 +10,7 @@ import vocab_group_mapping, { vocabGroupMappingSaga } from './vocab_mapping';
 import vocab_study_multiple, {
   vocabStudyMultipleSaga,
 } from './vocab_study_multiple';
+import timer,{timerSaga} from './timer';
 
 const rootReducer = combineReducers({
   auth,
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   vocab_group,
   vocab_group_mapping,
   vocab_study_multiple,
+  timer,
 });
 
 export function* rootSaga() {
@@ -30,6 +32,7 @@ export function* rootSaga() {
     vocabGroupSaga(),
     vocabGroupMappingSaga(),
     vocabStudyMultipleSaga(),
+    timerSaga(),
   ]);
 }
 
