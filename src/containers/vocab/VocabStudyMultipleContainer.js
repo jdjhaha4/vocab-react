@@ -10,6 +10,7 @@ import {
   changeField,
   goToTheNextQuestion,
 } from '../../modules/vocab_study_multiple';
+import { increaseAsync, start, stop, init } from '../../modules/timer';
 
 const VocabStudyMultipleContainer = ({ history, match }) => {
   const { groupcode } = match.params;
@@ -30,25 +31,42 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
       goToTheNextQuestionLoadingFlag:
         loading['vocab_study_multiple/GO_TO_THE_NEXT_QUESTION'],
     }));
+  const { studyTime } = useSelector(({ timer }) => ({
+    studyTime: timer,
+  }));
 
   useEffect(() => {
     let group_code = groupcode;
     dispatch(getVocabGroupData({ group_code }));
     dispatch(getVocabList({ groupCode: groupcode }));
+    return ()=>{
+      dispatch(init());
+    }
   }, [groupcode]);
+
   const onClickBack = useCallback(() => {
     history.goBack();
   }, []);
 
   useEffect(() => {
     dispatch(initQuestionList({ vocabList }));
+    dispatch(start());
+    dispatch(increaseAsync());
   }, [vocabList]);
 
   useEffect(() => {
-    if(question['complete']){
-      
+    if (question['complete']) {
+      dispatch(stop());
     }
   }, [question['complete']]);
+
+  const moveToThePage = useCallback(
+    () => {
+      dispatch(init());
+      history.push(`/vocab/study`);
+    },
+    [],
+  );
 
   const compareAnswer = useCallback(
     ({ id, vocab, mean }) => {
@@ -114,6 +132,8 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
       compareAnswer={compareAnswer}
       postQuestionResultLoadingFlag={postQuestionResultLoadingFlag}
       goToTheNextQuestionLoadingFlag={goToTheNextQuestionLoadingFlag}
+      moveToThePage={moveToThePage}
+      studyTime={studyTime}
     />
   );
 };

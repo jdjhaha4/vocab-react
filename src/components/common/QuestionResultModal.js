@@ -50,6 +50,7 @@ const QuestionResultModal = ({
   cancelText = '취소',
   onConfirm,
   onCancel,
+  studyTime,
 }) => {
   if (!visible) return null;
   return (
@@ -57,7 +58,7 @@ const QuestionResultModal = ({
       <AlertModalBlock>
         <h2>{title}</h2>
         <p>31개 단어 중에 1개 단어를 틀렸습니다.</p>
-        <p>0시간 3분 20초 동안 학습하셨습니다.</p>
+        <p>{studyTime.hour}시간 {studyTime.minute}분 {studyTime.second}초 동안 학습하셨습니다.</p>
         <div className="buttons">
           <StyledButton cyan onClick={onConfirm}>
             학습결과 확인

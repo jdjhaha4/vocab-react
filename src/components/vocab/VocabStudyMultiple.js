@@ -53,14 +53,10 @@ const VocabStudyMultipleBlock = styled.div`
     height: 60px;
     line-height: 60px;
   }
+  .study_time{
+    text-align: center;
+  }
   .score {
-    margin-top: 10px;
-    background: ${palette.gray[3]};
-    font-size: 1.2rem;
-    font-weight: 600;
-    vertical-align: middle;
-    height: 60px;
-    line-height: 60px;
     text-align: right;
   }
   .vocab_box {
@@ -130,6 +126,8 @@ const VocabStudyMultiple = ({
   compareAnswer,
   postQuestionResultLoadingFlag,
   goToTheNextQuestionLoadingFlag,
+  moveToThePage,
+  studyTime,
 }) => {
   return (
     <VocabStudyMultipleBlock>
@@ -146,7 +144,10 @@ const VocabStudyMultiple = ({
             </span>
           </div>
           <div className="col-4 type_select">객관식 문제 맞추기</div>
-          <div className="col-8 score">
+          <div className="col-4 type_select study_time">
+            학습 시간: {studyTime.hour}시간 {studyTime.minute}분 {studyTime.second}초
+          </div>
+          <div className="col-4 type_select score">
             {question.index + 1} / {vocabGroupData.vocab_count}
           </div>
         </div>
@@ -200,7 +201,10 @@ const VocabStudyMultiple = ({
         description="수고하셨습니다!"
         visible={question['complete']}
         confirmText="학습하기로 이동"
-        onConfirm={()=>{history.push(`/vocab/study`);}}
+        studyTime={studyTime}
+        onConfirm={() => {
+          moveToThePage();
+        }}
       />
     </VocabStudyMultipleBlock>
   );
