@@ -4,7 +4,7 @@ import Button from './Button';
 
 const Fullscreen = styled.div`
   position: fixed;
-  z-index: 30;
+  z-index: 9999;
   top: 0;
   left: 0;
   width: 100%;
