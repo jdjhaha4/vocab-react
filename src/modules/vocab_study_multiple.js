@@ -19,6 +19,12 @@ const [
 ] = createRequestActionTypes('vocab_study_multiple/GO_TO_THE_NEXT_QUESTION');
 
 const [
+  INSERT_QUESTION_RESULT,
+  INSERT_QUESTION_RESULT_SUCCESS,
+  INSERT_QUESTION_RESULT_FAILURE,
+] = createRequestActionTypes('vocab_study_multiple/INSERT_QUESTION_RESULT');
+
+const [
   POST_QUESTION_RESULT,
   POST_QUESTION_RESULT_SUCCESS,
   POST_QUESTION_RESULT_FAILURE,
@@ -42,12 +48,37 @@ export const initQuestionList = createAction(
 
 export const goToTheNextQuestion = createAction(
   GO_TO_THE_NEXT_QUESTION,
-  ({delayMillis}) => ({delayMillis}),
+  ({ delayMillis }) => ({ delayMillis }),
+);
+
+export const insertQuestionResult = createAction(
+  INSERT_QUESTION_RESULT,
+  ({
+    group_code,
+    group_name,
+    vocab_count,
+    answer_count,
+    wrong_answer_count,
+    complete_flag,
+    study_time_seconds,
+  }) => ({
+    group_code,
+    group_name,
+    vocab_count,
+    answer_count,
+    wrong_answer_count,
+    complete_flag,
+    study_time_seconds,
+  }),
 );
 
 export const postQuestionResult = createAction(
   POST_QUESTION_RESULT,
   ({
+    vocab_question_result_id,
+    group_code,
+    question_type,
+    question_value,
     vocab_id,
     vocab,
     mean,
@@ -56,6 +87,10 @@ export const postQuestionResult = createAction(
     answer_mean,
     result_flag,
   }) => ({
+    vocab_question_result_id,
+    group_code,
+    question_type,
+    question_value,
     vocab_id,
     vocab,
     mean,
@@ -64,6 +99,11 @@ export const postQuestionResult = createAction(
     answer_mean,
     result_flag,
   }),
+);
+
+const insertQuestionResultSaga = createRequestSaga(
+  INSERT_QUESTION_RESULT,
+  vocabStudyMultipleAPI.insertQuestionResult,
 );
 
 const postQuestionResultSaga = createDelayRequestSaga(
@@ -76,6 +116,7 @@ const goToTheNextQuestionSaga = createDelaySaga(GO_TO_THE_NEXT_QUESTION);
 export function* vocabStudyMultipleSaga() {
   yield takeLatest(POST_QUESTION_RESULT, postQuestionResultSaga);
   yield takeLatest(GO_TO_THE_NEXT_QUESTION, goToTheNextQuestionSaga);
+  yield takeLatest(INSERT_QUESTION_RESULT, insertQuestionResultSaga);
 }
 
 const initialState = {
@@ -86,7 +127,8 @@ const initialState = {
   resultFlag: '',
   answerVocabId: -1,
   wrongAnswerVocabId: -1,
-  complete:false,
+  complete: false,
+  vocabQuestionResultId: -1,
 };
 
 const vocab_study_multiple = handleActions(
@@ -124,7 +166,7 @@ const vocab_study_multiple = handleActions(
       }),
     [GO_TO_THE_NEXT_QUESTION_SUCCESS]: (state) =>
       produce(state, (draft) => {
-        if (draft['list'].length > draft['index']+1) {
+        if (draft['list'].length > draft['index'] + 1) {
           draft['index'] += 1;
           draft['resultFlag'] = '';
           draft['answerVocabId'] = -1;
@@ -150,6 +192,16 @@ const vocab_study_multiple = handleActions(
       return newState;
     },
     [POST_QUESTION_RESULT_FAILURE]: (state, { payload: error }) => {
+      console.log(error);
+      return state;
+    },
+    [INSERT_QUESTION_RESULT_SUCCESS]: (state, { payload: vqrVO }) => {
+      const newState = produce(state, (draft) => {
+        draft['vocabQuestionResultId'] = vqrVO['vocab_question_result_id'];
+      });
+      return newState;
+    },
+    [INSERT_QUESTION_RESULT_FAILURE]: (state, { payload: error }) => {
       console.log(error);
       return state;
     },

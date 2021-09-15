@@ -6,11 +6,13 @@ import { withRouter } from 'react-router-dom';
 import { getVocabGroupData } from '../../modules/vocab_group';
 import {
   initQuestionList,
+  insertQuestionResult,
   postQuestionResult,
   changeField,
   goToTheNextQuestion,
 } from '../../modules/vocab_study_multiple';
 import { increaseAsync, start, stop, init } from '../../modules/timer';
+import { isEmpty } from '../../util/jsonUtil';
 
 const VocabStudyMultipleContainer = ({ history, match }) => {
   const { groupcode } = match.params;
@@ -50,13 +52,30 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
 
   useEffect(() => {
     dispatch(initQuestionList({ vocabList }));
+    //타이머 시작
     dispatch(start());
     dispatch(increaseAsync());
   }, [vocabList]);
 
   useEffect(() => {
+    if(!isEmpty(vocabGroupData)){
+      console.log('객관식 맞추기 정보 등록!!');
+      dispatch(insertQuestionResult({
+        group_code:vocabGroupData.group_code,
+        group_name: vocabGroupData.group_name,
+        vocab_count: vocabGroupData.vocab_count,
+        answer_count: 0,
+        wrong_answer_count: 0,
+        complete_flag:'F',
+        study_time_seconds:0,
+      }));
+    }
+  }, []);
+
+  useEffect(() => {
     if (question['complete']) {
       dispatch(stop());
+
     }
   }, [question['complete']]);
 
@@ -74,6 +93,10 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
         //해당 단어 정답을 맞췄음을 서버에 전달
         dispatch(
           postQuestionResult({
+            vocab_question_result_id: question['vocabQuestionResultId'],
+            group_code: groupcode,
+            question_type:'multipleChoice',
+            question_value:'vocab',
             vocab_id: question.vocab['id'],
             vocab: question.vocab['vocab'],
             mean: question.vocab['mean'],
@@ -99,6 +122,10 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
         //해당 단어 오답임을 서버에 전달
         dispatch(
           postQuestionResult({
+            vocab_question_result_id: question['vocabQuestionResultId'],
+            group_code: groupcode,
+            question_type:'multipleChoice',
+            question_value:'vocab',
             vocab_id: question.vocab['id'],
             vocab: question.vocab['vocab'],
             mean: question.vocab['mean'],
