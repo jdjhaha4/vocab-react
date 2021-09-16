@@ -14,6 +14,7 @@ import { changeNaviSubMenu } from '../modules/navigation';
 import VocabStudyTypeContainer from '../containers/vocab/VocabStudyTypeContainer';
 import VocabStudyLookContainer from '../containers/vocab/VocabStudyLookContainer';
 import VocabStudyMultipleContainer from '../containers/vocab/VocabStudyMultipleContainer';
+import VocabQuestionResultContainer from '../containers/vocab/VocabQuestionResultContainer';
 
 const PageWrapper = styled.div`
   position: relative;
@@ -113,6 +114,15 @@ const VocabStudyPage = () => {
               학습하기
             </StyledLink>
           </LnbItem>
+          <LnbItem>
+            <StyledLink
+              className={sub_menu_id=='vocab/question/result'?'active':''}
+              to="/vocab/question/result"
+              onClick={() => onChangeSubMenuId('vocab/question/result')}
+            >
+              학습결과
+            </StyledLink>
+          </LnbItem>
         </div>
         <div className="page-contents">
           <Route path="/vocab" component={VocabListContainer} exact={true} />
@@ -130,6 +140,7 @@ const VocabStudyPage = () => {
           <Route path="/vocab/study/type/:groupcode" component={VocabStudyTypeContainer} />
           <Route path="/vocab/study/look/:groupcode" component={VocabStudyLookContainer} />
           <Route path="/vocab/study/multiple/:groupcode" component={VocabStudyMultipleContainer} />
+          <Route path="/vocab/question/result" component={VocabQuestionResultContainer} />
         </div>
       </Wrapper>
     </PageWrapper>

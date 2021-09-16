@@ -7,6 +7,7 @@ import { getVocabGroupData } from '../../modules/vocab_group';
 import {
   initQuestionList,
   insertQuestionResult,
+  updateQuestionResult,
   postQuestionResult,
   changeField,
   goToTheNextQuestion,
@@ -41,9 +42,20 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
     let group_code = groupcode;
     dispatch(getVocabGroupData({ group_code }));
     dispatch(getVocabList({ groupCode: groupcode }));
-    return ()=>{
+    return () => {
+      if (!question['complete']) {
+        dispatch(
+          updateQuestionResult({
+            id:question['vocabQuestionResultId'],
+            answer_count:question['answerCount'],
+            wrong_answer_count:question['wrongAnswerCount'],
+            complete_flag:"F",
+            study_time_seconds: studyTime['count'],
+          }),
+        );
+      }
       dispatch(init());
-    }
+    };
   }, [groupcode]);
 
   const onClickBack = useCallback(() => {
@@ -58,34 +70,40 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
   }, [vocabList]);
 
   useEffect(() => {
-    if(!isEmpty(vocabGroupData)){
-      console.log('객관식 맞추기 정보 등록!!');
-      dispatch(insertQuestionResult({
-        group_code:vocabGroupData.group_code,
-        group_name: vocabGroupData.group_name,
-        vocab_count: vocabGroupData.vocab_count,
-        answer_count: 0,
-        wrong_answer_count: 0,
-        complete_flag:'F',
-        study_time_seconds:0,
-      }));
+    if (!isEmpty(vocabGroupData)) {
+      dispatch(
+        insertQuestionResult({
+          group_code: vocabGroupData.group_code,
+          group_name: vocabGroupData.group_name,
+          vocab_count: vocabGroupData.vocab_count,
+          answer_count: 0,
+          wrong_answer_count: 0,
+          complete_flag: 'F',
+          study_time_seconds: 0,
+        }),
+      );
     }
   }, []);
 
   useEffect(() => {
     if (question['complete']) {
       dispatch(stop());
-
+      dispatch(
+        updateQuestionResult({
+          id:question['vocabQuestionResultId'],
+          answer_count:question['answerCount'],
+          wrong_answer_count:question['wrongAnswerCount'],
+          complete_flag:"T",
+          study_time_seconds: studyTime['count'],
+        }),
+      );
     }
   }, [question['complete']]);
 
-  const moveToThePage = useCallback(
-    () => {
-      dispatch(init());
-      history.push(`/vocab/study`);
-    },
-    [],
-  );
+  const moveToThePage = useCallback(() => {
+    dispatch(init());
+    history.push(`/vocab/study`);
+  }, []);
 
   const compareAnswer = useCallback(
     ({ id, vocab, mean }) => {
@@ -95,8 +113,8 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
           postQuestionResult({
             vocab_question_result_id: question['vocabQuestionResultId'],
             group_code: groupcode,
-            question_type:'multipleChoice',
-            question_value:'vocab',
+            question_type: 'multipleChoice',
+            question_value: 'vocab',
             vocab_id: question.vocab['id'],
             vocab: question.vocab['vocab'],
             mean: question.vocab['mean'],
@@ -124,8 +142,8 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
           postQuestionResult({
             vocab_question_result_id: question['vocabQuestionResultId'],
             group_code: groupcode,
-            question_type:'multipleChoice',
-            question_value:'vocab',
+            question_type: 'multipleChoice',
+            question_value: 'vocab',
             vocab_id: question.vocab['id'],
             vocab: question.vocab['vocab'],
             mean: question.vocab['mean'],

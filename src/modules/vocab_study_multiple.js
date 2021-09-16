@@ -25,6 +25,12 @@ const [
 ] = createRequestActionTypes('vocab_study_multiple/INSERT_QUESTION_RESULT');
 
 const [
+  UPDATE_QUESTION_RESULT,
+  UPDATE_QUESTION_RESULT_SUCCESS,
+  UPDATE_QUESTION_RESULT_FAILURE,
+] = createRequestActionTypes('vocab_study_multiple/UPDATE_QUESTION_RESULT');
+
+const [
   POST_QUESTION_RESULT,
   POST_QUESTION_RESULT_SUCCESS,
   POST_QUESTION_RESULT_FAILURE,
@@ -72,6 +78,23 @@ export const insertQuestionResult = createAction(
   }),
 );
 
+export const updateQuestionResult = createAction(
+  UPDATE_QUESTION_RESULT,
+  ({
+    id,
+    answer_count,
+    wrong_answer_count,
+    complete_flag,
+    study_time_seconds,
+  }) => ({
+    id,
+    answer_count,
+    wrong_answer_count,
+    complete_flag,
+    study_time_seconds,
+  }),
+);
+
 export const postQuestionResult = createAction(
   POST_QUESTION_RESULT,
   ({
@@ -106,6 +129,11 @@ const insertQuestionResultSaga = createRequestSaga(
   vocabStudyMultipleAPI.insertQuestionResult,
 );
 
+const updateQuestionResultSaga = createRequestSaga(
+  UPDATE_QUESTION_RESULT,
+  vocabStudyMultipleAPI.updateQuestionResult,
+);
+
 const postQuestionResultSaga = createDelayRequestSaga(
   POST_QUESTION_RESULT,
   vocabStudyMultipleAPI.postQuestionResult,
@@ -117,6 +145,7 @@ export function* vocabStudyMultipleSaga() {
   yield takeLatest(POST_QUESTION_RESULT, postQuestionResultSaga);
   yield takeLatest(GO_TO_THE_NEXT_QUESTION, goToTheNextQuestionSaga);
   yield takeLatest(INSERT_QUESTION_RESULT, insertQuestionResultSaga);
+  yield takeLatest(UPDATE_QUESTION_RESULT, updateQuestionResultSaga);
 }
 
 const initialState = {
@@ -129,6 +158,8 @@ const initialState = {
   wrongAnswerVocabId: -1,
   complete: false,
   vocabQuestionResultId: -1,
+  answerCount: 0,
+  wrongAnswerCount: 0,
 };
 
 const vocab_study_multiple = handleActions(
@@ -136,16 +167,26 @@ const vocab_study_multiple = handleActions(
     [CHANGE_FIELD]: (
       state,
       { payload: { resultFlag, answerVocabId, wrongAnswerVocabId } },
-    ) =>
-      produce(state, (draft) => {
+    ) => {
+      const newState = produce(state, (draft) => {
         draft['resultFlag'] = resultFlag;
         draft['answerVocabId'] = answerVocabId;
         draft['wrongAnswerVocabId'] = wrongAnswerVocabId;
-      }),
+        if (resultFlag == 'T') {
+          draft['answerCount'] += 1;
+        } else {
+          draft['wrongAnswerCount'] += 1;
+        }
+      });
+
+      return newState;
+    },
     [INIT_QUESTION_LIST]: (state, { payload: { vocabList } }) =>
       produce(state, (draft) => {
         draft['index'] = 0;
         draft['complete'] = false;
+        draft['answerCount'] = 0;
+        draft['wrongAnswerCount'] = 0;
         if (vocabList != null && vocabList.length > 0) {
           let questionList = [];
           questionList = cloneObject(vocabList);
@@ -202,6 +243,14 @@ const vocab_study_multiple = handleActions(
       return newState;
     },
     [INSERT_QUESTION_RESULT_FAILURE]: (state, { payload: error }) => {
+      console.log(error);
+      return state;
+    },
+    [UPDATE_QUESTION_RESULT_SUCCESS]: (state, { payload: resultMap }) => {
+      const newState = produce(state, (draft) => {});
+      return newState;
+    },
+    [UPDATE_QUESTION_RESULT_FAILURE]: (state, { payload: error }) => {
       console.log(error);
       return state;
     },

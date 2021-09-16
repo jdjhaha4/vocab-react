@@ -19,6 +19,21 @@ export const insertQuestionResult = ({
     study_time_seconds,
   });
 
+export const updateQuestionResult = ({
+  id,
+  answer_count,
+  wrong_answer_count,
+  complete_flag,
+  study_time_seconds,
+}) =>
+  client.post('/vocab/question/result/update', {
+    id,
+    answer_count,
+    wrong_answer_count,
+    complete_flag,
+    study_time_seconds,
+  });
+
 export const postQuestionResult = ({
   vocab_question_result_id,
   group_code,

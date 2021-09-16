@@ -33,6 +33,11 @@ const AlertModalBlock = styled.div`
     display: flex;
     justify-content: flex-end;
   }
+  .wrong_answer_count{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: red;
+  }
 `;
 
 const StyledButton = styled(Button)`
@@ -51,13 +56,17 @@ const QuestionResultModal = ({
   onConfirm,
   onCancel,
   studyTime,
+  vocabCount,
+  answerCount,
+  wrongAnswerCount,
 }) => {
   if (!visible) return null;
   return (
     <Fullscreen>
       <AlertModalBlock>
         <h2>{title}</h2>
-        <p>31개 단어 중에 1개 단어를 틀렸습니다.</p>
+        <p>{answerCount}개 단어를 맞췄습니다.</p>
+        <p><span className="wrong_answer_count">{wrongAnswerCount}개</span> 단어를 틀렸습니다.</p>
         <p>{studyTime.hour}시간 {studyTime.minute}분 {studyTime.second}초 동안 학습하셨습니다.</p>
         <div className="buttons">
           <StyledButton cyan onClick={onConfirm}>

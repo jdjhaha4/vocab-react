@@ -202,6 +202,9 @@ const VocabStudyMultiple = ({
         visible={question['complete']}
         confirmText="학습하기로 이동"
         studyTime={studyTime}
+        vocabCount={vocabGroupData.vocab_count}
+        answerCount={question['answerCount']}
+        wrongAnswerCount={question['wrongAnswerCount']}
         onConfirm={() => {
           moveToThePage();
         }}
