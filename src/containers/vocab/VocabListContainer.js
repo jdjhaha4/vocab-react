@@ -82,6 +82,7 @@ const VocabListContainer = () => {
   //vocabListReload 가 트루로 변경될 때
   useEffect(() => {
     if (vocabListReload) {
+      dispatch(getVocabGroupList());
       dispatch(getVocabList({ groupCode: selectedGroupCode }));
     }
   }, [vocabListReload]);
