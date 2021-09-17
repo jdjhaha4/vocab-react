@@ -15,6 +15,7 @@ import VocabStudyTypeContainer from '../containers/vocab/VocabStudyTypeContainer
 import VocabStudyLookContainer from '../containers/vocab/VocabStudyLookContainer';
 import VocabStudyMultipleContainer from '../containers/vocab/VocabStudyMultipleContainer';
 import VocabQuestionResultContainer from '../containers/vocab/VocabQuestionResultContainer';
+import VocabQuestionResultGroupContainer from '../containers/vocab/VocabQuestionResultGroupContainer';
 
 const PageWrapper = styled.div`
   position: relative;
@@ -140,7 +141,8 @@ const VocabStudyPage = () => {
           <Route path="/vocab/study/type/:groupcode" component={VocabStudyTypeContainer} />
           <Route path="/vocab/study/look/:groupcode" component={VocabStudyLookContainer} />
           <Route path="/vocab/study/multiple/:groupcode" component={VocabStudyMultipleContainer} />
-          <Route path="/vocab/question/result" component={VocabQuestionResultContainer} />
+          <Route path="/vocab/question/result" exact component={VocabQuestionResultContainer} />
+          <Route path="/vocab/question/result/:groupcode" component={VocabQuestionResultGroupContainer} />
         </div>
       </Wrapper>
     </PageWrapper>

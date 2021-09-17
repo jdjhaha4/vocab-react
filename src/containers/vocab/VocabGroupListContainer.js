@@ -11,14 +11,13 @@ import {
 const VocabGroupListContainer = () => {
   const dispatch = useDispatch();
 
-  const { form, vocabGroupList, vocabGroupError, vocabGroupListReload } = useSelector(
-    ({ vocab_group }) => ({
+  const { form, vocabGroupList, vocabGroupError, vocabGroupListReload } =
+    useSelector(({ vocab_group }) => ({
       form: vocab_group.form,
       vocabGroupList: vocab_group.vocabGroupList,
       vocabGroupError: vocab_group.vocabGroupError,
       vocabGroupListReload: vocab_group.vocabGroupListReload,
-    }),
-  );
+    }));
 
   //인풋 변경 이벤트 핸들러
   const onChange = (e) => {
@@ -33,22 +32,21 @@ const VocabGroupListContainer = () => {
   const onFocusComplete = () => {
     dispatch(
       changeField({
-        key: "groupNameFocus",
+        key: 'groupNameFocus',
         value: false,
       }),
     );
   };
 
   const onKeyUp = (e) => {
-    if(e.key === "Enter"){
+    if (e.key === 'Enter') {
       onAddVocabGroup();
     }
-  }
+  };
 
   const onAddVocabGroup = useCallback(() => {
     const { group_name } = form;
-    if(group_name.trim() ===''){
-      
+    if (group_name.trim() === '') {
       return;
     }
     dispatch(addVocabGroup({ group_name }));
@@ -62,23 +60,23 @@ const VocabGroupListContainer = () => {
   }, [dispatch]);
   //vocabGroupListReload 가 트루로 변경될 때
   useEffect(() => {
-    if(vocabGroupListReload){
+    if (vocabGroupListReload) {
       dispatch(getVocabGroupList());
     }
   }, [vocabGroupListReload]);
 
   return (
-      <GroupList
-        form={form}
-        vocabGroupList={vocabGroupList}
-        vocabGroupError={vocabGroupError}
-        onChange={onChange}
-        onKeyUp={onKeyUp}
-        onAddVocabGroup={onAddVocabGroup}
-        getVocabGroupList={getVocabGroupList}
-        onFocusComplete={onFocusComplete}
-        onRemoveVocabGroup={onRemoveVocabGroup}
-      />
+    <GroupList
+      form={form}
+      vocabGroupList={vocabGroupList}
+      vocabGroupError={vocabGroupError}
+      onChange={onChange}
+      onKeyUp={onKeyUp}
+      onAddVocabGroup={onAddVocabGroup}
+      getVocabGroupList={getVocabGroupList}
+      onFocusComplete={onFocusComplete}
+      onRemoveVocabGroup={onRemoveVocabGroup}
+    />
   );
 };
 
