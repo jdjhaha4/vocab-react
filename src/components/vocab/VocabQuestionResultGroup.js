@@ -4,31 +4,6 @@ import palette from '../../lib/styles/palette';
 import { withRouter } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 
-const data = {
-  labels: ['1', '2', '3', '4', '5', '6'],
-  datasets: [
-    {
-      label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
-      fill: false,
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgba(255, 99, 132, 0.2)',
-    },
-  ],
-};
-
-const options = {
-  scales: {
-    yAxes: [
-      {
-        ticks: {
-          beginAtZero: true,
-        },
-      },
-    ],
-  },
-};
-
 const VocabQuestionResultGroupBlock = styled.div`
   height: calc(100vh - 150px);
   background-color: ${palette.gray[0]};
@@ -44,6 +19,60 @@ const VocabQuestionResultGroupBlock = styled.div`
 `;
 
 const VocabQuestionResultGroup = ({ vocabQuestionResultGroupList }) => {
+  const data = {
+    labels: [],
+    datasets: [
+      {
+        label: '정답률',
+        data: [],
+        fill: false,
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgba(255, 99, 132, 0.2)',
+      },
+    ],
+  };
+  {
+    vocabQuestionResultGroupList.map((item) => {
+      const answerRate = Math.floor(
+        (item.answer_count / (item.wrong_answer_count + item.answer_count)) *
+          100,
+      );
+      if (!isNaN(answerRate)) {
+        data['labels'].push(item.update_datetime);
+        data['datasets'][0]['data'].push(answerRate);
+      }
+    });
+  }
+
+  const options = {
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
+    },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            var label = context.dataset.label || '';
+
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += context.parsed.y+' %';
+            }
+            return label;
+          },
+        },
+      },
+    },
+  };
+
   return (
     <VocabQuestionResultGroupBlock>
       <div className="container">
@@ -51,9 +80,9 @@ const VocabQuestionResultGroup = ({ vocabQuestionResultGroupList }) => {
           <div className="col-12">
             <Line data={data} options={options} />
           </div>
-          {vocabQuestionResultGroupList.map((item) => {
+          {vocabQuestionResultGroupList.map((item, index) => {
             return (
-              <div key={item.update_time} className="col-12">
+              <div key={item.update_datetime + '_' + index} className="col-12">
                 <div className="list_box">
                   <div>{item.group_name}</div>
                   <div>{item.vocab_count}</div>

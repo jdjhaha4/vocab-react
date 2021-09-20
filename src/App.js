@@ -6,6 +6,7 @@ import MainPage from "./pages/MainPage";
 import VocabStudyPage from "./pages/VocabStudyPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import VocabStudyPageBackgroundContainer from "./containers/vocab/VocabStudyPageBackgroundContainer";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route component={LoginPage} path="/login" />
       <Route component={RegisterPage} path="/register"/>
       <Route component={VocabStudyPage} path="/vocab"/>
+      <VocabStudyPageBackgroundContainer />
     </>
   );
 }

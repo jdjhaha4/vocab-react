@@ -93,7 +93,7 @@ const VocabQuestionResult = ({history, vocabQuestionResultList }) => {
                       {vocabGroupItem.vocab_count} 단어
                     </div>
                     <div className="study_count">
-                      {vocabGroupItem.study_count}회 테스트 완료
+                      {vocabGroupItem.study_count}회 테스트
                     </div>
                     <div className="study_count">
                       최근 : {vocabGroupItem.update_datetime}

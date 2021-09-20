@@ -59,6 +59,7 @@ const QuestionResultModal = ({
   vocabCount,
   answerCount,
   wrongAnswerCount,
+  onClickMoveToTheResult,
 }) => {
   if (!visible) return null;
   return (
@@ -69,7 +70,7 @@ const QuestionResultModal = ({
         <p><span className="wrong_answer_count">{wrongAnswerCount}개</span> 단어를 틀렸습니다.</p>
         <p>{studyTime.hour}시간 {studyTime.minute}분 {studyTime.second}초 동안 학습하셨습니다.</p>
         <div className="buttons">
-          <StyledButton cyan onClick={onConfirm}>
+          <StyledButton cyan onClick={onClickMoveToTheResult}>
             학습결과 확인
           </StyledButton>
           <StyledButton cyan onClick={onConfirm}>

@@ -128,6 +128,7 @@ const VocabStudyMultiple = ({
   goToTheNextQuestionLoadingFlag,
   moveToThePage,
   studyTime,
+  moveToTheResult,
 }) => {
   return (
     <VocabStudyMultipleBlock>
@@ -207,6 +208,9 @@ const VocabStudyMultiple = ({
         wrongAnswerCount={question['wrongAnswerCount']}
         onConfirm={() => {
           moveToThePage();
+        }}
+        onClickMoveToTheResult={()=>{
+          moveToTheResult();
         }}
       />
     </VocabStudyMultipleBlock>

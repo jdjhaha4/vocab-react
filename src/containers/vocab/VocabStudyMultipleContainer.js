@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import VocabStudyMultiple from '../../components/vocab/VocabStudyMultiple';
 import { getVocabList, shuffleVocab } from '../../modules/vocab';
@@ -8,14 +8,20 @@ import {
   initQuestionList,
   insertQuestionResult,
   updateQuestionResult,
+  updateQuestionResult2,
   postQuestionResult,
   changeField,
   goToTheNextQuestion,
+  setUpdateFlag,
+  unmountAction,
 } from '../../modules/vocab_study_multiple';
 import { increaseAsync, start, stop, init } from '../../modules/timer';
 import { isEmpty } from '../../util/jsonUtil';
+import { cloneObject } from '../../util/arrayUtil';
+import produce from 'immer';
 
 const VocabStudyMultipleContainer = ({ history, match }) => {
+
   const { groupcode } = match.params;
   const dispatch = useDispatch();
   const { vocabList } = useSelector(({ vocab }) => ({
@@ -43,20 +49,35 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
     dispatch(getVocabGroupData({ group_code }));
     dispatch(getVocabList({ groupCode: groupcode }));
     return () => {
-      if (!question['complete']) {
-        dispatch(
-          updateQuestionResult({
-            id:question['vocabQuestionResultId'],
-            answer_count:question['answerCount'],
-            wrong_answer_count:question['wrongAnswerCount'],
-            complete_flag:"F",
-            study_time_seconds: studyTime['count'],
-          }),
-        );
-      }
       dispatch(init());
     };
   }, [groupcode]);
+
+  useEffect(() => {
+    dispatch(
+      setUpdateFlag({
+        unmountFlag: false,
+        flag: false,
+        vocabQuestionResultId: question['vocabQuestionResultId'],
+        answerCount: question['answerCount'],
+        wrongAnswerCount: question['wrongAnswerCount'],
+        complete_flag: 'F',
+        study_time_seconds: studyTime['count'],
+      }),
+    );
+  }, [
+    question['vocabQuestionResultId'],
+    question['answerCount'],
+    question['wrongAnswerCount'],
+    studyTime['count'],
+  ]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(updateQuestionResult2({complete_flag:'F'}));
+      dispatch(unmountAction());
+    };
+  }, []);
 
   const onClickBack = useCallback(() => {
     history.goBack();
@@ -88,21 +109,54 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
   useEffect(() => {
     if (question['complete']) {
       dispatch(stop());
-      dispatch(
-        updateQuestionResult({
-          id:question['vocabQuestionResultId'],
-          answer_count:question['answerCount'],
-          wrong_answer_count:question['wrongAnswerCount'],
-          complete_flag:"T",
-          study_time_seconds: studyTime['count'],
-        }),
-      );
+      // dispatch(
+      //   setUpdateFlag({
+      //     unmountFlag: false,
+      //     flag: false,
+      //     vocabQuestionResultId: question['vocabQuestionResultId'],
+      //     answerCount: question['answerCount'],
+      //     wrongAnswerCount: question['wrongAnswerCount'],
+      //     complete_flag: 'T',
+      //     study_time_seconds: studyTime['count'],
+      //   }),
+      // );
+      dispatch(updateQuestionResult2({complete_flag:'T'}));
     }
   }, [question['complete']]);
+
+  // useEffect(() => {
+  //   if (question['updateData']['flag']) {
+  //     dispatch(
+  //       updateQuestionResult({
+  //         id: question['updateData']['vocabQuestionResultId'],
+  //         answer_count: question['updateData']['answerCount'],
+  //         wrong_answer_count: question['updateData']['wrongAnswerCount'],
+  //         complete_flag: question['updateData']['complete_flag'],
+  //         study_time_seconds: question['updateData']['study_time_seconds'],
+  //       }),
+  //     );
+  //     dispatch(
+  //       setUpdateFlag({
+  //         unmountFlag:false,
+  //         flag: false,
+  //         vocabQuestionResultId: -1,
+  //         answerCount: 0,
+  //         wrongAnswerCount: 0,
+  //         complete_flag: 'N',
+  //         study_time_seconds: 0,
+  //       }),
+  //     );
+  //   }
+  // }, [question['updateData']['flag']]);
 
   const moveToThePage = useCallback(() => {
     dispatch(init());
     history.push(`/vocab/study`);
+  }, []);
+
+  const moveToTheResult = useCallback(() => {
+    dispatch(init());
+    history.push(`/vocab/question/result/${groupcode}`);
   }, []);
 
   const compareAnswer = useCallback(
@@ -179,6 +233,7 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
       goToTheNextQuestionLoadingFlag={goToTheNextQuestionLoadingFlag}
       moveToThePage={moveToThePage}
       studyTime={studyTime}
+      moveToTheResult={moveToTheResult}
     />
   );
 };
