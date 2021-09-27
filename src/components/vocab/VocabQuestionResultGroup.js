@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import { withRouter } from 'react-router-dom';
@@ -16,6 +16,10 @@ const VocabQuestionResultGroupBlock = styled.div`
     border-radius: 10px;
     background: white;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.025);
+  }
+
+  .chart_box {
+    padding: 0 10px;
   }
 `;
 
@@ -50,6 +54,35 @@ const VocabQuestionResultGroup = ({
       }
     });
   }
+  
+
+  const plugins = [
+    {
+      afterDraw: (chart) => {
+        // eslint-disable-next-line no-underscore-dangle
+        console.log(chart);
+        if (chart.tooltip._active && chart.tooltip._active.length) {
+          console.log('test');
+          // find coordinates of tooltip
+          const activePoint = chart.tooltip._active[0];
+          const { ctx } = chart;
+          const { x } = activePoint.element;
+          const topY = chart.scales.y.top;
+          const bottomY = chart.scales.y.bottom;
+
+          // draw vertical line
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(x, topY);
+          ctx.lineTo(x, bottomY);
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = '#1C2128';
+          ctx.stroke();
+          ctx.restore();
+        }
+      },
+    },
+  ];
 
   const options = {
     scales: {
@@ -78,6 +111,16 @@ const VocabQuestionResultGroup = ({
         },
       },
     },
+    tooltips: {
+      mode: 'index',
+      axis: 'x',
+      intersect: false,
+    },
+    hover: {
+      mode: 'index',
+      axis: 'x',
+      intersect: false,
+    },
   };
 
   let preTestDate = null;
@@ -93,11 +136,13 @@ const VocabQuestionResultGroup = ({
             <h6>{vocabQuestionResultGroupList.length}회 테스트</h6>
           </div>
           <div className="col-12">
-            <Line data={data} options={options} />
+            <div className="chart_box">
+              <Line plugins={plugins} data={data} options={options} />
+            </div>
           </div>
           {vocabQuestionResultGroupList.map((item, index) => {
-            const now = moment(item.update_datetime, "YYYY-MM-DD hh:mm:ss");
-            if(preTestDate != null){
+            const now = moment(item.update_datetime, 'YYYY-MM-DD hh:mm:ss');
+            if (preTestDate != null) {
               var duration = moment.duration(now.diff(preTestDate));
               console.log(duration.asDays());
             }
