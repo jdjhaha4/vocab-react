@@ -27,10 +27,15 @@ const VocabQuestionResultGroupContainer = ({ history, match }) => {
     dispatch(getVocabGroupData({ group_code }));
   }, [groupcode]);
 
+  const moveToHistory = useCallback((vocab_question_result_id) => {
+    history.push(`/vocab/question/history/${vocab_question_result_id}`);
+  }, []);
+
   return (
     <VocabQuestionResultGroup
       vocabGroupData={vocabGroupData}
       vocabQuestionResultGroupList={vocabQuestionResultGroupList}
+      moveToHistory={moveToHistory}
     />
   );
 };

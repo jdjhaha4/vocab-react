@@ -4,6 +4,7 @@ import palette from '../../lib/styles/palette';
 import { withRouter } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import moment from '../../../node_modules/moment/moment';
+import { cloneObject } from '../../util/arrayUtil';
 
 const VocabQuestionResultGroupBlock = styled.div`
   height: calc(100vh - 150px);
@@ -16,6 +17,11 @@ const VocabQuestionResultGroupBlock = styled.div`
     border-radius: 10px;
     background: white;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.025);
+
+    &:hover {
+      cursor: pointer;
+      background: ${palette.gray[2]};
+    }
   }
 
   .chart_box {
@@ -26,7 +32,10 @@ const VocabQuestionResultGroupBlock = styled.div`
 const VocabQuestionResultGroup = ({
   vocabGroupData,
   vocabQuestionResultGroupList,
+  moveToHistory,
 }) => {
+  let reversedList = cloneObject(vocabQuestionResultGroupList);
+  reversedList = reversedList.reverse();
   const data = {
     labels: [],
     datasets: [
@@ -40,35 +49,38 @@ const VocabQuestionResultGroup = ({
     ],
   };
   {
-    vocabQuestionResultGroupList.map((item) => {
+    vocabQuestionResultGroupList.map((item, index) => {
       const answerRate = Math.floor(
         (item.answer_count / (item.wrong_answer_count + item.answer_count)) *
           100,
       );
+      let tmpItem = cloneObject(item);
+      tmpItem['id'] = index;
+      
       if (!isNaN(answerRate)) {
-        data['labels'].push(item.update_datetime);
-        data['datasets'][0]['data'].push(answerRate);
+        tmpItem['answerRate'] = answerRate;
       } else {
-        data['labels'].push(item.update_datetime);
-        data['datasets'][0]['data'].push(0);
+        tmpItem['answerRate'] = 0;
       }
+      data['labels'].push((index+1)+' 회차');
+      data['datasets'][0]['data'].push(tmpItem);
     });
   }
   
 
   const plugins = [
     {
-      afterDraw: (chart) => {
+      beforeDraw: (chart) => {
         // eslint-disable-next-line no-underscore-dangle
-        console.log(chart);
-        if (chart.tooltip._active && chart.tooltip._active.length) {
-          console.log('test');
+        if (chart.getActiveElements() && chart.getActiveElements().length >0) {
           // find coordinates of tooltip
-          const activePoint = chart.tooltip._active[0];
+          const activePoint = chart.getActiveElements()[0];
           const { ctx } = chart;
           const { x } = activePoint.element;
           const topY = chart.scales.y.top;
           const bottomY = chart.scales.y.bottom;
+
+          chart.tooltip.setActiveElements(chart.getActiveElements(),0);
 
           // draw vertical line
           ctx.save();
@@ -76,7 +88,7 @@ const VocabQuestionResultGroup = ({
           ctx.moveTo(x, topY);
           ctx.lineTo(x, bottomY);
           ctx.lineWidth = 1;
-          ctx.strokeStyle = '#1C2128';
+          ctx.strokeStyle = 'rgba(255, 99, 132, 1)';
           ctx.stroke();
           ctx.restore();
         }
@@ -99,7 +111,6 @@ const VocabQuestionResultGroup = ({
         callbacks: {
           label: function (context) {
             var label = context.dataset.label || '';
-
             if (label) {
               label += ': ';
             }
@@ -121,6 +132,11 @@ const VocabQuestionResultGroup = ({
       axis: 'x',
       intersect: false,
     },
+    tension: 0.3,
+    parsing: {
+      xAxisKey: 'id',
+      yAxisKey: 'answerRate'
+  }
   };
 
   let preTestDate = null;
@@ -140,7 +156,7 @@ const VocabQuestionResultGroup = ({
               <Line plugins={plugins} data={data} options={options} />
             </div>
           </div>
-          {vocabQuestionResultGroupList.map((item, index) => {
+          {reversedList.map((item, index) => {
             const now = moment(item.update_datetime, 'YYYY-MM-DD hh:mm:ss');
             if (preTestDate != null) {
               var duration = moment.duration(now.diff(preTestDate));
@@ -155,9 +171,9 @@ const VocabQuestionResultGroup = ({
 
             return (
               <div key={item.update_datetime + '_' + index} className="col-12">
-                <div className="list_box">
+                <div className="list_box" onClick={()=>{moveToHistory(item.id)}}>
                   <div>
-                    <b>{index + 1} 회차</b>
+                    <b>{reversedList.length - index } 회차</b>
                   </div>
                   <div>
                     총 {item.vocab_count} 단어 중 정답:{item.answer_count} 오답:

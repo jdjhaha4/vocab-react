@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AuthAlertModal from './AuthAlertModal';
 import produce from 'immer';
 
@@ -83,6 +83,7 @@ const AuthForm = ({
   validationError,
   setValidationError,
 }) => {
+  const idInputEl = useRef(null);
   const text = textMap[type];
   const [modal, setModal] = useState({
     type: "login",
@@ -140,13 +141,16 @@ const AuthForm = ({
       onIdDuplInit();
     }
   }, [form.idDuplCheck]);
-
+  useEffect(() => {
+    idInputEl.current.focus();
+  }, []);
   return (
     <>
       <AuthFormBlock>
         <h3>{text}</h3>
         <form onSubmit={onSubmit} autoComplete="off">
           <StyledInput
+            ref={idInputEl}
             name="id"
             placeholder="아이디"
             onChange={onChange}
