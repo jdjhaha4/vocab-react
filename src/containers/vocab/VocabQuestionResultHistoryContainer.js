@@ -2,15 +2,15 @@ import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import VocabQuestionResultHistory from '../../components/vocab/VocabQuestionResultHistory';
 import { withRouter } from 'react-router-dom';
-import { getVocabQuestionResultGroupList } from '../../modules/vocab_question_result';
+import { getVocabQuestionResultHistoryList } from '../../modules/vocab_question_result_history';
 import { getVocabGroupData } from '../../modules/vocab_group';
 
 const VocabQuestionResultHistoryContainer = ({ history, match }) => {
   const { vocab_question_result_id } = match.params;
   const dispatch = useDispatch();
-  const { vocabQuestionResultGroupList } = useSelector(
-    ({ vocab_question_result }) => ({
-      //vocabQuestionResultGroupList: vocab_question_result.groupList,
+  const { vocabQuestionResultHistoryList } = useSelector(
+    ({ vocab_question_result_history }) => ({
+      vocabQuestionResultHistoryList: vocab_question_result_history.list,
     }),
   );
 
@@ -23,12 +23,15 @@ const VocabQuestionResultHistoryContainer = ({ history, match }) => {
   }, []);
 
   useEffect(() => {
-    //let group_code = groupcode;
-    //dispatch(getVocabGroupData({ group_code }));
+    dispatch(getVocabQuestionResultHistoryList({ vocab_question_result_id }));
+  }, [vocab_question_result_id]);
+  const onClickBack = useCallback(() => {
+    history.goBack();
   }, []);
-
   return (
     <VocabQuestionResultHistory
+    vocabQuestionResultHistoryList={vocabQuestionResultHistoryList}
+    onClickBack={onClickBack}
     />
   );
 };

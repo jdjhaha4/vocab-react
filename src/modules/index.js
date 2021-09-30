@@ -12,6 +12,8 @@ import vocab_study_multiple, {
 } from './vocab_study_multiple';
 import timer,{timerSaga} from './timer';
 import vocab_question_result,{vocabQuestionResultSaga} from './vocab_question_result';
+import vocab_question_result_history,{vocabQuestionResultHistorySaga} from './vocab_question_result_history';
+
 
 const rootReducer = combineReducers({
   auth,
@@ -24,6 +26,7 @@ const rootReducer = combineReducers({
   vocab_study_multiple,
   timer,
   vocab_question_result,
+  vocab_question_result_history,
 });
 
 export function* rootSaga() {
@@ -36,6 +39,7 @@ export function* rootSaga() {
     vocabStudyMultipleSaga(),
     timerSaga(),
     vocabQuestionResultSaga(),
+    vocabQuestionResultHistorySaga(),
   ]);
 }
 

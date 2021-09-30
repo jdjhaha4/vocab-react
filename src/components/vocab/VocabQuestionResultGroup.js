@@ -27,6 +27,15 @@ const VocabQuestionResultGroupBlock = styled.div`
   .chart_box {
     padding: 0 10px;
   }
+
+  .border_box {
+    display: inline-block;
+    padding: 2px;
+    margin: 2px 0 2px 10px;
+    border: 1px solid ${palette.gray[3]};
+    border-radius: 15px;
+    background: ${palette.gray[3]};
+  }
 `;
 
 const VocabQuestionResultGroup = ({
@@ -56,23 +65,22 @@ const VocabQuestionResultGroup = ({
       );
       let tmpItem = cloneObject(item);
       tmpItem['id'] = index;
-      
+
       if (!isNaN(answerRate)) {
         tmpItem['answerRate'] = answerRate;
       } else {
         tmpItem['answerRate'] = 0;
       }
-      data['labels'].push((index+1)+' 회차');
+      data['labels'].push(index + 1 + ' 회차');
       data['datasets'][0]['data'].push(tmpItem);
     });
   }
-  
 
   const plugins = [
     {
       beforeDraw: (chart) => {
         // eslint-disable-next-line no-underscore-dangle
-        if (chart.getActiveElements() && chart.getActiveElements().length >0) {
+        if (chart.getActiveElements() && chart.getActiveElements().length > 0) {
           // find coordinates of tooltip
           const activePoint = chart.getActiveElements()[0];
           const { ctx } = chart;
@@ -80,7 +88,7 @@ const VocabQuestionResultGroup = ({
           const topY = chart.scales.y.top;
           const bottomY = chart.scales.y.bottom;
 
-          chart.tooltip.setActiveElements(chart.getActiveElements(),0);
+          chart.tooltip.setActiveElements(chart.getActiveElements(), 0);
 
           // draw vertical line
           ctx.save();
@@ -135,11 +143,9 @@ const VocabQuestionResultGroup = ({
     tension: 0.3,
     parsing: {
       xAxisKey: 'id',
-      yAxisKey: 'answerRate'
-  }
+      yAxisKey: 'answerRate',
+    },
   };
-
-  let preTestDate = null;
 
   return (
     <VocabQuestionResultGroupBlock>
@@ -157,27 +163,56 @@ const VocabQuestionResultGroup = ({
             </div>
           </div>
           {reversedList.map((item, index) => {
-            const now = moment(item.update_datetime, 'YYYY-MM-DD hh:mm:ss');
-            if (preTestDate != null) {
-              var duration = moment.duration(now.diff(preTestDate));
-              console.log(duration.asDays());
+            let speed = 0;
+            let upAndDown = '';
+            let answerRate = Math.floor(
+              (item.answer_count /
+                (item.wrong_answer_count + item.answer_count)) *
+                100,
+            );
+            if(isNaN(answerRate)){
+              answerRate = 0;
             }
-            preTestDate = now;
+            // if((index+1) < reversedList.length){
+            //   const beforeDate = moment(reversedList[index+1]['update_datetime'], 'YYYY-MM-DD hh:mm:ss');
+            //   const itemDate = moment(reversedList[index]['update_datetime'], 'YYYY-MM-DD hh:mm:ss');
+            //   console.log(beforeDate);
+            //   console.log(itemDate);
+            //   var duration = moment.duration(itemDate.diff(beforeDate));
+            // }
+
             const hour = Math.floor(item.study_time_seconds / (60 * 60));
             const minute = Math.floor(
               (item.study_time_seconds % (60 * 60)) / 60,
             );
             const second = Math.floor(item.study_time_seconds % 60);
+            if (index + 1 < reversedList.length) {
+              speed =
+                reversedList[index + 1].study_time_seconds -
+                reversedList[index].study_time_seconds;
+              if (speed > 0) {
+                upAndDown = '빠름';
+              } else if (speed < 0) {
+                upAndDown = '느림';
+              }
+              speed = Math.abs(speed);
+            }
 
             return (
               <div key={item.update_datetime + '_' + index} className="col-12">
-                <div className="list_box" onClick={()=>{moveToHistory(item.id)}}>
+                <div
+                  className="list_box"
+                  onClick={() => {
+                    moveToHistory(item.id);
+                  }}
+                >
                   <div>
-                    <b>{reversedList.length - index } 회차</b>
+                    <b>{reversedList.length - index} 회차</b>
                   </div>
                   <div>
                     총 {item.vocab_count} 단어 중 정답:{item.answer_count} 오답:
                     {item.wrong_answer_count}
+                    <span className="border_box">{`${answerRate}%`}</span>
                   </div>
                   <div>
                     {item.complete_flag == 'T'
@@ -188,6 +223,7 @@ const VocabQuestionResultGroup = ({
                   </div>
                   <div>
                     학습 시간: {hour}시간 {minute}분 {second}초
+                    <span className="border_box">{`${speed} 초 ${upAndDown}`}</span>
                   </div>
                   <div>테스트 일시: {item.update_datetime}</div>
                 </div>

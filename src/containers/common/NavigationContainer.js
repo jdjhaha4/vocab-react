@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Navigation from '../../components/common/Navigation';
-import { changeNaviMenu } from '../../modules/navigation';
+import { changeNaviMenu,changeNaviSubMenu } from '../../modules/navigation';
 
 const NavigationContainer = ({ pageMenuId }) => {
   const dispatch = useDispatch();
@@ -13,6 +13,9 @@ const NavigationContainer = ({ pageMenuId }) => {
   const onChangeMenuId = useCallback(
     (menu_id) => {
       dispatch(changeNaviMenu(menu_id));
+      if(menu_id=='vocab'){
+        dispatch(changeNaviSubMenu('vocab'));
+      }
     },
     [menu_id],
   );

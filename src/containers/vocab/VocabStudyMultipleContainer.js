@@ -19,6 +19,7 @@ import { increaseAsync, start, stop, init } from '../../modules/timer';
 import { isEmpty } from '../../util/jsonUtil';
 import { cloneObject } from '../../util/arrayUtil';
 import produce from 'immer';
+import { changeNaviSubMenu } from '../../modules/navigation';
 
 const VocabStudyMultipleContainer = ({ history, match }) => {
 
@@ -156,6 +157,7 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
 
   const moveToTheResult = useCallback(() => {
     dispatch(init());
+    dispatch(changeNaviSubMenu('vocab/question/result'));
     history.push(`/vocab/question/result/${groupcode}`);
   }, []);
 
