@@ -47,6 +47,11 @@ const VocabStudyBlock = styled.div`
     color: ${palette.gray[8]};
     font-weight: 600;
   }
+  .study_count {
+    font-size: 0.8rem;
+    color: ${palette.gray[6]};
+    font-weight: 500;
+  }
 `;
 const VocabStudy = ({ history, vocabGroupList }) => {
   const onClickGroup = useCallback(
@@ -54,8 +59,10 @@ const VocabStudy = ({ history, vocabGroupList }) => {
       const vocabGroupItem = vocabGroupList.find(
         (item) => item.group_code === group_code,
       );
-      if(vocabGroupItem.vocab_count === 0){
-        alert(`${vocabGroupItem.group_name} 그룹에 단어를 등록 후 선택해 주세요.`);
+      if (vocabGroupItem.vocab_count === 0) {
+        alert(
+          `${vocabGroupItem.group_name} 그룹에 단어를 등록 후 선택해 주세요.`,
+        );
         return;
       }
       history.push(`/vocab/study/type/${group_code}`);
@@ -86,6 +93,16 @@ const VocabStudy = ({ history, vocabGroupList }) => {
                     <div className="vocab_count">
                       {vocabGroupItem.vocab_count} 단어
                     </div>
+                    {vocabGroupItem.update_datetime ? (
+                      <>
+                        <div className="study_count">
+                          {vocabGroupItem.study_count}회 테스트
+                        </div>
+                        <div className="study_count">
+                          최근 : {vocabGroupItem.update_datetime}
+                        </div>
+                      </>
+                    ) : null}
                   </div>
                 </div>
               ))}

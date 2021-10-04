@@ -88,8 +88,7 @@ const VocabQuestionResultHistory = ({
             return item.result_flag == 'F' ? (
               <div className={`col-12 ${resultFlag}`} key={`history_${item.id}`}>
                 {item.vocab}={item.mean}
-                <span className="worng_answer">선택한 오답 : </span>
-                {item.answer_vocab}={item.answer_mean}
+                <span className="worng_answer">선택한 오답 : {item.answer_vocab}={item.answer_mean}</span>
                 <span className="time">{itemSelectSeconds}초</span>
               </div>
             ) : (

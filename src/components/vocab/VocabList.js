@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
+import { ReactComponent as HeadPhonesIcon } from '../../resources/svg/headphones.svg';
 
 const VocabListBlock = styled.div`
   background-color: ${palette.gray[0]};
@@ -64,7 +65,7 @@ const VocabListItem = styled.div`
   }
   .mean {
     display: inline-block;
-    width: 62%;
+    width: 52%;
     margin-left: 20px;
   }
   .horizontal_line {
@@ -81,21 +82,9 @@ const StyledInput = styled.input`
   margin-left: 5px;
   display: block;
   width: 100%;
-  ${(props) =>
-    props.vocab &&
-    css`
-      float: left;
-      width: 27%;
-    `};
-  ${(props) =>
-    props.mean &&
-    css`
-      float: left;
-      width: 58%;
-    `};
   height: calc(1.5em + 0.75rem + 2px);
   padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 400;
   line-height: 1.5;
   color: #6e707e;
@@ -104,13 +93,32 @@ const StyledInput = styled.input`
   border: 1px solid #d1d3e2;
   border-radius: 0.35rem;
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-
+  ${(props) =>
+    props.vocab &&
+    css`
+      float: left;
+      width: 27%;
+      color: #003399;
+      font-weight: 600;
+    `};
+  ${(props) =>
+    props.mean &&
+    css`
+      float: left;
+      width: 58%;
+    `};
   &:focus {
     color: #6e707e;
     background-color: #fff;
     border-color: #bac8f3;
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgb(78 115 223 / 25%);
+    ${(props) =>
+      props.vocab &&
+      css`
+        color: #003399;
+        font-weight: 600;
+      `};
   }
   & + & {
     margin-left: 10px;
@@ -127,6 +135,13 @@ const StyledButton = styled(Button)`
 const StyledButton2 = styled(Button)`
   float: right;
   height: 30px;
+  padding: 0 12px;
+`;
+const StyledButton3 = styled(Button)`
+  float: right;
+  height: 30px;
+  margin-right: 10px;
+  padding: 0 3px;
 `;
 
 const VocabList = ({
@@ -142,6 +157,7 @@ const VocabList = ({
   onChangeGroupCode,
 }) => {
   const vocabInputEl = useRef(null);
+  const audioEl = useRef(null);
   const vocabInputElFocus = () => {
     vocabInputEl.current.focus();
   };
@@ -156,7 +172,12 @@ const VocabList = ({
     <VocabListBlock>
       <label>단어 등록</label>
       <div className="group_select_area">
-        <select value={selectedGroupCode} onChange={(e)=>{onChangeGroupCode(e.target.value)}}>
+        <select
+          value={selectedGroupCode}
+          onChange={(e) => {
+            onChangeGroupCode(e.target.value);
+          }}
+        >
           <option value="all">모든 단어</option>
           <option value="none">그룹이 없는 단어</option>
           {vocabGroupList == null
@@ -166,7 +187,8 @@ const VocabList = ({
                   key={vocabGroupItem.group_code}
                   value={vocabGroupItem.group_code}
                 >
-                  {vocabGroupItem.group_name} ({vocabGroupItem.vocab_count} 단어)
+                  {vocabGroupItem.group_name} ({vocabGroupItem.vocab_count}{' '}
+                  단어)
                 </option>
               ))}
         </select>
@@ -203,9 +225,18 @@ const VocabList = ({
             <StyledButton2 onClick={() => onRemoveVocab(vocabItem.id)}>
               -
             </StyledButton2>
+            <StyledButton3 onClick={() =>{audioEl.current.play()}}>
+              <HeadPhonesIcon />
+            </StyledButton3>
           </VocabListItem>
         ))}
       </div>
+      <audio ref={audioEl} controls>
+        <source
+          src="https://ssl.gstatic.com/dictionary/static/sounds/20200429/thoroughly--_gb_1.mp3"
+          type="audio/mp3"
+        ></source>
+      </audio>
     </VocabListBlock>
   );
 };

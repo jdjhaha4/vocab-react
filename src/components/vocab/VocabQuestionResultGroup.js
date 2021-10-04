@@ -64,7 +64,7 @@ const VocabQuestionResultGroup = ({
           100,
       );
       let tmpItem = cloneObject(item);
-      tmpItem['id'] = index;
+      tmpItem['index_id'] = index;
 
       if (!isNaN(answerRate)) {
         tmpItem['answerRate'] = answerRate;
@@ -145,6 +145,12 @@ const VocabQuestionResultGroup = ({
       xAxisKey: 'id',
       yAxisKey: 'answerRate',
     },
+    onClick: function (evt) {
+      //evt.chart.getActiveElements()[0].index
+      //evt.chart.data.datasets[0]
+      const vocab_question_result_history_id=evt.chart.data.datasets[0].data[evt.chart.getActiveElements()[0].index].id
+      moveToHistory(vocab_question_result_history_id);
+    },
   };
 
   return (
@@ -170,7 +176,7 @@ const VocabQuestionResultGroup = ({
                 (item.wrong_answer_count + item.answer_count)) *
                 100,
             );
-            if(isNaN(answerRate)){
+            if (isNaN(answerRate)) {
               answerRate = 0;
             }
             // if((index+1) < reversedList.length){
@@ -215,11 +221,17 @@ const VocabQuestionResultGroup = ({
                     <span className="border_box">{`${answerRate}%`}</span>
                   </div>
                   <div>
-                    {item.complete_flag == 'T'
-                      ? `${item.vocab_count} 단어 테스트 완료`
-                      : `${
-                          item.answer_count + item.wrong_answer_count + 1
-                        } 번 째 단어 테스트 도중 종료`}
+                    {item.complete_flag == 'T' ? (
+                      <>
+                        {item.vocab_count} 단어 테스트
+                        <span className="border_box">완료</span>
+                      </>
+                    ) : (
+                      <>
+                        {item.answer_count + item.wrong_answer_count + 1} 번 째
+                        단어 테스트 도중<span className="border_box">종료</span>
+                      </>
+                    )}
                   </div>
                   <div>
                     학습 시간: {hour}시간 {minute}분 {second}초
