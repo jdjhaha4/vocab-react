@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
+import LoadingSpinner from '../common/LoadingSpinner';
 import { ReactComponent as HeadPhonesIcon } from '../../resources/svg/headphones.svg';
 
 const VocabListBlock = styled.div`
@@ -62,6 +63,12 @@ const VocabListItem = styled.div`
     color: #003399;
     font-size: 1.2rem;
     font-weight: 600;
+  }
+  .phonetic{
+    margin-left:5px;
+    color : ${palette.gray[6]};
+    font-size:0.9rem;
+    font-weight: 400;
   }
   .mean {
     display: inline-block;
@@ -155,9 +162,11 @@ const VocabList = ({
   vocabGroupList,
   selectedGroupCode,
   onChangeGroupCode,
+  addVocabLoadingFlag,
 }) => {
   const vocabInputEl = useRef(null);
   const audioEl = useRef(null);
+  const audioSourceEl = useRef(null);
   const vocabInputElFocus = () => {
     vocabInputEl.current.focus();
   };
@@ -219,24 +228,38 @@ const VocabList = ({
       <div className="vocab_list">
         {vocabList.map((vocabItem) => (
           <VocabListItem key={vocabItem.id}>
-            <span className="vocab">{vocabItem.vocab}</span>
+            <span className="vocab">
+              {vocabItem.vocab}
+              
+              {vocabItem['dicArr'] != null ? (<span className="phonetic">[{vocabItem['dicArr'][0]['phonetic']}]</span>) :null }
+            </span>
             <span className="horizontal_line"></span>
             <span className="mean">{vocabItem.mean}</span>
             <StyledButton2 onClick={() => onRemoveVocab(vocabItem.id)}>
               -
             </StyledButton2>
-            <StyledButton3 onClick={() =>{audioEl.current.play()}}>
-              <HeadPhonesIcon />
-            </StyledButton3>
+            {vocabItem['dicArr'] != null ? (
+              <StyledButton3
+                onClick={() => {
+                  audioSourceEl.current.src = vocabItem['dicArr'][0]['phonetics'][0]['audio'];
+                  audioEl.current.pause();
+                  audioEl.current.load();
+                  audioEl.current.play();
+                }}
+              >
+                <HeadPhonesIcon />
+              </StyledButton3>
+            ) : null}
           </VocabListItem>
         ))}
       </div>
-      <audio ref={audioEl} controls>
-        <source
-          src="https://ssl.gstatic.com/dictionary/static/sounds/20200429/thoroughly--_gb_1.mp3"
+      <audio ref={audioEl}>
+        <source ref={audioSourceEl}
+          src=""
           type="audio/mp3"
         ></source>
       </audio>
+      <LoadingSpinner visible={addVocabLoadingFlag} />
     </VocabListBlock>
   );
 };

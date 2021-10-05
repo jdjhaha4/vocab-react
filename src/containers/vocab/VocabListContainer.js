@@ -31,6 +31,12 @@ const VocabListContainer = () => {
     }),
   );
   
+  const { addVocabLoadingFlag } =
+  useSelector(({ loading }) => ({
+    addVocabLoadingFlag:
+      loading['vocab/ADD_VOCAB'],
+  }));
+
   const onChangeGroupCode = useCallback((groupCode) => {
     dispatch(changeSelectedGroupCode({ groupCode }));
   }, []);
@@ -101,6 +107,7 @@ const VocabListContainer = () => {
       vocabGroupList={vocabGroupList}
       selectedGroupCode={selectedGroupCode}
       onChangeGroupCode={onChangeGroupCode}
+      addVocabLoadingFlag={addVocabLoadingFlag}
     />
   );
 };
