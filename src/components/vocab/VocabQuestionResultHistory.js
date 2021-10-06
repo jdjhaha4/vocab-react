@@ -55,12 +55,26 @@ const VocabQuestionResultHistoryBlock = styled.div`
       border-radius: 10px;
     }
   }
+  .question_value {
+    margin-left: 10px;
+    font-size:1.1rem;
+    font-weight: 600;
+    color: ${palette.gray[6]};
+  }
 `;
 
 const VocabQuestionResultHistory = ({
   vocabQuestionResultHistoryList,
   onClickBack,
 }) => {
+  let questionValue = "";
+  if(vocabQuestionResultHistoryList != null && vocabQuestionResultHistoryList.length >0){
+    if(vocabQuestionResultHistoryList[0]['question_value'] == 'mean'){
+      questionValue = "(뜻 보고 단어 선택)";
+    }else if(vocabQuestionResultHistoryList[0]['question_value'] == 'vocab'){
+      questionValue = "(단어 보고 뜻 선택)";
+    }
+  }
   return (
     <VocabQuestionResultHistoryBlock>
       <div className="container">
@@ -74,7 +88,7 @@ const VocabQuestionResultHistory = ({
             </div>
           </div>
           <div className="col-10">
-            <h4>학습결과 이력</h4>
+            <h4>학습결과 이력<span className="question_value">{questionValue}</span></h4>
           </div>
           {vocabQuestionResultHistoryList.map((item, index) => {
             let itemSelectSeconds = 0;

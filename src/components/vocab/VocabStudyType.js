@@ -83,6 +83,17 @@ const VocabStudyType = ({ history, vocabGroupData, onClickBack }) => {
     [vocabGroupData],
   );
 
+  const onClickMultipleMean = useCallback(
+    (group_code) => {
+      if(vocabGroupData.vocab_count >= 5){
+        history.push(`/vocab/study/multipleMean/${group_code}`);
+      }else{
+        alert('5단어 이상 그룹에 할당 후 이용 부탁드립니다.');
+      }
+    },
+    [vocabGroupData],
+  );
+
   return (
     <VocabStudyBlock>
       <div className="container">
@@ -103,7 +114,7 @@ const VocabStudyType = ({ history, vocabGroupData, onClickBack }) => {
               className="box"
               onClick={() => onClickLook(vocabGroupData.group_code)}
             >
-              눈으로 훑어보기
+              훑어보기
             </div>
           </div>
           <div className="col-6">
@@ -111,8 +122,35 @@ const VocabStudyType = ({ history, vocabGroupData, onClickBack }) => {
               className="box"
               onClick={() => onClickMultiple(vocabGroupData.group_code)}
             >
-              객관식 문제 맞추기
-              <span className="sub_title">(영단어 보고 뜻 고르기)</span>
+              객관식
+              <span className="sub_title">(영단어 보고 뜻 선택)</span>
+            </div>
+          </div>
+          <div className="col-6">
+            <div
+              className="box"
+              onClick={() => onClickMultipleMean(vocabGroupData.group_code)}
+            >
+              객관식
+              <span className="sub_title">(뜻 보고 영단어 선택)</span>
+            </div>
+          </div>
+          <div className="col-6">
+            <div
+              className="box"
+              onClick={() => {}}
+            >
+              주관식
+              <span className="sub_title">(영단어 보고 뜻 쓰기))</span>
+            </div>
+          </div>
+          <div className="col-6">
+            <div
+              className="box"
+              onClick={() => {}}
+            >
+              주관식
+              <span className="sub_title">(뜻 보고 영단어 쓰기))</span>
             </div>
           </div>
         </div>

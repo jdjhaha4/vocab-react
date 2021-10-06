@@ -20,6 +20,12 @@ const VocabStudyLookBlock = styled.div`
     font-size: 1.2rem;
     font-weight: 600;
   }
+  .phonetic{
+    margin-left:5px;
+    color : ${palette.gray[6]};
+    font-size:0.9rem;
+    font-weight: 400;
+  }
   .mean {
   }
 
@@ -123,7 +129,7 @@ const VocabStudyLookBlock = styled.div`
     width: 42%;
     height: 100%;
     position: absolute;
-    top:0;
+    top: 0;
     display: none;
     ${(props) =>
       props.hideVocab &&
@@ -137,7 +143,7 @@ const VocabStudyLookBlock = styled.div`
     width: 58%;
     height: 100%;
     position: absolute;
-    top:0;
+    top: 0;
     display: none;
     ${(props) =>
       props.hideMean &&
@@ -242,7 +248,14 @@ const VocabStudyLook = ({
                   key={`${vocabItem.id}_vocab`}
                   onClick={(e) => onClickHideVocab(e)}
                 >
-                  <span className="vocab">{vocabItem.vocab}</span>
+                  <span className="vocab">
+                    {vocabItem.vocab}
+                    {vocabItem['dicArr'] != null ? (
+                      <span className="phonetic">
+                        [{vocabItem['dicArr'][0]['phonetic']}]
+                      </span>
+                    ) : null}
+                  </span>
                 </div>
                 <div
                   className="col-7 "
