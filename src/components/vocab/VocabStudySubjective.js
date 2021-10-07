@@ -1,11 +1,13 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
 import produce from 'immer';
 import LoadingSpinner from '../common/LoadingSpinner';
 import QuestionResultModal from '../common/QuestionResultModal';
+import SubjectiveAnswerConfirmModal from '../common/SubjectiveAnswerConfirmModal';
 import { withRouter } from 'react-router-dom';
+import { cloneObject } from '../../util/arrayUtil';
 
 const CorrectBlock = styled.div`
   color: green;
@@ -53,7 +55,7 @@ const VocabStudySubjectiveBlock = styled.div`
     height: 60px;
     line-height: 60px;
   }
-  .study_time{
+  .study_time {
     text-align: center;
   }
   .score {
@@ -118,6 +120,47 @@ const VocabStudySubjectiveBlock = styled.div`
     font-weight: 500;
   }
 `;
+
+const StyledInput = styled.input`
+  margin: 10px 0;
+  margin-left: 5px;
+  display: inline-block;
+  width: 100%;
+  ${(props) =>
+    props.groupNm &&
+    css`
+      float: left;
+      width: 100%;
+    `};
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #6e707e;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #d1d3e2;
+  border-radius: 0.35rem;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  &:focus {
+    color: #6e707e;
+    background-color: #fff;
+    border-color: #bac8f3;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgb(78 115 223 / 25%);
+  }
+  & + & {
+    margin-left: 10px;
+  }
+`;
+const StyledButton = styled(Button)`
+  float: right;
+  height: 38px;
+  margin-top: 10px;
+  margin-right: 10px;
+`;
 const VocabStudySubjective = ({
   history,
   vocabGroupData,
@@ -130,6 +173,92 @@ const VocabStudySubjective = ({
   studyTime,
   moveToTheResult,
 }) => {
+  const answerInputEl = useRef(null);
+  // title="영단어 보고 뜻 쓰기"
+  //       visible={false}
+  //       vocab="strongly"
+  //       mean="강하게, 튼튼하게"
+  //       answer="강하게"
+  const [modal, setModal] = useState({
+    title: '영단어 보고 뜻 쓰기',
+    visible: false,
+    id: -1,
+    vocab: '',
+    mean: '',
+    answer: '',
+  });
+
+  const onChange = (e) => {
+    const { value, name } = e.target;
+    if (name == 'answer') {
+      const nextState = produce(modal, (draft) => {
+        draft['answer'] = value;
+      });
+      setModal(nextState);
+    }
+  };
+
+  //question.vocab['vocab']
+  useEffect(() => {
+    const nextState = produce(modal, (draft) => {
+      draft['id'] = question.vocab['id'];
+      draft['vocab'] = question.vocab['vocab'];
+      draft['mean'] = question.vocab['mean'];
+      draft['answer'] = '';
+    });
+    setModal(nextState);
+    answerInputEl.current.focus();
+  }, [question.vocab['vocab']]);
+
+  const onClickConfirm = useCallback(() => {
+    if (modal['answer'] != null && modal['answer'].trim() != '') {
+      const nextState = produce(modal, (draft) => {
+        draft['visible'] = true;
+      });
+      setModal(nextState);
+    } else {
+      alert('뜻을 입력후에 확인 버튼을 클릭하세요.');
+    }
+  }, [question]);
+
+  const onClickAnswerProcess = useCallback(() => {
+    const nextState = produce(modal, (draft) => {
+      draft['visible'] = false;
+    });
+    setModal(nextState);
+    let answerItem = {};
+    answerItem['id'] = question.vocab['id'];
+    answerItem['vocab'] = question.vocab['vocab'];
+    answerItem['mean'] = modal['answer'];
+    answerItem['result_flag'] = 'T';
+
+    compareAnswer(answerItem);
+  }, [question]);
+
+  const onClickWrongAnswerProcess = useCallback(() => {
+    const nextState = produce(modal, (draft) => {
+      draft['visible'] = false;
+    });
+    setModal(nextState);
+    let answerItem = {};
+    answerItem['id'] = -1;
+    answerItem['vocab'] = question.vocab['vocab'];
+    answerItem['mean'] = modal['answer'];
+    answerItem['result_flag'] = 'F';
+
+    compareAnswer(answerItem);
+  }, [question]);
+
+  const onClickDontKnowProcess = useCallback(() => {
+    let answerItem = {};
+    answerItem['id'] = -1;
+    answerItem['vocab'] = question.vocab['vocab'];
+    answerItem['mean'] = '';
+    answerItem['result_flag'] = 'N';
+
+    compareAnswer(answerItem);
+  }, [modal]);
+
   return (
     <VocabStudySubjectiveBlock>
       <div className="container">
@@ -144,9 +273,10 @@ const VocabStudySubjective = ({
               ({vocabGroupData.vocab_count} 단어)
             </span>
           </div>
-          <div className="col-4 type_select">객관식 문제 맞추기</div>
+          <div className="col-4 type_select">영단어 뜻 입력하기</div>
           <div className="col-4 type_select study_time">
-            학습 시간: {studyTime.hour}시간 {studyTime.minute}분 {studyTime.second}초
+            학습 시간: {studyTime.hour}시간 {studyTime.minute}분{' '}
+            {studyTime.second}초
           </div>
           <div className="col-4 type_select score">
             {question.index + 1} / {vocabGroupData.vocab_count}
@@ -155,6 +285,11 @@ const VocabStudySubjective = ({
         <div className="row vocab_box">
           <div className="col-12 vocab_title">단어</div>
           <div className="col-12 vocab">{question.vocab['vocab']}</div>
+          {question.resultFlag == 'T' || question.resultFlag == 'F' ? (
+            <div className="col-12">
+              <CorrectBlock>{question.vocab['mean']}</CorrectBlock>
+            </div>
+          ) : null}
           <div className="col-12">
             {question.resultFlag == 'T' ? (
               <CorrectBlock>정답 입니다. 다음 문제로 이동 합니다</CorrectBlock>
@@ -166,33 +301,31 @@ const VocabStudySubjective = ({
             ) : null}
           </div>
           <div className="col-12 multiple_box multiple_title">
-            일치하는 뜻 선택
+            영단어의 뜻을 입력하세요.
           </div>
-          {question.meanMultipleChoices.map((item, index) => {
-            let correctClassName =
-              item.id == question.answerVocabId ? ' correct' : '';
-            let wrongClassName =
-              question.resultFlag == 'F' &&
-              item.id == question.wrongAnswerVocabId
-                ? ' wrong'
-                : '';
-            return (
-              <div
-                className="col-6"
-                key={`choice_${item.id}`}
-                onClick={() => {
-                  compareAnswer(item);
-                }}
-              >
-                <div
-                  className={`multiple_mean${correctClassName}${wrongClassName}`}
-                >
-                  <span className="round_char">{index + 1}</span>
-                  {item.mean}
-                </div>
-              </div>
-            );
-          })}
+          <div className="col-12">
+            <StyledInput
+              ref={answerInputEl}
+              groupNm="true"
+              name="answer"
+              type="text"
+              placeholder="영단어의 뜻을 입력하세요."
+              value={modal['answer']}
+              onChange={onChange}
+              // onKeyUp={onKeyUp}
+              autoComplete="off"
+            />
+          </div>
+          <div className="col-12">
+            <StyledButton onClick={() => onClickConfirm()}>확인</StyledButton>
+            <StyledButton
+              onClick={() => {
+                onClickDontKnowProcess();
+              }}
+            >
+              모름
+            </StyledButton>
+          </div>
         </div>
       </div>
       <LoadingSpinner visible={postQuestionResultLoadingFlag} />
@@ -209,9 +342,18 @@ const VocabStudySubjective = ({
         onConfirm={() => {
           moveToThePage();
         }}
-        onClickMoveToTheResult={()=>{
+        onClickMoveToTheResult={() => {
           moveToTheResult();
         }}
+      />
+      <SubjectiveAnswerConfirmModal
+        title={modal['title']}
+        visible={modal['visible']}
+        vocab={modal['vocab']}
+        mean={modal['mean']}
+        answer={modal['answer']}
+        onClickAnswerProcess={onClickAnswerProcess}
+        onClickWrongAnswerProcess={onClickWrongAnswerProcess}
       />
     </VocabStudySubjectiveBlock>
   );

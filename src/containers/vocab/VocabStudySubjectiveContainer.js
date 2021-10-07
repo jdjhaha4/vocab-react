@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import VocabStudyMultiple from '../../components/vocab/VocabStudyMultiple';
+import VocabStudySubjective from '../../components/vocab/VocabStudySubjective';
 import { getVocabList, shuffleVocab } from '../../modules/vocab';
 import { withRouter } from 'react-router-dom';
 import { getVocabGroupData } from '../../modules/vocab_group';
@@ -21,7 +21,7 @@ import { cloneObject } from '../../util/arrayUtil';
 import produce from 'immer';
 import { changeNaviSubMenu } from '../../modules/navigation';
 
-const VocabStudyMultipleContainer = ({ history, match }) => {
+const VocabStudySubjectiveContainer = ({ history, match }) => {
 
   const { groupcode } = match.params;
   const dispatch = useDispatch();
@@ -105,50 +105,14 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
         }),
       );
     }
-  }, []);
+  }, [vocabGroupData]);
 
   useEffect(() => {
     if (question['complete']) {
       dispatch(stop());
-      // dispatch(
-      //   setUpdateFlag({
-      //     unmountFlag: false,
-      //     flag: false,
-      //     vocabQuestionResultId: question['vocabQuestionResultId'],
-      //     answerCount: question['answerCount'],
-      //     wrongAnswerCount: question['wrongAnswerCount'],
-      //     complete_flag: 'T',
-      //     study_time_seconds: studyTime['count'],
-      //   }),
-      // );
       dispatch(updateQuestionResult2({complete_flag:'T'}));
     }
   }, [question['complete']]);
-
-  // useEffect(() => {
-  //   if (question['updateData']['flag']) {
-  //     dispatch(
-  //       updateQuestionResult({
-  //         id: question['updateData']['vocabQuestionResultId'],
-  //         answer_count: question['updateData']['answerCount'],
-  //         wrong_answer_count: question['updateData']['wrongAnswerCount'],
-  //         complete_flag: question['updateData']['complete_flag'],
-  //         study_time_seconds: question['updateData']['study_time_seconds'],
-  //       }),
-  //     );
-  //     dispatch(
-  //       setUpdateFlag({
-  //         unmountFlag:false,
-  //         flag: false,
-  //         vocabQuestionResultId: -1,
-  //         answerCount: 0,
-  //         wrongAnswerCount: 0,
-  //         complete_flag: 'N',
-  //         study_time_seconds: 0,
-  //       }),
-  //     );
-  //   }
-  // }, [question['updateData']['flag']]);
 
   const moveToThePage = useCallback(() => {
     dispatch(init());
@@ -162,14 +126,14 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
   }, []);
 
   const compareAnswer = useCallback(
-    ({ id, vocab, mean }) => {
+    ({ id, vocab, mean, result_flag }) => {
       if (question.vocab['id'] === id) {
         //해당 단어 정답을 맞췄음을 서버에 전달
         dispatch(
           postQuestionResult({
             vocab_question_result_id: question['vocabQuestionResultId'],
             group_code: groupcode,
-            question_type: 'multipleChoice',
+            question_type: 'subjective',
             question_value: 'vocab',
             vocab_id: question.vocab['id'],
             vocab: question.vocab['vocab'],
@@ -177,7 +141,7 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
             answer_vocab_id: id,
             answer_vocab: vocab,
             answer_mean: mean,
-            result_flag: 'T',
+            result_flag: result_flag,
           }),
         );
         //정답 처리
@@ -198,7 +162,7 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
           postQuestionResult({
             vocab_question_result_id: question['vocabQuestionResultId'],
             group_code: groupcode,
-            question_type: 'multipleChoice',
+            question_type: 'subjective',
             question_value: 'vocab',
             vocab_id: question.vocab['id'],
             vocab: question.vocab['vocab'],
@@ -206,7 +170,7 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
             answer_vocab_id: id,
             answer_vocab: vocab,
             answer_mean: mean,
-            result_flag: 'F',
+            result_flag: result_flag,
           }),
         );
         //오답 처리
@@ -226,7 +190,7 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
   );
 
   return (
-    <VocabStudyMultiple
+    <VocabStudySubjective
       vocabGroupData={vocabGroupData}
       onClickBack={onClickBack}
       question={question}
@@ -240,4 +204,4 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
   );
 };
 
-export default withRouter(VocabStudyMultipleContainer);
+export default withRouter(VocabStudySubjectiveContainer);

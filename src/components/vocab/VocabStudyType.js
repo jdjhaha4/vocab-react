@@ -94,6 +94,17 @@ const VocabStudyType = ({ history, vocabGroupData, onClickBack }) => {
     [vocabGroupData],
   );
 
+  const onClickSubjective = useCallback(
+    (group_code) => {
+      if(vocabGroupData.vocab_count >= 5){
+        history.push(`/vocab/study/subjective/${group_code}`);
+      }else{
+        alert('5단어 이상 그룹에 할당 후 이용 부탁드립니다.');
+      }
+    },
+    [vocabGroupData],
+  );
+
   return (
     <VocabStudyBlock>
       <div className="container">
@@ -138,7 +149,7 @@ const VocabStudyType = ({ history, vocabGroupData, onClickBack }) => {
           <div className="col-6">
             <div
               className="box"
-              onClick={() => {}}
+              onClick={() => onClickSubjective(vocabGroupData.group_code)}
             >
               주관식
               <span className="sub_title">(영단어 보고 뜻 쓰기))</span>

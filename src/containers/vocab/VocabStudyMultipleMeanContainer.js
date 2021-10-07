@@ -105,7 +105,7 @@ const VocabStudyMultipleMeanContainer = ({ history, match }) => {
         }),
       );
     }
-  }, []);
+  }, [vocabGroupData]);
 
   useEffect(() => {
     if (question['complete']) {

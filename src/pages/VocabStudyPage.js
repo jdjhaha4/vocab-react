@@ -18,6 +18,7 @@ import VocabStudyMultipleMeanContainer from '../containers/vocab/VocabStudyMulti
 import VocabQuestionResultContainer from '../containers/vocab/VocabQuestionResultContainer';
 import VocabQuestionResultGroupContainer from '../containers/vocab/VocabQuestionResultGroupContainer';
 import VocabQuestionResultHistoryContainer from '../containers/vocab/VocabQuestionResultHistoryContainer';
+import VocabStudySubjectiveContainer from '../containers/vocab/VocabStudySubjectiveContainer';
 
 const PageWrapper = styled.div`
   position: relative;
@@ -144,6 +145,7 @@ const VocabStudyPage = () => {
           <Route path="/vocab/study/look/:groupcode" component={VocabStudyLookContainer} />
           <Route path="/vocab/study/multiple/:groupcode" component={VocabStudyMultipleContainer} />
           <Route path="/vocab/study/multipleMean/:groupcode" component={VocabStudyMultipleMeanContainer} />
+          <Route path="/vocab/study/subjective/:groupcode" component={VocabStudySubjectiveContainer} />
           <Route path="/vocab/question/result" exact component={VocabQuestionResultContainer} />
           <Route path="/vocab/question/result/:groupcode" component={VocabQuestionResultGroupContainer} />
           <Route path="/vocab/question/history/:vocab_question_result_id" component={VocabQuestionResultHistoryContainer} />
