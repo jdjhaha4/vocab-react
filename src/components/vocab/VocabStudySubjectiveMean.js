@@ -21,7 +21,7 @@ const WrongBlock = styled.div`
   font-weight: 600;
   text-align: center;
 `;
-const VocabStudySubjectiveBlock = styled.div`
+const VocabStudySubjectiveMeanBlock = styled.div`
   .previous {
     padding: 5px;
     background: ${palette.gray[8]};
@@ -161,7 +161,7 @@ const StyledButton = styled(Button)`
   margin-top: 10px;
   margin-right: 10px;
 `;
-const VocabStudySubjective = ({
+const VocabStudySubjectiveMean = ({
   history,
   vocabGroupData,
   onClickBack,
@@ -212,13 +212,10 @@ const VocabStudySubjective = ({
 
   const onClickConfirm = useCallback(() => {
     if (modal['answer'] != null && modal['answer'].trim() != '') {
-      if(modal['answer'].trim() == modal['mean'].trim()){
+      if(modal['answer'].trim() == modal['vocab'].trim()){
         onClickAnswerProcess();
       }else{
-        const nextState = produce(modal, (draft) => {
-          draft['visible'] = true;
-        });
-        setModal(nextState);
+        onClickWrongAnswerProcess();
       }
     } else {
       alert('뜻을 입력후에 확인 버튼을 클릭하세요.');
@@ -232,8 +229,8 @@ const VocabStudySubjective = ({
     setModal(nextState);
     let answerItem = {};
     answerItem['id'] = question.vocab['id'];
-    answerItem['vocab'] = question.vocab['vocab'];
-    answerItem['mean'] = modal['answer'];
+    answerItem['vocab'] = modal['answer'];
+    answerItem['mean'] = question.vocab['mean'];
     answerItem['result_flag'] = 'T';
 
     compareAnswer(answerItem);
@@ -246,18 +243,18 @@ const VocabStudySubjective = ({
     setModal(nextState);
     let answerItem = {};
     answerItem['id'] = -1;
-    answerItem['vocab'] = question.vocab['vocab'];
-    answerItem['mean'] = modal['answer'];
+    answerItem['vocab'] = modal['answer'];
+    answerItem['mean'] = question.vocab['mean'];
     answerItem['result_flag'] = 'F';
 
     compareAnswer(answerItem);
-  }, [question, modal]);
+  }, [question,modal]);
 
   const onClickDontKnowProcess = useCallback(() => {
     let answerItem = {};
     answerItem['id'] = -1;
-    answerItem['vocab'] = question.vocab['vocab'];
-    answerItem['mean'] = '';
+    answerItem['vocab'] = '';
+    answerItem['mean'] = question.vocab['mean'];
     answerItem['result_flag'] = 'N';
 
     compareAnswer(answerItem);
@@ -277,7 +274,7 @@ const VocabStudySubjective = ({
   };
 
   return (
-    <VocabStudySubjectiveBlock>
+    <VocabStudySubjectiveMeanBlock>
       <div className="container">
         <div className="row">
           <div className="col-12">
@@ -290,7 +287,7 @@ const VocabStudySubjective = ({
               ({vocabGroupData.vocab_count} 단어)
             </span>
           </div>
-          <div className="col-4 type_select">영단어 뜻 입력하기</div>
+          <div className="col-4 type_select">뜻 보고 영단어 입력하기</div>
           <div className="col-4 type_select study_time">
             학습 시간: {studyTime.hour}시간 {studyTime.minute}분{' '}
             {studyTime.second}초
@@ -300,11 +297,11 @@ const VocabStudySubjective = ({
           </div>
         </div>
         <div className="row vocab_box">
-          <div className="col-12 vocab_title">단어</div>
-          <div className="col-12 vocab">{question.vocab['vocab']}</div>
+          <div className="col-12 vocab_title">뜻</div>
+          <div className="col-12 vocab">{question.vocab['mean']}</div>
           {question.resultFlag == 'T' || question.resultFlag == 'F' ? (
             <div className="col-12">
-              <CorrectBlock>{question.vocab['mean']}</CorrectBlock>
+              <CorrectBlock>{question.vocab['vocab']}</CorrectBlock>
             </div>
           ) : null}
           <div className="col-12">
@@ -318,7 +315,7 @@ const VocabStudySubjective = ({
             ) : null}
           </div>
           <div className="col-12 multiple_box multiple_title">
-            영단어의 뜻을 입력하세요.
+            뜻을 보고 영단어를 입력하세요.
           </div>
           <div className="col-12">
             <StyledInput
@@ -326,7 +323,7 @@ const VocabStudySubjective = ({
               groupNm="true"
               name="answer"
               type="text"
-              placeholder="영단어의 뜻을 입력하세요."
+              placeholder="영단어를 입력하세요."
               value={modal['answer']}
               onChange={onChange}
               onKeyDown={onKeyDown}
@@ -373,8 +370,8 @@ const VocabStudySubjective = ({
         onClickAnswerProcess={onClickAnswerProcess}
         onClickWrongAnswerProcess={onClickWrongAnswerProcess}
       />
-    </VocabStudySubjectiveBlock>
+    </VocabStudySubjectiveMeanBlock>
   );
 };
 
-export default withRouter(VocabStudySubjective);
+export default withRouter(VocabStudySubjectiveMean);

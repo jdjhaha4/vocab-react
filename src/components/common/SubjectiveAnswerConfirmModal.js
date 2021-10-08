@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import Button from './Button';
 
@@ -27,13 +27,13 @@ const AlertModalBlock = styled.div`
     margin-top: 0;
     margin-bottom: 1rem;
   }
-  
+
   .buttons {
-    margin-top:3rem;
+    margin-top: 3rem;
     display: flex;
     justify-content: flex-end;
   }
-  .wrong_answer_count{
+  .wrong_answer_count {
     font-size: 1.2rem;
     font-weight: 600;
     color: red;
@@ -61,20 +61,47 @@ const SubjectiveAnswerConfirmModal = ({
   onClickAnswerProcess,
   onClickWrongAnswerProcess,
 }) => {
+  const fullScreen = useRef(null);
+  let keysPressed = {};
+  const onKeyDown = (e) => {
+    keysPressed[e.code] = true;
+  };
+  const onKeyUp = (e) => {
+    if (visible && keysPressed['ControlLeft'] && keysPressed['Enter']) {
+      onClickWrongAnswerProcess();
+    } else if (visible && keysPressed['Enter']) {
+      onClickAnswerProcess();
+    }
+    keysPressed[e.code] = undefined;
+  };
+
+  useEffect(() => {
+    if (visible) {
+      fullScreen.current.focus();
+    }
+  }, [visible]);
+
   if (!visible) return null;
   return (
-    <Fullscreen>
+    <Fullscreen
+      ref={fullScreen}
+      onKeyDown={onKeyDown}
+      onKeyUp={onKeyUp}
+      tabIndex="0"
+    >
       <AlertModalBlock>
         <h2>{title}</h2>
-        <p>단어 : <span className="vocab">{vocab}</span></p>
+        <p>
+          단어 : <span className="vocab">{vocab}</span>
+        </p>
         <p>뜻 : {mean}</p>
         <p>입력한 답 : {answer}</p>
         <div className="buttons">
-          <StyledButton cyan onClick={()=>onClickAnswerProcess()}>
-            정답으로 처리
+          <StyledButton cyan onClick={() => onClickWrongAnswerProcess()}>
+            오답으로 처리(왼쪽 Ctrl + Enter)
           </StyledButton>
-          <StyledButton cyan onClick={()=>onClickWrongAnswerProcess()}>
-            오답으로 처리
+          <StyledButton cyan onClick={() => onClickAnswerProcess()}>
+            정답으로 처리(Enter)
           </StyledButton>
         </div>
       </AlertModalBlock>

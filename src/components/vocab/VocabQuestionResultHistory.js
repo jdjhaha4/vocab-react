@@ -84,6 +84,7 @@ const VocabQuestionResultHistory = ({
   vocabQuestionResultHistoryList,
   onClickBack,
 }) => {
+  let questionValueStr = '';
   let questionValue = '';
   let questionType = '';
   if (
@@ -94,26 +95,30 @@ const VocabQuestionResultHistory = ({
       vocabQuestionResultHistoryList[0]['question_type'] == 'multipleChoice' &&
       vocabQuestionResultHistoryList[0]['question_value'] == 'mean'
     ) {
-      questionValue = '객관식 (뜻 보고 단어 선택)';
+      questionValueStr = '객관식 (뜻 보고 단어 선택)';
       questionType = 'multipleChoice';
+      questionValue = 'mean';
     } else if (
       vocabQuestionResultHistoryList[0]['question_type'] == 'multipleChoice' &&
       vocabQuestionResultHistoryList[0]['question_value'] == 'vocab'
     ) {
-      questionValue = '객관식 (단어 보고 뜻 선택)';
+      questionValueStr = '객관식 (단어 보고 뜻 선택)';
       questionType = 'multipleChoice';
+      questionValue = 'vocab';
     } else if (
       vocabQuestionResultHistoryList[0]['question_type'] == 'subjective' &&
       vocabQuestionResultHistoryList[0]['question_value'] == 'vocab'
     ) {
-      questionValue = '주관식 (단어 보고 뜻 입력)';
+      questionValueStr = '주관식 (단어 보고 뜻 입력)';
       questionType = 'subjective';
+      questionValue = 'vocab';
     } else if (
       vocabQuestionResultHistoryList[0]['question_type'] == 'subjective' &&
       vocabQuestionResultHistoryList[0]['question_value'] == 'mean'
     ) {
-      questionValue = '주관식 (뜻 보고 단어 입력)';
+      questionValueStr = '주관식 (뜻 보고 단어 입력)';
       questionType = 'subjective';
+      questionValue = 'mean';
     }
   }
   return (
@@ -131,7 +136,7 @@ const VocabQuestionResultHistory = ({
           <div className="col-10">
             <h4>
               학습결과 이력
-              <span className="question_value">{questionValue}</span>
+              <span className="question_value">{questionValueStr}</span>
             </h4>
           </div>
           {vocabQuestionResultHistoryList.map((item, index) => {
@@ -157,6 +162,16 @@ const VocabQuestionResultHistory = ({
               >
                 <span className="round_char">{index + 1}</span>
                 {item.vocab}={item.mean}
+                {questionType === 'subjective' && questionValue === 'vocab' ? (
+                  <span className="worng_answer">
+                    입력한 뜻 : {item.answer_mean}
+                  </span>
+                ) : null}
+                {questionType === 'subjective' && questionValue === 'mean' ? (
+                  <span className="worng_answer">
+                    입력한 단어 : {item.answer_vocab}
+                  </span>
+                ) : null}
                 <span className="time">{itemSelectSeconds}초</span>
               </div>
             );
@@ -169,13 +184,26 @@ const VocabQuestionResultHistory = ({
                 >
                   <span className="round_char">{index + 1}</span>
                   {item.vocab}={item.mean}
-                  <span className="worng_answer">
-                    오답 : {item.answer_vocab}={item.answer_mean}
-                  </span>
+                  {questionType == 'multipleChoice' &&
+                  (questionValue == 'vocab' || questionValue == 'mean') ? (
+                    <span className="worng_answer">
+                      선택한 오답 : {item.answer_vocab}={item.answer_mean}
+                    </span>
+                  ) : null}
+                  {questionType == 'subjective' && questionValue == 'vocab' ? (
+                    <span className="worng_answer">
+                      입력한 뜻 : {item.answer_mean}
+                    </span>
+                  ) : null}
+                  {questionType == 'subjective' && questionValue == 'mean' ? (
+                    <span className="worng_answer">
+                      입력한 단어 : {item.answer_vocab}
+                    </span>
+                  ) : null}
                   <span className="time">{itemSelectSeconds}초</span>
                 </div>
               );
-            }else if(item.result_flag == 'N'){
+            } else if (item.result_flag == 'N') {
               divTag = (
                 <div
                   className={`col-12 ${resultFlag}`}
@@ -183,9 +211,7 @@ const VocabQuestionResultHistory = ({
                 >
                   <span className="round_char">{index + 1}</span>
                   {item.vocab}={item.mean}
-                  <span className="worng_answer">
-                    모름
-                  </span>
+                  <span className="worng_answer">모름</span>
                   <span className="time">{itemSelectSeconds}초</span>
                 </div>
               );
