@@ -105,7 +105,7 @@ const VocabStudySubjectiveMeanContainer = ({ history, match }) => {
         }),
       );
     }
-  }, [vocabGroupData]);
+  }, []);
 
   useEffect(() => {
     if (question['complete']) {
@@ -134,7 +134,7 @@ const VocabStudySubjectiveMeanContainer = ({ history, match }) => {
             vocab_question_result_id: question['vocabQuestionResultId'],
             group_code: groupcode,
             question_type: 'subjective',
-            question_value: 'vocab',
+            question_value: 'mean',
             vocab_id: question.vocab['id'],
             vocab: question.vocab['vocab'],
             mean: question.vocab['mean'],
@@ -163,7 +163,7 @@ const VocabStudySubjectiveMeanContainer = ({ history, match }) => {
             vocab_question_result_id: question['vocabQuestionResultId'],
             group_code: groupcode,
             question_type: 'subjective',
-            question_value: 'vocab',
+            question_value: 'mean',
             vocab_id: question.vocab['id'],
             vocab: question.vocab['vocab'],
             mean: question.vocab['mean'],

@@ -105,50 +105,14 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
         }),
       );
     }
-  }, [vocabGroupData]);
+  }, []);
 
   useEffect(() => {
     if (question['complete']) {
       dispatch(stop());
-      // dispatch(
-      //   setUpdateFlag({
-      //     unmountFlag: false,
-      //     flag: false,
-      //     vocabQuestionResultId: question['vocabQuestionResultId'],
-      //     answerCount: question['answerCount'],
-      //     wrongAnswerCount: question['wrongAnswerCount'],
-      //     complete_flag: 'T',
-      //     study_time_seconds: studyTime['count'],
-      //   }),
-      // );
       dispatch(updateQuestionResult2({complete_flag:'T'}));
     }
   }, [question['complete']]);
-
-  // useEffect(() => {
-  //   if (question['updateData']['flag']) {
-  //     dispatch(
-  //       updateQuestionResult({
-  //         id: question['updateData']['vocabQuestionResultId'],
-  //         answer_count: question['updateData']['answerCount'],
-  //         wrong_answer_count: question['updateData']['wrongAnswerCount'],
-  //         complete_flag: question['updateData']['complete_flag'],
-  //         study_time_seconds: question['updateData']['study_time_seconds'],
-  //       }),
-  //     );
-  //     dispatch(
-  //       setUpdateFlag({
-  //         unmountFlag:false,
-  //         flag: false,
-  //         vocabQuestionResultId: -1,
-  //         answerCount: 0,
-  //         wrongAnswerCount: 0,
-  //         complete_flag: 'N',
-  //         study_time_seconds: 0,
-  //       }),
-  //     );
-  //   }
-  // }, [question['updateData']['flag']]);
 
   const moveToThePage = useCallback(() => {
     dispatch(init());

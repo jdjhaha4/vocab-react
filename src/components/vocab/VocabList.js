@@ -64,10 +64,10 @@ const VocabListItem = styled.div`
     font-size: 1.2rem;
     font-weight: 600;
   }
-  .phonetic{
-    margin-left:5px;
-    color : ${palette.gray[6]};
-    font-size:0.9rem;
+  .phonetic {
+    margin-left: 5px;
+    color: ${palette.gray[6]};
+    font-size: 0.9rem;
     font-weight: 400;
   }
   .mean {
@@ -129,6 +129,9 @@ const StyledInput = styled.input`
   }
   & + & {
     margin-left: 10px;
+  }
+  &::placeholder{
+    color: ${palette.gray[4]};
   }
 `;
 
@@ -230,21 +233,40 @@ const VocabList = ({
           <VocabListItem key={vocabItem.id}>
             <span className="vocab">
               {vocabItem.vocab}
-              
-              {vocabItem['dicArr'] != null ? (<span className="phonetic">[{vocabItem['dicArr'][0]['phonetic']}]</span>) :null }
+
+              {(vocabItem['dicArr'] != null &&
+              vocabItem['dicArr'][0] != null &&
+              vocabItem['dicArr'][0]['phonetics'] != null &&
+              vocabItem['dicArr'][0]['phonetics'].length >0) ? (
+                <span className="phonetic">
+                  [{vocabItem['dicArr'][0]['phonetic']}]
+                </span>
+              ) : null}
             </span>
             <span className="horizontal_line"></span>
             <span className="mean">{vocabItem.mean}</span>
             <StyledButton2 onClick={() => onRemoveVocab(vocabItem.id)}>
               -
             </StyledButton2>
-            {vocabItem['dicArr'] != null ? (
+            {vocabItem['dicArr'] != null &&
+            vocabItem['dicArr'][0] != null &&
+            vocabItem['dicArr'][0]['phonetics'] != null &&
+            vocabItem['dicArr'][0]['phonetics'][0] != null &&
+            vocabItem['dicArr'][0]['phonetics'][0]['audio'] != null ? (
               <StyledButton3
                 onClick={() => {
-                  audioSourceEl.current.src = vocabItem['dicArr'][0]['phonetics'][0]['audio'];
-                  audioEl.current.pause();
-                  audioEl.current.load();
-                  audioEl.current.play();
+                  if (
+                    vocabItem['dicArr'][0] != null &&
+                    vocabItem['dicArr'][0]['phonetics'] != null &&
+                    vocabItem['dicArr'][0]['phonetics'][0] != null &&
+                    vocabItem['dicArr'][0]['phonetics'][0]['audio'] != null
+                  ) {
+                    audioSourceEl.current.src =
+                      vocabItem['dicArr'][0]['phonetics'][0]['audio'];
+                    audioEl.current.pause();
+                    audioEl.current.load();
+                    audioEl.current.play();
+                  }
                 }}
               >
                 <HeadPhonesIcon />
@@ -254,10 +276,7 @@ const VocabList = ({
         ))}
       </div>
       <audio ref={audioEl}>
-        <source ref={audioSourceEl}
-          src=""
-          type="audio/mp3"
-        ></source>
+        <source ref={audioSourceEl} src="" type="audio/mp3"></source>
       </audio>
       <LoadingSpinner visible={addVocabLoadingFlag} />
     </VocabListBlock>

@@ -5,6 +5,7 @@ import { changeField, initializeForm, login } from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
 import {check} from '../../modules/user';
 import client from '../../lib/api/client';
+import { tokenExpired } from '../../modules/app_background';
 
 const LoginForm=({history})=>{
     const [error, setError] = useState(null);
@@ -50,6 +51,7 @@ const LoginForm=({history})=>{
             console.log('로그인 성공');
             console.log(auth);
             client.defaults.headers.common['Authorization']=`Bearer ${auth.token}`;
+            dispatch(tokenExpired({expired:false}));
             dispatch(check());
         }
     },[auth, authError, dispatch]);

@@ -13,6 +13,7 @@ import vocab_study_multiple, {
 import timer,{timerSaga} from './timer';
 import vocab_question_result,{vocabQuestionResultSaga} from './vocab_question_result';
 import vocab_question_result_history,{vocabQuestionResultHistorySaga} from './vocab_question_result_history';
+import app_background from './app_background';
 
 
 const rootReducer = combineReducers({
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   timer,
   vocab_question_result,
   vocab_question_result_history,
+  app_background,
 });
 
 export function* rootSaga() {

@@ -20,6 +20,11 @@ export default function createDelayRequestSaga(type, request, delayMillis) {
                 payload: e,
                 error: true,
             });
+            yield put({
+                type: 'app_background/TOKEN_EXPIRED_ERROR',
+                payload: e,
+                error: true,
+            })
         }
         yield put(finishLoading(type)); //로딩 끝
     };

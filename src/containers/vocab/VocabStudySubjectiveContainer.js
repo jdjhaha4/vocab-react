@@ -105,7 +105,7 @@ const VocabStudySubjectiveContainer = ({ history, match }) => {
         }),
       );
     }
-  }, [vocabGroupData]);
+  }, []);
 
   useEffect(() => {
     if (question['complete']) {

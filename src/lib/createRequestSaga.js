@@ -26,6 +26,11 @@ export default function createRequestSaga(type, request) {
                 payload: e,
                 error: true,
             });
+            yield put({
+                type: 'app_background/TOKEN_EXPIRED_ERROR',
+                payload: e,
+                error: true,
+            })
         }
         yield put(finishLoading(type)); //로딩 끝
     };
