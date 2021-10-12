@@ -1,10 +1,15 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { changeField } from '../modules/app_background';
 
 const AppBackgroundContainer = ({history}) => {
-  const { expired } = useSelector(({ app_background }) => ({
+  const dispatch = useDispatch();
+
+  const { expired, error, errorCode } = useSelector(({ app_background }) => ({
     expired: app_background.expired,
+    error: app_background.error,
+    errorCode: app_background.errorCode,
   }));
 
   useEffect(() => {
@@ -13,6 +18,14 @@ const AppBackgroundContainer = ({history}) => {
       history.push(`/login`);
     }
   }, [expired]);
+
+  useEffect(() => {
+    if (error) {
+      alert(`서버 에러가 발생했습니다.${errorCode}`);
+      history.push(`/login`);
+      dispatch(changeField({key:'error',value:false}));
+    }
+  }, [error]);
 
   return null;
 };

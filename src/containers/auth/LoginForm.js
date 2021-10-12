@@ -42,14 +42,14 @@ const LoginForm=({history})=>{
     //로그인 성공/실패 처리
     useEffect(()=>{
         if(authError){
-            console.log('오류 발생');
-            console.log(authError);
+            // console.log('오류 발생');
+            // console.log(authError);
             setError('로그인 실패');
             return;
         }
         if(auth){
-            console.log('로그인 성공');
-            console.log(auth);
+            // console.log('로그인 성공');
+            // console.log(auth);
             client.defaults.headers.common['Authorization']=`Bearer ${auth.token}`;
             dispatch(tokenExpired({expired:false}));
             dispatch(check());

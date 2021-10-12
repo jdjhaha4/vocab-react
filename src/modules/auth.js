@@ -19,8 +19,11 @@ const [LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE] =
 
 const [ID_DUPL_CHECK, ID_DUPL_CHECK_SUCCESS, ID_DUPL_CHECK_FAILURE] =
   createRequestActionTypes('auth/ID_DUPL_CHECK');
+const [NICKNAME_DUPL_CHECK, NICKNAME_DUPL_CHECK_SUCCESS, NICKNAME_DUPL_CHECK_FAILURE] =
+  createRequestActionTypes('auth/NICKNAME_DUPL_CHECK');
 
 const ID_DUPL_INIT = 'auth/ID_DUPL_INIT';
+const NICKNAME_DUPL_INIT = 'auth/NICKNAME_DUPL_INIT';
 
 export const changeField = createAction(
   CHANGE_FIELD,
@@ -48,17 +51,21 @@ export const login = createAction(LOGIN, ({ id, password }) => ({
 }));
 
 export const idDuplCheck = createAction(ID_DUPL_CHECK, ({id})=>({id,}));
+export const nicknameDuplCheck = createAction(NICKNAME_DUPL_CHECK, ({nickname})=>({nickname,}));
 export const idDuplInit = createAction(ID_DUPL_INIT);
+export const nicknameDuplInit = createAction(NICKNAME_DUPL_INIT);
 
 //사가 생성
 const registerSaga = createRequestSaga(REGISTER, authAPI.register);
 const loginSaga = createRequestSaga(LOGIN, authAPI.login);
 const idDuplCheckSaga = createDelayRequestSaga(ID_DUPL_CHECK, authAPI.idDuplCheck, 500);
+const nicknameDuplCheckSaga = createDelayRequestSaga(NICKNAME_DUPL_CHECK, authAPI.nicknameDuplCheck, 500);
 
 export function* authSaga() {
   yield takeLatest(REGISTER, registerSaga);
   yield takeLatest(LOGIN, loginSaga);
   yield takeLatest(ID_DUPL_CHECK, idDuplCheckSaga);
+  yield takeLatest(NICKNAME_DUPL_CHECK, nicknameDuplCheckSaga);
 }
 
 const initialState = {
@@ -66,6 +73,8 @@ const initialState = {
     id: '',
     idDuplCheck: null,
     idDuplCheckError: null,
+    nicknameDuplCheck: null,
+    nicknameDuplCheckError: null,
     nickname: '',
     password: '',
     passwordConfirm: '',
@@ -128,6 +137,19 @@ const auth = handleActions(
     //아이디 중복체크 초기화
     [ID_DUPL_INIT]: (state, { payload: init }) => produce(state, (draft) => {
       draft["register"]["idDuplCheck"] = null;
+    }),
+    //닉네임 중복체크 성공
+    [NICKNAME_DUPL_CHECK_SUCCESS]: (state, { payload: idDuplCheck }) => produce(state, (draft) => {
+      draft["register"]["nicknameDuplCheck"] = idDuplCheck;
+      draft["register"]["nicknameDuplCheckError"] = null;
+    }),
+    //닉네임 중복체크 실패
+    [NICKNAME_DUPL_CHECK_FAILURE]: (state, { payload: error }) => produce(state, (draft) => {
+      draft["register"]["nicknameDuplCheckError"] = error;
+    }),
+    //닉네임 중복체크 초기화
+    [NICKNAME_DUPL_INIT]: (state, { payload: init }) => produce(state, (draft) => {
+      draft["register"]["nicknameDuplCheck"] = null;
     }),
   },
   initialState,

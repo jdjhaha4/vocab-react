@@ -80,6 +80,8 @@ const AuthForm = ({
   setError,
   onIdDuplCheck,
   onIdDuplInit,
+  onNicknameDuplCheck,
+  onNicknameDuplInit,
   validationError,
   setValidationError,
 }) => {
@@ -137,10 +139,21 @@ const AuthForm = ({
   }, [form.id]);
 
   useEffect(() => {
+    if (type === 'register' && form.nickname !== '') {
+      onNicknameDuplCheck();
+    } 
+  }, [form.nickname]);
+
+  useEffect(() => {
     if (type === 'register' && form.id === '') {
       onIdDuplInit();
     }
   }, [form.idDuplCheck]);
+  useEffect(() => {
+    if (type === 'register' && form.nickname === '') {
+      onNicknameDuplInit();
+    }
+  }, [form.nicknameDuplCheck]);
   useEffect(() => {
     idInputEl.current.focus();
   }, []);
@@ -172,13 +185,26 @@ const AuthForm = ({
             )}
           {type === 'register' && (
             <StyledInput
-              autoComplete="nickname"
               name="nickname"
               placeholder="닉네임"
               onChange={onChange}
               value={form.nickname}
             />
           )}
+          {type === 'register' &&
+            form.nicknameDuplCheck &&
+            form.nicknameDuplCheck.available && (
+              <IdAvailableMessageBlock>
+                사용 가능한 닉네임 입니다.
+              </IdAvailableMessageBlock>
+            )}
+          {type === 'register' &&
+            form.nicknameDuplCheck &&
+            !form.nicknameDuplCheck.available && (
+              <IdDuplMessageBlock>
+                이미 사용중인 닉네임 입니다.
+              </IdDuplMessageBlock>
+            )}
           <StyledInput
             autoComplete="new-password"
             name="password"

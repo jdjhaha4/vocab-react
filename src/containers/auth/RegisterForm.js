@@ -6,15 +6,17 @@ import {
   initializeForm,
   register,
   idDuplCheck,
+  nicknameDuplCheck,
   idDuplInit,
+  nicknameDuplInit,
 } from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
 import { useState } from 'react';
 import produce from 'immer';
 import client from '../../lib/api/client';
-import {check} from '../../modules/user';
+import { check } from '../../modules/user';
 
-const RegisterForm = ({history}) => {
+const RegisterForm = ({ history }) => {
   const [error, setError] = useState(null);
 
   const [validationError, setValidationError] = useState({
@@ -44,7 +46,7 @@ const RegisterForm = ({history}) => {
   //폼 등록 이벤트 핸들러
   const onSubmit = (e) => {
     e.preventDefault();
-    const { id, idDuplCheck, nickname, password, passwordConfirm } = form;
+    const { id, idDuplCheck, nicknameDuplCheck, nickname, password, passwordConfirm } = form;
     if (password !== passwordConfirm) {
       const nextState = produce(validationError, (draft) => {
         draft['type'] = 'passwordConfirm';
@@ -57,12 +59,78 @@ const RegisterForm = ({history}) => {
       setValidationError(nextState);
       return;
     }
+
+    var reg = /^(?=.*?[a-zA-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+    var hangulcheck = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+
+    if (false === reg.test(password)) {
+      const nextState = produce(validationError, (draft) => {
+        draft['type'] = 'passwordConfirm';
+        draft['status'] = true;
+        draft['title'] = '비밀번호 유효성';
+        draft['message'] =
+          '숫자+영문자+특수문자 조합으로 8자리 이상 사용해야 합니다.';
+      });
+      setValidationError(nextState);
+      return;
+    } else if (/(\w)\1\1\1/.test(password)) {
+      const nextState = produce(validationError, (draft) => {
+        draft['type'] = 'passwordConfirm';
+        draft['status'] = true;
+        draft['title'] = '비밀번호 유효성';
+        draft['message'] =
+          '비밀번호에 같은 문자를 4번 연속으로 사용할 수 없습니다.';
+      });
+      setValidationError(nextState);
+      return;
+    } else if (password.search(id) > -1) {
+      const nextState = produce(validationError, (draft) => {
+        draft['type'] = 'passwordConfirm';
+        draft['status'] = true;
+        draft['title'] = '비밀번호 유효성';
+        draft['message'] =
+          '비밀번호에 아이디가 포함되었습니다.';
+      });
+      setValidationError(nextState);
+      return;
+    } else if (password.search(/\s/) != -1) {
+      const nextState = produce(validationError, (draft) => {
+        draft['type'] = 'passwordConfirm';
+        draft['status'] = true;
+        draft['title'] = '비밀번호 유효성';
+        draft['message'] =
+          '비밀번호는 공백 없이 입력해주세요.';
+      });
+      setValidationError(nextState);
+      return;
+    } else if (hangulcheck.test(password)) {
+      const nextState = produce(validationError, (draft) => {
+        draft['type'] = 'passwordConfirm';
+        draft['status'] = true;
+        draft['title'] = '비밀번호 유효성';
+        draft['message'] =
+          '비밀번호에 한글을 사용 할 수 없습니다.';
+      });
+      setValidationError(nextState);
+      return;
+    }
+
     if (idDuplCheck && !idDuplCheck.available) {
       const nextState = produce(validationError, (draft) => {
         draft['type'] = 'idDuplCheck';
         draft['status'] = true;
         draft['title'] = '아이디 중복 확인';
         draft['message'] = '이미 사용중인 아이디 입니다.';
+      });
+
+      setValidationError(nextState);
+      return;
+    }else if (nicknameDuplCheck && !nicknameDuplCheck.available) {
+      const nextState = produce(validationError, (draft) => {
+        draft['type'] = 'nicknameDuplCheck';
+        draft['status'] = true;
+        draft['title'] = '닉네임 중복 확인';
+        draft['message'] = '이미 사용중인 닉네임 입니다.';
       });
 
       setValidationError(nextState);
@@ -75,17 +143,26 @@ const RegisterForm = ({history}) => {
     dispatch(idDuplCheck({ id }));
   };
 
-  const onIdDuplInit = useCallback(
-    () => {
-      dispatch(idDuplInit());
-    },
-    [form.idDuplCheck]
-  );
+  const onNicknameDuplCheck = (e) => {
+    const { nickname } = form;
+    dispatch(nicknameDuplCheck({ nickname }));
+  };
+
+  const onIdDuplInit = useCallback(() => {
+    dispatch(idDuplInit());
+  }, [form.idDuplCheck]);
+
+  const onNicknameDuplInit = useCallback(() => {
+    dispatch(nicknameDuplInit());
+  }, [form.nicknameDuplCheck]);
 
   //컴포넌트가 처음 렌더링될 때 form을 초기화함
   useEffect(() => {
     dispatch(initializeForm('register'));
-  }, [dispatch]);
+    return () => {
+      dispatch(initializeForm('register'));
+    };
+  }, []);
 
   //회원가입 성공/실패 처리
   useEffect(() => {
@@ -128,6 +205,8 @@ const RegisterForm = ({history}) => {
       onSubmit={onSubmit}
       onIdDuplCheck={onIdDuplCheck}
       onIdDuplInit={onIdDuplInit}
+      onNicknameDuplInit={onNicknameDuplInit}
+      onNicknameDuplCheck={onNicknameDuplCheck}
       validationError={validationError}
       setValidationError={setValidationError}
     />

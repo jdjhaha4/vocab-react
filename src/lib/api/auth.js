@@ -9,6 +9,8 @@ export const register = ({id, nickname, password}) =>
 
 export const idDuplCheck = ({id}) => client.post('/api/auth/idDupleCheck',{id});
 
+export const nicknameDuplCheck = ({nickname}) => client.post('/api/auth/nicknameDupleCheck',{nickname});
+
 export const check = ()=> client.get('/api/auth/check');
 
 //로그아웃
