@@ -20,6 +20,8 @@ import VocabQuestionResultGroupContainer from '../containers/vocab/VocabQuestion
 import VocabQuestionResultHistoryContainer from '../containers/vocab/VocabQuestionResultHistoryContainer';
 import VocabStudySubjectiveContainer from '../containers/vocab/VocabStudySubjectiveContainer';
 import VocabStudySubjectiveMeanContainer from '../containers/vocab/VocabStudySubjectiveMeanContainer';
+import VocabAttentionContainer from '../containers/vocab/VocabAttentionContainer';
+import VocabAttentionDetailContainer from '../containers/vocab/VocabAttentionDetailContainer';
 
 const PageWrapper = styled.div`
   position: relative;
@@ -128,6 +130,15 @@ const VocabStudyPage = () => {
               학습결과
             </StyledLink>
           </LnbItem>
+          <LnbItem>
+            <StyledLink
+              className={sub_menu_id=='vocab/attention'?'active':''}
+              to="/vocab/attention"
+              onClick={() => onChangeSubMenuId('vocab/attention')}
+            >
+              요주의 단어
+            </StyledLink>
+          </LnbItem>
         </div>
         <div className="page-contents">
           <Route path="/vocab" component={VocabListContainer} exact={true} />
@@ -151,6 +162,8 @@ const VocabStudyPage = () => {
           <Route path="/vocab/question/result" exact component={VocabQuestionResultContainer} />
           <Route path="/vocab/question/result/:groupcode" component={VocabQuestionResultGroupContainer} />
           <Route path="/vocab/question/history/:vocab_question_result_id" component={VocabQuestionResultHistoryContainer} />
+          <Route path="/vocab/attention" component={VocabAttentionContainer} exact/>
+          <Route path="/vocab/attention/:vocab_id" component={VocabAttentionDetailContainer} />
         </div>
       </Wrapper>
     </PageWrapper>

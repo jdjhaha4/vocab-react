@@ -13,6 +13,7 @@ import vocab_study_multiple, {
 import timer,{timerSaga} from './timer';
 import vocab_question_result,{vocabQuestionResultSaga} from './vocab_question_result';
 import vocab_question_result_history,{vocabQuestionResultHistorySaga} from './vocab_question_result_history';
+import vocab_attention,{vocabAttentionSaga} from './vocab_attention';
 import app_background from './app_background';
 
 
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   vocab_question_result,
   vocab_question_result_history,
   app_background,
+  vocab_attention,
 });
 
 export function* rootSaga() {
@@ -42,6 +44,7 @@ export function* rootSaga() {
     timerSaga(),
     vocabQuestionResultSaga(),
     vocabQuestionResultHistorySaga(),
+    vocabAttentionSaga(),
   ]);
 }
 

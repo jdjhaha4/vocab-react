@@ -8,6 +8,7 @@ export const insertQuestionResult = ({
   wrong_answer_count,
   complete_flag,
   study_time_seconds,
+  question_type_code,
 }) =>
   client.post('/vocab/question/result/insert', {
     group_code,
@@ -17,6 +18,7 @@ export const insertQuestionResult = ({
     wrong_answer_count,
     complete_flag,
     study_time_seconds,
+    question_type_code,
   });
 
 export const updateQuestionResult = ({

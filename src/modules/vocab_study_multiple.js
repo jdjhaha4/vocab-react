@@ -96,6 +96,7 @@ export const insertQuestionResult = createAction(
     wrong_answer_count,
     complete_flag,
     study_time_seconds,
+    question_type_code,
   }) => ({
     group_code,
     group_name,
@@ -104,6 +105,7 @@ export const insertQuestionResult = createAction(
     wrong_answer_count,
     complete_flag,
     study_time_seconds,
+    question_type_code,
   }),
 );
 

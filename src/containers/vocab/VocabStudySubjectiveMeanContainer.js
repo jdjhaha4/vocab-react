@@ -102,6 +102,7 @@ const VocabStudySubjectiveMeanContainer = ({ history, match }) => {
           wrong_answer_count: 0,
           complete_flag: 'F',
           study_time_seconds: 0,
+          question_type_code:'SM',
         }),
       );
     }
