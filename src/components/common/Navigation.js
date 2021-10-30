@@ -66,7 +66,7 @@ const Navigation = ({ menuId, onChangeMenuId, pageMenuId }) => {
               onChangeMenuId('vocab');
             }}
           >
-            영단어 공부
+            영단어
           </StyledLink>
         </div>
       </Wrapper>
