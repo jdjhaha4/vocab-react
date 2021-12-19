@@ -34,20 +34,20 @@ const VocabAttentionDetail = ({
         let answer = '';
         switch (vadItem.question_type_code) {
           case 'SV':
-            questionType = '단어보고 뜻 쓰기';
-            answer = `${vadItem.answer_mean} 이라고 답했습니다`;
+            questionType = '주관식(뜻 쓰기)';
+            answer = `다음과 같이 답했습니다 : ${vadItem.answer_mean}`;
             break;
           case 'SM':
-            questionType = '뜻 보고 단어 쓰기';
-            answer = `${vadItem.answer_vocab} 이라고 답했습니다`;
+            questionType = '주관식(단어 쓰기)';
+            answer = `다음과 같이 답했습니다 : ${vadItem.answer_vocab}`;
             break;
             case 'MV':
-              questionType = '단어보고 뜻 고르기';
-              answer = `${vadItem.answer_mean} 이라고 답했습니다`;
+              questionType = '객관식(뜻 고르기)';
+              answer = `다음과 같이 선택했습니다 : ${vadItem.answer_mean}(${vadItem.answer_vocab})`;
               break;
               case 'MM':
-                questionType = '뜻 보고 단어 고르기';
-                answer = `${vadItem.answer_vocab} 이라고 답했습니다`;
+                questionType = '객관식(단어 고르기)';
+                answer = `다음과 같이 선택했습니다 : ${vadItem.answer_vocab}(${vadItem.answer_mean})`;
             break;
           default:
             questionType = '문제 유형 없음';
