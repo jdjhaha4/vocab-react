@@ -1,3 +1,5 @@
+@import url('reset.css');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=PT+Serif&family=Poppins&display=swap');
 body {
   margin: 0;
   padding: 0;
@@ -32,4 +34,13 @@ a {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  line-height: 24px;
+}
+h1, h2, h3 {
+  font-family: 'PT Serif', serif;
 }

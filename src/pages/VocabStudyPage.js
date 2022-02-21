@@ -30,15 +30,25 @@ const Wrapper = styled(Responsive)`
   position: relative;
   margin-top: 15px;
   overflow: auto;
+  display:flex;
+  justify-content: space-between;
 
+  @media (max-width: 1024px){
+    
+  }
+  @media (max-width: 768px){
+      .lnb {
+        display:none;
+      }
+  }
   .lnb {
-    width: 15%;
-    float: left;
+    width: 120px;
+    flex-grow:0;
+    box-sizing:border-box;
   }
 
   .page-contents {
-    width: 85%;
-    float: left;
+    flex-grow:1;
   }
 `;
 
@@ -81,7 +91,7 @@ const VocabStudyPage = () => {
   );
   return (
     <PageWrapper>
-      <HeaderContainer />
+      <HeaderContainer/>
       <NavigationContainer pageMenuId="vocab" />
       <Wrapper>
         <div className="lnb">

@@ -59,7 +59,7 @@ const LoginForm=({history})=>{
     //user 값(id, username) 설정이 잘 되었는지 확인
     useEffect(()=>{
         if(user){
-            console.log(user);
+            //console.log(user);
             history.push('/');
             try{
                 localStorage.setItem('user', JSON.stringify(user));
