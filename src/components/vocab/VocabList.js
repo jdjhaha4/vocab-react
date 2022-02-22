@@ -130,7 +130,7 @@ const StyledInput = styled.input`
   & + & {
     margin-left: 10px;
   }
-  &::placeholder{
+  &::placeholder {
     color: ${palette.gray[4]};
   }
 `;
@@ -229,51 +229,75 @@ const VocabList = ({
         <StyledButton onClick={onAddVocab}>+</StyledButton>
       </div>
       <div className="vocab_list">
-        {vocabList.map((vocabItem) => (
-          <VocabListItem key={vocabItem.id}>
-            <span className="vocab">
-              {vocabItem.vocab}
-
-              {(vocabItem['dicArr'] != null &&
-              vocabItem['dicArr'][0] != null &&
-              vocabItem['dicArr'][0]['phonetics'] != null &&
-              vocabItem['dicArr'][0]['phonetics'].length >0) ? (
-                <span className="phonetic">
-                  [{vocabItem['dicArr'][0]['phonetic']}]
-                </span>
-              ) : null}
-            </span>
-            <span className="horizontal_line"></span>
-            <span className="mean">{vocabItem.mean}</span>
-            <StyledButton2 onClick={() => onRemoveVocab(vocabItem.id)}>
-              -
-            </StyledButton2>
-            {vocabItem['dicArr'] != null &&
-            vocabItem['dicArr'][0] != null &&
-            vocabItem['dicArr'][0]['phonetics'] != null &&
-            vocabItem['dicArr'][0]['phonetics'][0] != null &&
-            vocabItem['dicArr'][0]['phonetics'][0]['audio'] != null ? (
-              <StyledButton3
-                onClick={() => {
+        {vocabList.map((vocabItem) => {
+          let phonetic = '';
+          let audioMp3 = '';
+          if (vocabItem['dicArr'] != null && vocabItem['dicArr'].length > 0) {
+            for (var i = 0, len = vocabItem['dicArr'].length; i < len; i++) {
+              if (
+                vocabItem['dicArr'][i]['phonetics'] != null &&
+                vocabItem['dicArr'][i]['phonetics'].length > 0
+              ) {
+                for (
+                  var j = 0, jlen = vocabItem['dicArr'][i]['phonetics'].length;
+                  j < jlen;
+                  j++
+                ) {
+                  phonetic = vocabItem['dicArr'][i]['phonetics'][j].text;
+                  audioMp3 = vocabItem['dicArr'][i]['phonetics'][j].audio;
                   if (
-                    vocabItem['dicArr'][0] != null &&
-                    vocabItem['dicArr'][0]['phonetics'] != null &&
-                    vocabItem['dicArr'][0]['phonetics'][0] != null &&
-                    vocabItem['dicArr'][0]['phonetics'][0]['audio'] != null
+                    phonetic != null &&
+                    phonetic != '' &&
+                    audioMp3 != null &&
+                    audioMp3 != ''
                   ) {
-                    audioSourceEl.current.src =
-                      vocabItem['dicArr'][0]['phonetics'][0]['audio'];
-                    audioEl.current.pause();
-                    audioEl.current.load();
-                    audioEl.current.play();
+                    break;
                   }
-                }}
-              >
-                <HeadPhonesIcon />
-              </StyledButton3>
-            ) : null}
-          </VocabListItem>
-        ))}
+                }
+              }
+            }
+          }
+          return (
+            <VocabListItem key={vocabItem.id}>
+              <span className="vocab">
+                {vocabItem.vocab}
+
+                {phonetic != null && phonetic != '' ? (
+                  <span className="phonetic">[{phonetic}]</span>
+                ) : null}
+              </span>
+              <span className="horizontal_line"></span>
+              <span className="mean">{vocabItem.mean}</span>
+              <StyledButton2 onClick={() => onRemoveVocab(vocabItem.id)}>
+                -
+              </StyledButton2>
+              {phonetic != null &&
+              phonetic != '' &&
+              audioMp3 != null &&
+              audioMp3 != '' ? (
+                <StyledButton3
+                  onClick={() => {
+                    if (
+                      phonetic != null &&
+                      phonetic != '' &&
+                      audioMp3 != null &&
+                      audioMp3 != ''
+                    ) {
+                      audioSourceEl.current.src = audioMp3;
+                      audioEl.current.pause();
+                      audioEl.current.load();
+                      audioEl.current.oncanplaythrough = function () {
+                        audioEl.current.play();
+                      };
+                    }
+                  }}
+                >
+                  <HeadPhonesIcon />
+                </StyledButton3>
+              ) : null}
+            </VocabListItem>
+          );
+        })}
       </div>
       <audio ref={audioEl}>
         <source ref={audioSourceEl} src="" type="audio/mp3"></source>
