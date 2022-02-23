@@ -132,6 +132,9 @@ const Header = ({ user, onLogout, onChangeSubMenuId }) => {
       {menuToggle.visible ? (
         <MainMenu>
           <div>
+            <Link to="/" className="">
+              홈
+            </Link>
             <Link to="/vocab" onClick={() => {onToggleMenu();onChangeSubMenuId('vocab')}}>
               단어 목록
             </Link>

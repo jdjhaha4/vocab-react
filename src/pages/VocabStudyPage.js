@@ -30,25 +30,24 @@ const Wrapper = styled(Responsive)`
   position: relative;
   margin-top: 15px;
   overflow: auto;
-  display:flex;
+  display: flex;
   justify-content: space-between;
 
-  @media (max-width: 1024px){
-    
+  @media (max-width: 1024px) {
   }
-  @media (max-width: 768px){
-      .lnb {
-        display:none;
-      }
+  @media (max-width: 768px) {
+    .lnb {
+      display: none;
+    }
   }
   .lnb {
     width: 120px;
-    flex-grow:0;
-    box-sizing:border-box;
+    flex-grow: 0;
+    box-sizing: border-box;
   }
 
   .page-contents {
-    flex-grow:1;
+    flex-grow: 1;
   }
 `;
 
@@ -91,13 +90,13 @@ const VocabStudyPage = () => {
   );
   return (
     <PageWrapper>
-      <HeaderContainer/>
+      <HeaderContainer />
       <NavigationContainer pageMenuId="vocab" />
       <Wrapper>
         <div className="lnb">
           <LnbItem>
             <StyledLink
-              className={sub_menu_id=='vocab'?'active':''}
+              className={sub_menu_id == 'vocab' ? 'active' : ''}
               to="/vocab"
               onClick={() => onChangeSubMenuId('vocab')}
             >
@@ -106,7 +105,7 @@ const VocabStudyPage = () => {
           </LnbItem>
           <LnbItem>
             <StyledLink
-              className={sub_menu_id=='vocab/group'?'active':''}
+              className={sub_menu_id == 'vocab/group' ? 'active' : ''}
               to="/vocab/group"
               onClick={() => onChangeSubMenuId('vocab/group')}
             >
@@ -115,7 +114,7 @@ const VocabStudyPage = () => {
           </LnbItem>
           <LnbItem>
             <StyledLink
-              className={sub_menu_id=='vocab/group/mapping'?'active':''}
+              className={sub_menu_id == 'vocab/group/mapping' ? 'active' : ''}
               to="/vocab/group/mapping"
               onClick={() => onChangeSubMenuId('vocab/group/mapping')}
             >
@@ -124,7 +123,7 @@ const VocabStudyPage = () => {
           </LnbItem>
           <LnbItem>
             <StyledLink
-              className={sub_menu_id=='vocab/study'?'active':''}
+              className={sub_menu_id == 'vocab/study' ? 'active' : ''}
               to="/vocab/study"
               onClick={() => onChangeSubMenuId('vocab/study')}
             >
@@ -133,7 +132,7 @@ const VocabStudyPage = () => {
           </LnbItem>
           <LnbItem>
             <StyledLink
-              className={sub_menu_id=='vocab/question/result'?'active':''}
+              className={sub_menu_id == 'vocab/question/result' ? 'active' : ''}
               to="/vocab/question/result"
               onClick={() => onChangeSubMenuId('vocab/question/result')}
             >
@@ -142,7 +141,7 @@ const VocabStudyPage = () => {
           </LnbItem>
           <LnbItem>
             <StyledLink
-              className={sub_menu_id=='vocab/attention'?'active':''}
+              className={sub_menu_id == 'vocab/attention' ? 'active' : ''}
               to="/vocab/attention"
               onClick={() => onChangeSubMenuId('vocab/attention')}
             >
@@ -162,18 +161,57 @@ const VocabStudyPage = () => {
             component={VocabGroupMappingListContainers}
           />
           <Route path="/vocab/study" exact component={VocabStudyContainer} />
-          <Route path="/vocab/study/type" exact render={()=><div>학습 하실 그룹을 선택해 주세요.</div>} />
-          <Route path="/vocab/study/type/:groupcode" component={VocabStudyTypeContainer} />
-          <Route path="/vocab/study/look/:groupcode" component={VocabStudyLookContainer} />
-          <Route path="/vocab/study/multiple/:groupcode" component={VocabStudyMultipleContainer} />
-          <Route path="/vocab/study/multipleMean/:groupcode" component={VocabStudyMultipleMeanContainer} />
-          <Route path="/vocab/study/subjective/:groupcode" component={VocabStudySubjectiveContainer} />
-          <Route path="/vocab/study/subjectiveMean/:groupcode" component={VocabStudySubjectiveMeanContainer} />
-          <Route path="/vocab/question/result" exact component={VocabQuestionResultContainer} />
-          <Route path="/vocab/question/result/:groupcode" component={VocabQuestionResultGroupContainer} />
-          <Route path="/vocab/question/history/:vocab_question_result_id" component={VocabQuestionResultHistoryContainer} />
-          <Route path="/vocab/attention" component={VocabAttentionContainer} exact/>
-          <Route path="/vocab/attention/:vocab_id" component={VocabAttentionDetailContainer} />
+          <Route
+            path="/vocab/study/type"
+            exact
+            render={() => <div>학습 하실 그룹을 선택해 주세요.</div>}
+          />
+          <Route
+            path="/vocab/study/type/:groupcode"
+            component={VocabStudyTypeContainer}
+          />
+          <Route
+            path="/vocab/study/look/:groupcode"
+            component={VocabStudyLookContainer}
+          />
+          <Route
+            path="/vocab/study/multiple/:groupcode"
+            component={VocabStudyMultipleContainer}
+          />
+          <Route
+            path="/vocab/study/multipleMean/:groupcode"
+            component={VocabStudyMultipleMeanContainer}
+          />
+          <Route
+            path="/vocab/study/subjective/:groupcode"
+            component={VocabStudySubjectiveContainer}
+          />
+          <Route
+            path="/vocab/study/subjectiveMean/:groupcode"
+            component={VocabStudySubjectiveMeanContainer}
+          />
+          <Route
+            path="/vocab/question/result"
+            exact
+            component={VocabQuestionResultContainer}
+          />
+          <Route
+            path="/vocab/question/result/:groupcode"
+            component={VocabQuestionResultGroupContainer}
+          />
+          <Route
+            path="/vocab/question/history/:vocab_question_result_id"
+            component={VocabQuestionResultHistoryContainer}
+          />
+          <Route
+            path="/vocab/attention"
+            component={VocabAttentionContainer}
+            exact
+          />
+          <Route
+            path="/vocab/attention/:vocab_id"
+            component={VocabAttentionDetailContainer}
+          />
         </div>
       </Wrapper>
     </PageWrapper>

@@ -15,6 +15,10 @@ const VocabListBlock = styled.div`
 
   .add {
     overflow: hidden;
+    display:flex;
+    justify-content: space-between;
+    gap:0.3em;
+    align-items:baseline;
   }
 
   label {
@@ -56,13 +60,17 @@ const VocabListItem = styled.div`
   border: 1px solid ${palette.gray[1]};
   padding: 0.7rem;
   overflow: hidden;
-
+  display:flex;
+  justify-content:space-between;
+  gap:0.3em;
+  
   .vocab {
     display: inline-block;
     width: 28%;
     color: #003399;
     font-size: 1.2rem;
     font-weight: 600;
+    flex-grow:0;
   }
   .phonetic {
     margin-left: 5px;
@@ -73,7 +81,8 @@ const VocabListItem = styled.div`
   .mean {
     display: inline-block;
     width: 52%;
-    margin-left: 20px;
+    margin-left: 15px;
+    flex-grow:1;
   }
   .horizontal_line {
     display: inline-block;
@@ -81,6 +90,34 @@ const VocabListItem = styled.div`
     height: 1rem;
     background-color: ${palette.gray[6]};
     vertical-align: middle;
+  }
+  @media (max-width: 1024px) {
+    .vocab {
+      width: 220px;
+      flex-grow:0;
+      flex-shrink:0;
+    }
+    .btn_group{
+      width:72px;
+      flex-grow:0;
+      flex-shrink:0;
+    }
+    .mean {
+      margin-left:8px;
+    }
+  }
+  @media (max-width: 768px) {
+    flex-wrap:wrap;
+    .vocab {
+      width: 100%;
+    }
+    .horizontal_line{
+      display:none;
+    }
+    .mean {
+      width:70%;
+      margin-left:0;
+    }
   }
 `;
 
@@ -103,15 +140,15 @@ const StyledInput = styled.input`
   ${(props) =>
     props.vocab &&
     css`
-      float: left;
       width: 27%;
       color: #003399;
       font-weight: 600;
+      flex-grow:1;
+      flex-shrink:0;
     `};
   ${(props) =>
     props.mean &&
     css`
-      float: left;
       width: 58%;
     `};
   &:focus {
@@ -128,7 +165,7 @@ const StyledInput = styled.input`
       `};
   }
   & + & {
-    margin-left: 10px;
+    margin-left: 5px;
   }
   &::placeholder {
     color: ${palette.gray[4]};
@@ -138,7 +175,8 @@ const StyledInput = styled.input`
 const StyledButton = styled(Button)`
   float: right;
   height: 38px;
-  margin-top: 10px;
+  align-self:stretch;
+  margin-top: 12px;
   margin-right: 10px;
 `;
 
@@ -268,33 +306,35 @@ const VocabList = ({
               </span>
               <span className="horizontal_line"></span>
               <span className="mean">{vocabItem.mean}</span>
-              <StyledButton2 onClick={() => onRemoveVocab(vocabItem.id)}>
-                -
-              </StyledButton2>
-              {phonetic != null &&
-              phonetic != '' &&
-              audioMp3 != null &&
-              audioMp3 != '' ? (
-                <StyledButton3
-                  onClick={() => {
-                    if (
-                      phonetic != null &&
-                      phonetic != '' &&
-                      audioMp3 != null &&
-                      audioMp3 != ''
-                    ) {
-                      audioSourceEl.current.src = audioMp3;
-                      audioEl.current.pause();
-                      audioEl.current.load();
-                      audioEl.current.oncanplaythrough = function () {
-                        audioEl.current.play();
-                      };
-                    }
-                  }}
-                >
-                  <HeadPhonesIcon />
-                </StyledButton3>
-              ) : null}
+              <span className="btn_group">
+                <StyledButton2 onClick={() => onRemoveVocab(vocabItem.id)}>
+                  -
+                </StyledButton2>
+                {phonetic != null &&
+                phonetic != '' &&
+                audioMp3 != null &&
+                audioMp3 != '' ? (
+                  <StyledButton3
+                    onClick={() => {
+                      if (
+                        phonetic != null &&
+                        phonetic != '' &&
+                        audioMp3 != null &&
+                        audioMp3 != ''
+                      ) {
+                        audioSourceEl.current.src = audioMp3;
+                        audioEl.current.pause();
+                        audioEl.current.load();
+                        audioEl.current.oncanplaythrough = function () {
+                          audioEl.current.play();
+                        };
+                      }
+                    }}
+                  >
+                    <HeadPhonesIcon />
+                  </StyledButton3>
+                ) : null}
+              </span>
             </VocabListItem>
           );
         })}

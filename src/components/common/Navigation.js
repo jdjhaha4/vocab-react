@@ -7,6 +7,13 @@ import { useEffect } from 'react';
 
 const NavigationBlock = styled.div`
   margin-top: 15px;
+  display:block;
+  
+  @media (max-width: 1024px) {
+  }
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const Wrapper = styled(Responsive)`
