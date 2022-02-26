@@ -11,6 +11,9 @@ const GroupListBlock = styled.div`
   }
   .add {
     overflow: hidden;
+    display:flex;
+    justify-content:space-between;
+    gap:0.3em;
   }
 
   label {
@@ -29,6 +32,7 @@ const StyledInput = styled.input`
   ${(props) =>
     props.groupNm &&
     css`
+      flex-grow:1;
       float: left;
       width: 90%;
     `};
@@ -59,7 +63,7 @@ const StyledButton = styled(Button)`
   float: right;
   height: 38px;
   margin-top: 10px;
-  margin-right: 10px;
+  margin-right: 15px;
 `;
 
 const GroupListItem = styled.div`
@@ -70,6 +74,9 @@ const GroupListItem = styled.div`
   border: 1px solid ${palette.gray[1]};
   padding: 0.7rem;
   overflow: hidden;
+  display:flex;
+  justify-content:space-between;
+  gap:0.3em;
 
   .groupNm {
     float: left;

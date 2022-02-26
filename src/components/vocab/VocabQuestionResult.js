@@ -51,6 +51,30 @@ const VocabQuestionResultBlock = styled.div`
       color: ${palette.gray[6]};
       font-weight: 500;
   }
+  .flex_con{
+    display:flex;
+    justify-content:space-between;
+    gap:0.5%;
+  }
+  .flex_item{
+    width:23.5%;
+    flex-grow:1;
+  }
+  @media (max-width: 1024px) {
+    .flex_item{
+      width:45%;
+    }
+  }
+  @media (max-width: 768px) {
+    .flex_item{
+      width:45%;
+    }
+  }
+  @media (max-width: 480px) {
+    .flex_item{
+      width:100%;
+    }
+  }
 `;
 
 const VocabQuestionResult = ({history, vocabQuestionResultList }) => {
@@ -72,12 +96,12 @@ const VocabQuestionResult = ({history, vocabQuestionResultList }) => {
   return (
     <VocabQuestionResultBlock>
       <div className="container">
-        <div className="row">
+        <div className="row flex_con">
           {vocabQuestionResultList == null
             ? null
             : vocabQuestionResultList.map((vocabGroupItem) => (
                 <div
-                  className="col-3"
+                  className="col-3 flex_item"
                   key={vocabGroupItem.group_code}
                   value={vocabGroupItem.group_code}
                   onClick={() => onClickGroup(vocabGroupItem.group_code)}

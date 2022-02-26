@@ -5,6 +5,8 @@ import Button from '../common/Button';
 
 const VocabGroupMappingListBlock = styled.div`
   overflow: hidden;
+  display:flex;
+  justify-content:space-between;
 
   .group_area {
     float: left;
@@ -14,11 +16,35 @@ const VocabGroupMappingListBlock = styled.div`
     background-color: ${palette.gray[3]};
   }
   .group_vocab_area {
+    flex-grow:1;
     float: left;
     width: 35%;
     height: calc(100vh - 200px);
     overflow-y: auto;
     background-color: ${palette.gray[3]};
+
+    select {
+      width: 90%;
+      border: none;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      box-sizing:border-box;
+      background: ${palette.cyan[4]};
+      color:white;
+      option {
+        margin: 3px 0;
+        border: none;
+      }
+      option:focus {
+        border: none;
+      }
+    }
+
+    select:focus {
+      border: none;
+      outline: none;
+    }
   }
   .group_vocab_area .title {
     font-weight: 600;
@@ -34,6 +60,7 @@ const VocabGroupMappingListBlock = styled.div`
     background-color: ${palette.gray[3]};
   }
   .vocab_area {
+    flex-grow:1;
     float: left;
     width: 35%;
     height: calc(100vh - 200px);
@@ -46,10 +73,12 @@ const VocabGroupMappingListBlock = styled.div`
     width: 100%;
 
     select {
-      width: 100%;
+      width: 95%;
       border: none;
+      margin:5px;
       padding: 10px;
       border-radius: 5px;
+      box-sizing:border-box;
 
       option {
         margin: 3px 0;
@@ -63,6 +92,17 @@ const VocabGroupMappingListBlock = styled.div`
     select:focus {
       border: none;
       outline: none;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .group_area{
+      display:none;
+    }
+  }
+  @media (max-width: 768px) {
+    .group_area{
+      display:none;
     }
   }
 `;
@@ -154,13 +194,25 @@ const VocabGroupMappingList = ({
             ))}
       </div>
       <div className="group_vocab_area">
-        {selectedGroupCode === '' ? (
-          <div className="title">그룹을 선택해 주세요.</div>
-        ) : (
-          <div className="title">{selectedGroupName}</div>
-        )}
+        <select
+            value={selectedGroupCode}
+            onChange={(e) => {
+              onChangeGroupCode(Number(e.target.value));
+            }}
+          >
+          {vocabGroupList == null
+          ? <option value="">그룹을 등록하세요.</option>
+          : vocabGroupList.map((vocabGroupItem) => (
+              <option
+                key={vocabGroupItem.group_code}
+                value={vocabGroupItem.group_code}
+              >
+                {vocabGroupItem.group_name} ({vocabGroupItem.vocab_count} 단어)
+              </option>
+            ))}
+        </select>
         {vocabGroupMappingList == null || vocabGroupMappingList.length === 0 ? (
-          <div>단어를 매핑 시켜 주세요.</div>
+          <div style={{padding:'5px 15px'}}>단어를 매핑 시켜 주세요.</div>
         ) : (
           vocabGroupMappingList.map((vocabGroupMappingItem) => (
             <GroupVocabListItem

@@ -63,6 +63,7 @@ const VocabGroupMappingListContainers = () => {
 
   const onChangeGroupCode = useCallback(
     (groupCode) => {
+      console.log(groupCode);
       const findVocabGroupItem = vocabGroupList.find(
         (vocabGroupItem) => vocabGroupItem.group_code === groupCode,
       );

@@ -64,6 +64,21 @@ const VocabStudyBlock = styled.div`
       border-radius: 10px;
     }
   }
+  .flex_con{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:0.5%;
+  }
+  .flex_item{
+    width:45%;
+    flex-grow:1;
+  }
+  @media (max-width: 500px) {
+    .flex_item{
+      width:100%;
+    }
+  }
 `;
 const VocabStudyType = ({ history, vocabGroupData, onClickBack }) => {
   const onClickLook = useCallback(
@@ -130,44 +145,36 @@ const VocabStudyType = ({ history, vocabGroupData, onClickBack }) => {
             </span>
           </div>
           <div className="col-12 type_select">학습 유형 선택</div>
-          <div className="col-6">
+          <div className="flex_con">
             <div
-              className="box"
+              className="box flex_item"
               onClick={() => onClickLook(vocabGroupData.group_code)}
             >
               훑어보기
             </div>
-          </div>
-          <div className="col-6">
             <div
-              className="box"
+              className="box flex_item"
               onClick={() => onClickMultiple(vocabGroupData.group_code)}
             >
               객관식
               <span className="sub_title">(영단어 보고 뜻 선택)</span>
             </div>
-          </div>
-          <div className="col-6">
             <div
-              className="box"
+              className="box flex_item"
               onClick={() => onClickMultipleMean(vocabGroupData.group_code)}
             >
               객관식
               <span className="sub_title">(뜻 보고 영단어 선택)</span>
             </div>
-          </div>
-          <div className="col-6">
             <div
-              className="box"
+              className="box flex_item"
               onClick={() => onClickSubjective(vocabGroupData.group_code)}
             >
               주관식
               <span className="sub_title">(영단어 보고 뜻 쓰기))</span>
             </div>
-          </div>
-          <div className="col-6">
             <div
-              className="box"
+              className="box flex_item"
               onClick={() => onClickSubjectiveMean(vocabGroupData.group_code)}
             >
               주관식

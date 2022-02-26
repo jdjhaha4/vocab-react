@@ -43,6 +43,7 @@ const Wrapper = styled(Responsive)`
   .lnb {
     width: 120px;
     flex-grow: 0;
+    flex-shrink: 0;
     box-sizing: border-box;
   }
 
