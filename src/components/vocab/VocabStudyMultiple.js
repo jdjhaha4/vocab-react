@@ -117,6 +117,29 @@ const VocabStudyMultipleBlock = styled.div`
     text-align: center;
     font-weight: 500;
   }
+  .flex_con {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+  }
+  .flex_con .flex_item {
+    flex-basis:100%;
+  }
+  .flex_con2{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .flex_con2 span{
+    flex-grow:1;
+  }
+  
+  @media (max-width: 500px) {
+    .flex_con2 span:nth-child(1){
+      display:none;
+    }
+  }
 `;
 const VocabStudyMultiple = ({
   history,
@@ -132,9 +155,9 @@ const VocabStudyMultiple = ({
 }) => {
   return (
     <VocabStudyMultipleBlock>
-      <div className="container">
-        <div className="row">
-          <div className="col-12">
+      <div className="">
+        <div className="flex_con">
+          <div className="flex_item">
             <span
               className="previous"
               onClick={() => onClickBack()}
@@ -144,12 +167,10 @@ const VocabStudyMultiple = ({
               ({vocabGroupData.vocab_count} 단어)
             </span>
           </div>
-          <div className="col-4 type_select">객관식 문제 맞추기</div>
-          <div className="col-4 type_select study_time">
-            학습 시간: {studyTime.hour}시간 {studyTime.minute}분 {studyTime.second}초
-          </div>
-          <div className="col-4 type_select score">
-            {question.index + 1} / {vocabGroupData.vocab_count}
+          <div className="type_select study_time flex_item flex_con2">
+            <span>객관식 문제 맞추기</span>
+            <span>시간: {studyTime.hour}시간 {studyTime.minute}분 {studyTime.second}초</span>
+            <span>{question.index + 1} / {vocabGroupData.vocab_count}</span>
           </div>
         </div>
         <div className="row vocab_box">
@@ -178,7 +199,7 @@ const VocabStudyMultiple = ({
                 : '';
             return (
               <div
-                className="col-6"
+                className=""
                 key={`choice_${item.id}`}
                 onClick={() => {
                   compareAnswer(item);

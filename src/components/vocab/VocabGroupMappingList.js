@@ -200,6 +200,7 @@ const VocabGroupMappingList = ({
               onChangeGroupCode(Number(e.target.value));
             }}
           >
+          {vocabGroupList&&selectedGroupCode==''?(<option value="">선택하세요.</option>):null}
           {vocabGroupList == null
           ? <option value="">그룹을 등록하세요.</option>
           : vocabGroupList.map((vocabGroupItem) => (

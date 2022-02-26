@@ -70,7 +70,7 @@ const VocabQuestionResultBlock = styled.div`
       width:45%;
     }
   }
-  @media (max-width: 480px) {
+  @media (max-width: 450px) {
     .flex_item{
       width:100%;
     }

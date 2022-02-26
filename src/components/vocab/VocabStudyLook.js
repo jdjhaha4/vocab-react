@@ -7,6 +7,22 @@ const VocabStudyLookBlock = styled.div`
   .vocab_item {
     border-bottom: 1px solid ${palette.gray[4]};
     margin: 0;
+    display:flex;
+  }
+  .vocab_area{
+    flex-basis:40%;
+    flex-grow:0;
+    flex-shrink:0;
+    display:flex;
+  }
+  .mean_area{
+    display:flex;
+    align-items:center;
+  }
+  @media (max-width: 480px) {
+    .vocab_area{
+      flex-direction:column;
+    }
   }
   .vocab_item:nth-child(10n + 6),
   .vocab_item:nth-child(10n + 7),
@@ -44,9 +60,6 @@ const VocabStudyLookBlock = styled.div`
     background: ${palette.gray[3]};
     font-size: 1.2rem;
     font-weight: 600;
-    vertical-align: middle;
-    height: 60px;
-    line-height: 60px;
   }
   .previous {
     padding: 5px;
@@ -62,7 +75,6 @@ const VocabStudyLookBlock = styled.div`
     }
   }
   .toggle_wrap {
-    float: right;
     height: 38px;
     margin-top: 10px;
     margin-right: 15px;
@@ -164,6 +176,31 @@ const VocabStudyLookBlock = styled.div`
     text-align: center;
     font-weight: 500;
   }
+  .flex_con {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+  }
+  .flex_con .flex_item {
+    flex-basis:100%;
+  }
+  .flex_con2{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .flex_con2 span{
+    flex-grow:1;
+  }
+  @media (max-width: 580px) {
+    .flex_con2{
+      justify-content:flex-end;
+    }
+    .flex_con2 span{
+      display:none;
+    }
+  }
 `;
 const StyledButton = styled(Button)`
   float: right;
@@ -184,9 +221,9 @@ const VocabStudyLook = ({
 }) => {
   return (
     <VocabStudyLookBlock hideVocab={hideVocab} hideMean={hideMean}>
-      <div className="container">
-        <div className="row">
-          <div className="col-12">
+      <div className="">
+        <div className="flex_con">
+          <div className="flex_item title">
             <span
               className="previous"
               onClick={() => onClickBack()}
@@ -196,11 +233,19 @@ const VocabStudyLook = ({
               ({vocabGroupData.vocab_count} 단어)
             </span>
           </div>
-          <div className="col-4 type_select">눈으로 훑어보기</div>
-          <div className="col-8 type_select">
-            <StyledButton onClick={() => onClickShuffle()}>
-              단어 순서 변경
-            </StyledButton>
+          <div className="flex_item type_select flex_con2">
+            <span>눈으로 훑어보기</span>
+            <div className="toggle_wrap" onClick={(e) => onClickHideVocab(e)}>
+              <div className="toggle">
+                <input
+                  type="checkbox"
+                  id="hideVocab"
+                  checked={hideVocab}
+                  readOnly
+                ></input>
+                <label htmlFor="hideVocab">단어 가림</label>
+              </div>
+            </div>
             <div
               className="toggle_wrap"
               onClick={(e) => {
@@ -219,46 +264,38 @@ const VocabStudyLook = ({
                 </label>
               </div>
             </div>
-            <div className="toggle_wrap" onClick={(e) => onClickHideVocab(e)}>
-              <div className="toggle">
-                <input
-                  type="checkbox"
-                  id="hideVocab"
-                  checked={hideVocab}
-                  readOnly
-                ></input>
-                <label htmlFor="hideVocab">단어 가림</label>
-              </div>
-            </div>
+            <StyledButton onClick={() => onClickShuffle()}>
+              단어 순서 변경
+            </StyledButton>
           </div>
         </div>
-        <div className="row vocab_box">
-          <div className="col-12 vocab_box_list">
+        <div className="vocab_box">
+          <div className="vocab_box_list">
             {vocabList.map((vocabItem, index) => (
-              <div className="row vocab_item" key={vocabItem.id}>
+              <div className="vocab_item" key={vocabItem.id}>
                 <div
-                  className="col-1"
+                  className=""
                   key={`${vocabItem.id}_id`}
                   style={{ textAlign: 'right' }}
                 >
                   <span className="round_char">{index + 1}</span>
                 </div>
                 <div
-                  className="col-4 "
+                  className="vocab_area"
                   key={`${vocabItem.id}_vocab`}
                   onClick={(e) => onClickHideVocab(e)}
                 >
                   <span className="vocab">
                     {vocabItem.vocab}
-                    {vocabItem['dicArr'] != null ? (
-                      <span className="phonetic">
-                        [{vocabItem['dicArr'][0]['phonetic']}]
-                      </span>
-                    ) : null}
                   </span>
+                  {vocabItem['dicArr'] != null ? (
+                    <span className="phonetic">
+                      [{vocabItem['dicArr'][0]['phonetic']}]
+                    </span>
+                  ) : null}
                 </div>
                 <div
-                  className="col-7 "
+                  className="mean_area"
                   key={`${vocabItem.id}_mean`}
                   onClick={(e) => {
                     onClickHideMean(e);

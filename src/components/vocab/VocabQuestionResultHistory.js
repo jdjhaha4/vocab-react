@@ -78,6 +78,16 @@ const VocabQuestionResultHistoryBlock = styled.div`
     text-align: center;
     font-weight: 500;
   }
+  .flex_con {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
+    gap:0.5em;
+  }
+  .flex_con .flex_item:nth-child(2) {
+    flex-grow:1;
+  }
 `;
 
 const VocabQuestionResultHistory = ({
@@ -123,9 +133,9 @@ const VocabQuestionResultHistory = ({
   }
   return (
     <VocabQuestionResultHistoryBlock>
-      <div className="container">
-        <div className="row">
-          <div className="col-2">
+      <div className="">
+        <div className="flex_con">
+          <div className="flex_item">
             <div className="wrapper">
               <span
                 className="previous"
@@ -133,7 +143,7 @@ const VocabQuestionResultHistory = ({
               >{`< 이전`}</span>
             </div>
           </div>
-          <div className="col-10">
+          <div className="flex_item">
             <h4>
               학습결과 이력
               <span className="question_value">{questionValueStr}</span>
