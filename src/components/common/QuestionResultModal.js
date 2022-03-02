@@ -31,19 +31,24 @@ const AlertModalBlock = styled.div`
   .buttons {
     margin-top:3rem;
     display: flex;
+    flex-wrap:wrap;
     justify-content: flex-end;
+    gap:0.5em;
   }
   .wrong_answer_count{
     font-size: 1.2rem;
     font-weight: 600;
     color: red;
   }
+  @media (max-width: 490px) {
+    width: 90%;
+  }
 `;
 
 const StyledButton = styled(Button)`
   height: 2rem;
-  & + & {
-    margin-left: 0.75rem;
+  @media (max-width: 490px) {
+    flex-grow:1;
   }
 `;
 

@@ -21,6 +21,7 @@ const WrongBlock = styled.div`
 `;
 const VocabStudyMultipleBlock = styled.div`
   .previous {
+    display:inline-block;
     padding: 5px;
     background: ${palette.gray[8]};
     color: white;

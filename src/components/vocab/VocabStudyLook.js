@@ -8,6 +8,7 @@ const VocabStudyLookBlock = styled.div`
     border-bottom: 1px solid ${palette.gray[4]};
     margin: 0;
     display:flex;
+    padding:5px;
   }
   .vocab_area{
     flex-basis:40%;
@@ -62,6 +63,7 @@ const VocabStudyLookBlock = styled.div`
     font-weight: 600;
   }
   .previous {
+    display:inline-block;
     padding: 5px;
     background: ${palette.gray[8]};
     color: white;
@@ -207,6 +209,7 @@ const StyledButton = styled(Button)`
   height: 38px;
   margin-top: 10px;
   margin-right: 10px;
+  margin-bottom: 10px;
   line-height: normal;
 `;
 const VocabStudyLook = ({
@@ -223,7 +226,7 @@ const VocabStudyLook = ({
     <VocabStudyLookBlock hideVocab={hideVocab} hideMean={hideMean}>
       <div className="">
         <div className="flex_con">
-          <div className="flex_item title">
+          <div className="flex_item">
             <span
               className="previous"
               onClick={() => onClickBack()}

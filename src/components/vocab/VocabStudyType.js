@@ -52,6 +52,7 @@ const VocabStudyBlock = styled.div`
     font-weight: 600;
   }
   .previous {
+    display:inline-block;
     padding: 5px;
     background: ${palette.gray[8]};
     color: white;

@@ -16,7 +16,7 @@ const Fullscreen = styled.div`
 `;
 
 const AlertModalBlock = styled.div`
-  width: 50%;
+  width: 70%;
   max-width: 650px;
   background: white;
   padding: 1.5rem;
@@ -31,7 +31,9 @@ const AlertModalBlock = styled.div`
   .buttons {
     margin-top: 3rem;
     display: flex;
+    flex-wrap:wrap;
     justify-content: flex-end;
+    gap:0.5em;
   }
   .wrong_answer_count {
     font-size: 1.2rem;
@@ -43,12 +45,15 @@ const AlertModalBlock = styled.div`
     font-size: 1.7rem;
     font-weight: 600;
   }
+  @media (max-width: 490px) {
+    width: 90%;
+  }
 `;
 
 const StyledButton = styled(Button)`
   height: 2rem;
-  & + & {
-    margin-left: 0.75rem;
+  @media (max-width: 490px) {
+    flex-grow:1;
   }
 `;
 
@@ -98,10 +103,10 @@ const SubjectiveAnswerConfirmModal = ({
         <p>입력한 답 : {answer}</p>
         <div className="buttons">
           <StyledButton cyan onClick={() => onClickWrongAnswerProcess()}>
-            오답으로 처리(왼쪽 Ctrl + Enter)
+            오답으로 처리
           </StyledButton>
           <StyledButton cyan onClick={() => onClickAnswerProcess()}>
-            정답으로 처리(Enter)
+            정답으로 처리
           </StyledButton>
         </div>
       </AlertModalBlock>

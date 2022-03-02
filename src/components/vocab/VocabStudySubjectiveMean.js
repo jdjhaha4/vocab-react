@@ -23,6 +23,7 @@ const WrongBlock = styled.div`
 `;
 const VocabStudySubjectiveMeanBlock = styled.div`
   .previous {
+    display:inline-block;
     padding: 5px;
     background: ${palette.gray[8]};
     color: white;
@@ -352,13 +353,13 @@ const VocabStudySubjectiveMean = ({
             />
           </div>
           <div className="col-12">
-            <StyledButton onClick={() => onClickConfirm()}>확인(Enter)</StyledButton>
+            <StyledButton onClick={() => onClickConfirm()}>확인</StyledButton>
             <StyledButton
               onClick={() => {
                 onClickDontKnowProcess();
               }}
             >
-              모름(왼쪽 Ctrl + Enter)
+              모름
             </StyledButton>
           </div>
         </div>
