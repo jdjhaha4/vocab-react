@@ -21,13 +21,14 @@ const VocabListContainer = () => {
     vocabGroupList: vocab_group.vocabGroupList,
   }));
 
-  const { form, vocabList, vocabError, vocabListReload, selectedGroupCode } = useSelector(
+  const { form, vocabList, vocabError, vocabListReload, selectedGroupCode, vocabBeingAdded } = useSelector(
     ({ vocab }) => ({
       form: vocab.form,
       vocabList: vocab.vocabList,
       vocabError: vocab.vocabError,
       vocabListReload: vocab.vocabListReload,
       selectedGroupCode: vocab.selectedGroupCode,
+      vocabBeingAdded: vocab.vocabBeingAdded,
     }),
   );
   
@@ -69,11 +70,11 @@ const VocabListContainer = () => {
 
   const onAddVocab = useCallback(() => {
     const { vocab, mean } = form;
-    if (vocab.trim() === '' || mean.trim() === '') {
+    if (vocab.trim() === '' || mean.trim() === '' || vocabBeingAdded) {
       return;
     }
     dispatch(addVocab({ vocab, mean, selectedGroupCode }));
-  }, [form]);
+  }, [form, vocabBeingAdded]);
 
   const onRemoveVocab = useCallback((id) => {
     dispatch(removeVocab({ id }));

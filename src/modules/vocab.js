@@ -79,6 +79,7 @@ const initialState = {
   vocabError: null,
   vocabListReload: false,
   selectedGroupCode: 'all',
+  vocabBeingAdded: false,
 };
 
 function shuffle(array) {
@@ -116,18 +117,28 @@ const vocab = handleActions(
       produce(state, (draft) => {
         draft['vocabList'] = shuffle(draft['vocabList']);
       }),
+    [ADD_VOCAB]: (state, { payload: resultCnt }) => {
+      const newState = produce(state, (draft) => {
+        draft['vocabBeingAdded'] = true;
+      });
+      return newState;
+    },
     [ADD_VOCAB_SUCCESS]: (state, { payload: resultCnt }) => {
       const newState = produce(state, (draft) => {
         draft['form']['vocab'] = '';
         draft['form']['mean'] = '';
         draft['form']['vocabFocus'] = true;
         draft['vocabListReload'] = true;
+        draft['vocabBeingAdded'] = false;
       });
       return newState;
     },
     [ADD_VOCAB_FAILURE]: (state, { payload: error }) => {
       console.log(error);
-      return state;
+      const newState = produce(state, (draft) => {
+        draft['vocabBeingAdded'] = false;
+      });
+      return newState;
     },
     [GET_VOCAB_LIST_SUCCESS]: (state, { payload: resultVocabList }) => {
       const newState = produce(state, (draft) => {
@@ -140,8 +151,7 @@ const vocab = handleActions(
           try {
             const vocabDicArray = JSON.parse(vocabItem['vocab_dic_json']);
             vocaJsonObj['dicArr'] = vocabDicArray;
-          } catch (e) {
-          }
+          } catch (e) {}
           draft['vocabList'].push(vocaJsonObj);
         });
       });
