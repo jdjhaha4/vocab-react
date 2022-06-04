@@ -1,19 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
+import GroupModifyAlertModal from './GroupModifyAlertModal';
 
 const GroupListBlock = styled.div`
   background-color: ${palette.gray[0]};
-  .group_list{
+  .group_list {
     height: calc(100vh - 270px);
-    overflow:auto;
+    overflow: auto;
   }
   .add {
     overflow: hidden;
-    display:flex;
-    justify-content:space-between;
-    gap:0.3em;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.3em;
   }
 
   label {
@@ -32,7 +33,7 @@ const StyledInput = styled.input`
   ${(props) =>
     props.groupNm &&
     css`
-      flex-grow:1;
+      flex-grow: 1;
       float: left;
       width: 90%;
     `};
@@ -74,9 +75,14 @@ const GroupListItem = styled.div`
   border: 1px solid ${palette.gray[1]};
   padding: 0.7rem;
   overflow: hidden;
-  display:flex;
-  justify-content:space-between;
-  gap:0.3em;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.3em;
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.gray[2]};
+  }
 
   .groupNm {
     float: left;
@@ -97,11 +103,15 @@ const GroupList = ({
   getVocabGroupList,
   onFocusComplete,
   onRemoveVocabGroup,
+  onUpdateVocabGroup,
 }) => {
   const groupNameInputEl = useRef(null);
   const groupNameInputElFocus = () => {
     groupNameInputEl.current.focus();
   };
+  const [modifyFlag, setModifyFlag] = useState({
+    visible: false,
+  });
   //vocabFocus 가 트루로 변경될 때
   useEffect(() => {
     if (form.groupNameFocus) {
@@ -109,6 +119,37 @@ const GroupList = ({
       onFocusComplete();
     }
   }, [form.groupNameFocus]);
+
+  const onCancelGroupModify = useCallback(() => {
+    setModifyFlag({
+      visible: false,
+      title: '그룹 수정',
+      group_code: '',
+      group_name: '',
+      release_boolean:false,
+    });
+  }, []);
+
+  const onSaveGroupItem = useCallback(({ group_code, group_name, release_boolean }) => {
+    onUpdateVocabGroup({ group_code: group_code, group_name: group_name, release_boolean: release_boolean });
+    setModifyFlag({
+      visible: false,
+      title: '그룹 수정',
+      group_code: '',
+      group_name: '',
+      release_boolean: false,
+    });
+  }, []);
+
+  const onGroupItemClick = useCallback((groupItem) => {
+    setModifyFlag({
+      visible: true,
+      title: '그룹 수정',
+      group_code: groupItem.group_code,
+      group_name: groupItem.group_name,
+      release_boolean: groupItem.release_boolean,
+    });
+  }, []);
 
   return (
     <GroupListBlock>
@@ -129,16 +170,30 @@ const GroupList = ({
       </div>
       <div className="group_list">
         {vocabGroupList.map((vocabGroupItem) => (
-          <GroupListItem key={vocabGroupItem.group_code}>
-            <span className="groupNm">{vocabGroupItem.group_name} ({vocabGroupItem.vocab_count} 단어)</span>
+          <GroupListItem
+            key={vocabGroupItem.group_code}
+            onClick={(e) => onGroupItemClick(vocabGroupItem)}
+          >
+            <span className="groupNm">
+              {vocabGroupItem.group_name} ({vocabGroupItem.vocab_count} 단어)
+            </span>
             <StyledButton2
-              onClick={() => onRemoveVocabGroup(vocabGroupItem.group_code)}
+              onClick={(e) => onRemoveVocabGroup(e, vocabGroupItem.group_code)}
             >
               -
             </StyledButton2>
           </GroupListItem>
         ))}
       </div>
+      <GroupModifyAlertModal
+        title={modifyFlag.title}
+        visible={modifyFlag.visible}
+        groupCode={modifyFlag.group_code}
+        groupName={modifyFlag.group_name}
+        release_boolean={modifyFlag.release_boolean}
+        onCancel={onCancelGroupModify}
+        onSaveGroupItem={onSaveGroupItem}
+      />
     </GroupListBlock>
   );
 };

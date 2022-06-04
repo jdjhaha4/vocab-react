@@ -1,7 +1,7 @@
 {
   "name": "voca-study-frontend",
   "version": "0.1.0",
-  "homepage": ".",
+  "homepage": "http://vocab.cafe24.com:8080",
   "private": true,
   "dependencies": {
     "@babel/core": "7.12.3",

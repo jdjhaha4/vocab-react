@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { ReactComponent as HeadPhonesIcon } from '../../resources/svg/headphones.svg';
+import VocabModifyAlertModal from './VocabModifyAlertModal';
 
 const VocabListBlock = styled.div`
   background-color: ${palette.gray[0]};
@@ -60,17 +61,20 @@ const VocabListItem = styled.div`
   border: 1px solid ${palette.gray[1]};
   padding: 0.7rem;
   overflow: hidden;
-  display:flex;
-  justify-content:space-between;
-  gap:0.3em;
-  
+  display: flex;
+  justify-content: space-between;
+  gap: 0.3em;
+  &:hover {
+    cursor: pointer;
+    background: ${palette.gray[2]};
+  }
   .vocab {
     display: inline-block;
     width: 28%;
     color: #003399;
     font-size: 1.2rem;
     font-weight: 600;
-    flex-grow:0;
+    flex-grow: 0;
   }
   .phonetic {
     margin-left: 5px;
@@ -82,7 +86,7 @@ const VocabListItem = styled.div`
     display: inline-block;
     width: 52%;
     margin-left: 15px;
-    flex-grow:1;
+    flex-grow: 1;
   }
   .horizontal_line {
     display: inline-block;
@@ -91,32 +95,33 @@ const VocabListItem = styled.div`
     background-color: ${palette.gray[6]};
     vertical-align: middle;
   }
+
   @media (max-width: 1024px) {
     .vocab {
       width: 220px;
-      flex-grow:0;
-      flex-shrink:0;
+      flex-grow: 0;
+      flex-shrink: 0;
     }
-    .btn_group{
-      width:72px;
-      flex-grow:0;
-      flex-shrink:0;
+    .btn_group {
+      width: 72px;
+      flex-grow: 0;
+      flex-shrink: 0;
     }
     .mean {
-      margin-left:8px;
+      margin-left: 8px;
     }
   }
   @media (max-width: 768px) {
-    flex-wrap:wrap;
+    flex-wrap: wrap;
     .vocab {
       width: 100%;
     }
-    .horizontal_line{
-      display:none;
+    .horizontal_line {
+      display: none;
     }
     .mean {
-      width:70%;
-      margin-left:0;
+      width: 70%;
+      margin-left: 0;
     }
   }
 `;
@@ -143,8 +148,8 @@ const StyledInput = styled.input`
       width: 27%;
       color: #003399;
       font-weight: 600;
-      flex-grow:1;
-      flex-shrink:0;
+      flex-grow: 1;
+      flex-shrink: 0;
     `};
   ${(props) =>
     props.mean &&
@@ -175,7 +180,7 @@ const StyledInput = styled.input`
 const StyledButton = styled(Button)`
   float: right;
   height: 38px;
-  align-self:stretch;
+  align-self: stretch;
   margin-top: 12px;
   margin-right: 10px;
 `;
@@ -204,6 +209,7 @@ const VocabList = ({
   selectedGroupCode,
   onChangeGroupCode,
   addVocabLoadingFlag,
+  onUpdateVocab,
 }) => {
   const vocabInputEl = useRef(null);
   const audioEl = useRef(null);
@@ -211,6 +217,9 @@ const VocabList = ({
   const vocabInputElFocus = () => {
     vocabInputEl.current.focus();
   };
+  const [modifyFlag, setModifyFlag] = useState({
+    visible: false,
+  });
   //vocabFocus 가 트루로 변경될 때
   useEffect(() => {
     if (form.vocabFocus) {
@@ -218,6 +227,36 @@ const VocabList = ({
       onFocusComplete();
     }
   }, [form.vocabFocus]);
+
+  const onCancelVocabModify = useCallback(()=>{
+    setModifyFlag({
+      visible: false,
+      title: '단어 수정',
+      vocab: '',
+      mean:'' ,
+    });
+  },[]);
+
+  const onSaveVocabItem = useCallback(({id, vocab, mean})=>{
+    onUpdateVocab({id:id, vocab: vocab, mean: mean});
+    setModifyFlag({
+      visible: false,
+      title: '단어 수정',
+      vocab: '',
+      mean:'' ,
+    });
+  },[]);
+
+  const onVocabItemClick = useCallback((vocabItem) => {
+    setModifyFlag({
+      visible: true,
+      title: '단어 수정',
+      id: vocabItem.id,
+      vocab: vocabItem.vocab,
+      mean: vocabItem.mean,
+    });
+  }, []);
+
   return (
     <VocabListBlock>
       <label>단어 등록</label>
@@ -296,7 +335,10 @@ const VocabList = ({
             }
           }
           return (
-            <VocabListItem key={vocabItem.id}>
+            <VocabListItem
+              key={vocabItem.id}
+              onClick={(e) => onVocabItemClick(vocabItem)}
+            >
               <span className="vocab">
                 {vocabItem.vocab}
 
@@ -307,7 +349,7 @@ const VocabList = ({
               <span className="horizontal_line"></span>
               <span className="mean">{vocabItem.mean}</span>
               <span className="btn_group">
-                <StyledButton2 onClick={() => onRemoveVocab(vocabItem.id)}>
+                <StyledButton2 onClick={(e) => onRemoveVocab(e,vocabItem.id)}>
                   -
                 </StyledButton2>
                 {phonetic != null &&
@@ -315,7 +357,7 @@ const VocabList = ({
                 audioMp3 != null &&
                 audioMp3 != '' ? (
                   <StyledButton3
-                    onClick={() => {
+                    onClick={(e) => {
                       if (
                         phonetic != null &&
                         phonetic != '' &&
@@ -329,6 +371,8 @@ const VocabList = ({
                           audioEl.current.play();
                         };
                       }
+                      e.stopPropagation();
+                      e.preventDefault();
                     }}
                   >
                     <HeadPhonesIcon />
@@ -343,6 +387,15 @@ const VocabList = ({
         <source ref={audioSourceEl} src="" type="audio/mp3"></source>
       </audio>
       <LoadingSpinner visible={addVocabLoadingFlag} />
+      <VocabModifyAlertModal
+        title={modifyFlag.title}
+        visible={modifyFlag.visible}
+        id={modifyFlag.id}
+        vocab={modifyFlag.vocab}
+        mean={modifyFlag.mean}
+        onCancel={onCancelVocabModify}
+        onSaveVocabItem = {onSaveVocabItem}
+      />
     </VocabListBlock>
   );
 };

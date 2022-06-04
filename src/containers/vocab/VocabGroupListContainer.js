@@ -6,6 +6,7 @@ import {
   addVocabGroup,
   getVocabGroupList,
   removeVocabGroup,
+  updateVocabGroup,
 } from '../../modules/vocab_group';
 
 const VocabGroupListContainer = () => {
@@ -51,8 +52,19 @@ const VocabGroupListContainer = () => {
     }
     dispatch(addVocabGroup({ group_name }));
   }, [form]);
-  const onRemoveVocabGroup = useCallback((group_code) => {
+  const onRemoveVocabGroup = useCallback((e,group_code) => {
     dispatch(removeVocabGroup({ group_code }));
+    e.stopPropagation();
+    e.preventDefault();
+  }, []);
+  const onUpdateVocabGroup = useCallback((groupItem) => {
+    dispatch(
+      updateVocabGroup({
+        group_code: groupItem.group_code,
+        group_name: groupItem.group_name,
+        release_boolean: groupItem.release_boolean,
+      }),
+    );
   }, []);
   //컴포넌트가 처음 렌더링될 때
   useEffect(() => {
@@ -76,6 +88,7 @@ const VocabGroupListContainer = () => {
       getVocabGroupList={getVocabGroupList}
       onFocusComplete={onFocusComplete}
       onRemoveVocabGroup={onRemoveVocabGroup}
+      onUpdateVocabGroup={onUpdateVocabGroup}
     />
   );
 };

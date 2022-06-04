@@ -13,6 +13,8 @@ const [GET_VOCAB_LIST, GET_VOCAB_LIST_SUCCESS, GET_VOCAB_LIST_FAILURE] =
   createRequestActionTypes('vocab/GET_VOCAB_LIST');
 const [ADD_VOCAB, ADD_VOCAB_SUCCESS, ADD_VOCAB_FAILURE] =
   createRequestActionTypes('vocab/ADD_VOCAB');
+const [UPDATE_VOCAB, UPDATE_VOCAB_SUCCESS, UPDATE_VOCAB_FAILURE] =
+  createRequestActionTypes('vocab/UPDATE_VOCAB');
 const [REMOVE_VOCAB, REMOVE_VOCAB_SUCCESS, REMOVE_VOCAB_FAILURE] =
   createRequestActionTypes('vocab/REMOVE_VOCAB');
 
@@ -50,6 +52,14 @@ export const addVocab = createAction(
     selectedGroupCode,
   }),
 );
+export const updateVocab = createAction(
+  UPDATE_VOCAB,
+  ({id, vocab, mean }) => ({
+    id,
+    vocab,
+    mean,
+  }),
+);
 
 export const removeVocab = createAction(REMOVE_VOCAB, ({ id }) => ({
   id,
@@ -60,10 +70,12 @@ const vocabGetListSaga = createRequestSaga(
   vocabAPI.getVocabList,
 );
 const vocabAddSaga = createRequestSaga(ADD_VOCAB, vocabAPI.addVocab);
+const vocabUpdateSaga = createRequestSaga(UPDATE_VOCAB, vocabAPI.updateVocab);
 const vocabRemoveSaga = createRequestSaga(REMOVE_VOCAB, vocabAPI.removeVocab);
 
 export function* vocabSaga() {
   yield takeLatest(ADD_VOCAB, vocabAddSaga);
+  yield takeLatest(UPDATE_VOCAB, vocabUpdateSaga);
   yield takeLatest(GET_VOCAB_LIST, vocabGetListSaga);
   yield takeLatest(REMOVE_VOCAB, vocabRemoveSaga);
 }
@@ -137,6 +149,23 @@ const vocab = handleActions(
       console.log(error);
       const newState = produce(state, (draft) => {
         draft['vocabBeingAdded'] = false;
+      });
+      return newState;
+    },
+    [UPDATE_VOCAB_SUCCESS]: (state, { payload: updatedVocabItem }) => {
+      const newState = produce(state, (draft) => {
+        const updatedIdIndex = draft['vocabList'].findIndex(
+          (vocabItem) => vocabItem.id === updatedVocabItem.id,
+        );
+        const vocaJsonObj = JSON.parse(updatedVocabItem['voca_json']);
+        draft['vocabList'][updatedIdIndex]['vocab'] = vocaJsonObj['vocab'];
+        draft['vocabList'][updatedIdIndex]['mean'] = vocaJsonObj['mean'];
+      });
+      return newState;
+    },
+    [UPDATE_VOCAB_FAILURE]: (state, { payload: error }) => {
+      const newState = produce(state, (draft) => {
+        
       });
       return newState;
     },

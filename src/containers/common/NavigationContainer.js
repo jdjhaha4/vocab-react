@@ -15,6 +15,8 @@ const NavigationContainer = ({ pageMenuId }) => {
       dispatch(changeNaviMenu(menu_id));
       if(menu_id=='vocab'){
         dispatch(changeNaviSubMenu('vocab'));
+      }else if(menu_id=='share'){
+        dispatch(changeNaviSubMenu('share'));
       }
     },
     [menu_id],

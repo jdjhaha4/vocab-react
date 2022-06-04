@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const client = axios.create();
-//client.defaults.baseURL = 'http://localhost:8080/';
+// client.defaults.baseURL = 'http://localhost:8080/';
  client.defaults.baseURL = 'http://vocab.cafe24.com:8080/';
 /*
 글로벌 설정 예시

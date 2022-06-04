@@ -76,6 +76,17 @@ const Navigation = ({ menuId, onChangeMenuId, pageMenuId }) => {
             영단어
           </StyledLink>
         </div>
+        <div className="item">
+          <StyledLink
+            className={menuId === 'share' ? 'active' : ''}
+            to="/share"
+            onClick={() => {
+              onChangeMenuId('share');
+            }}
+          >
+            공유단어
+          </StyledLink>
+        </div>
       </Wrapper>
     </NavigationBlock>
   );

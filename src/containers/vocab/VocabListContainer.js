@@ -7,6 +7,7 @@ import {
   getVocabList,
   removeVocab,
   changeSelectedGroupCode,
+  updateVocab,
 } from '../../modules/vocab';
 import { getVocabGroupList } from '../../modules/vocab_group';
 
@@ -76,8 +77,14 @@ const VocabListContainer = () => {
     dispatch(addVocab({ vocab, mean, selectedGroupCode }));
   }, [form, vocabBeingAdded]);
 
-  const onRemoveVocab = useCallback((id) => {
+  const onRemoveVocab = useCallback((e, id) => {
     dispatch(removeVocab({ id }));
+    e.stopPropagation();
+    e.preventDefault();
+  }, []);
+
+  const onUpdateVocab = useCallback((vocabItem) => {
+    dispatch(updateVocab({ id:vocabItem.id, vocab:vocabItem.vocab, mean:vocabItem.mean }));
   }, []);
 
   //컴포넌트가 처음 렌더링될 때
@@ -109,6 +116,7 @@ const VocabListContainer = () => {
       selectedGroupCode={selectedGroupCode}
       onChangeGroupCode={onChangeGroupCode}
       addVocabLoadingFlag={addVocabLoadingFlag}
+      onUpdateVocab={onUpdateVocab}
     />
   );
 };
