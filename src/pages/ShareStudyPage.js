@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import Responsive from '../components/common/Responsive';
-import { Route, Link } from 'react-router-dom';
+import { Route, Link ,useHistory} from 'react-router-dom';
 import HeaderContainer from '../containers/common/HeaderContainer';
 import NavigationContainer from '../containers/common/NavigationContainer';
 import palette from '../lib/styles/palette';
@@ -70,7 +70,29 @@ const StyledLink = styled(Link)`
 `;
 
 const ShareStudyPage = () => {
+  const [locationKeys, setLocationKeys] = useState([]);
+  const history = useHistory();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    return history.listen((location) => {
+      if (history.action === "PUSH") {
+        setLocationKeys([location.key]);
+      }
+
+      if (history.action === "POP") {
+        if (locationKeys[1] === location.key) {
+          setLocationKeys(([_, ...keys]) => keys);
+          dispatch(changeNaviSubMenu(history.location.pathname));
+        } else {
+          setLocationKeys((keys) => [location.key, ...keys]);
+          dispatch(changeNaviSubMenu(history.location.pathname));
+          // Handle back event
+        }
+      }
+    });
+  }, [locationKeys]);
+
   const { sub_menu_id } = useSelector(({ navigation }) => ({
     sub_menu_id: navigation.sub_menu_id,
   }));
@@ -84,23 +106,23 @@ const ShareStudyPage = () => {
   return (
     <PageWrapper>
       <HeaderContainer />
-      <NavigationContainer pageMenuId="share" />
+      <NavigationContainer pageMenuId="/share" />
       <Wrapper>
         <div className="lnb">
           <LnbItem>
             <StyledLink
-              className={sub_menu_id == 'share' ? 'active' : ''}
+              className={sub_menu_id == '/share' ? 'active' : ''}
               to="/share"
-              onClick={() => onChangeSubMenuId('share')}
+              onClick={() => onChangeSubMenuId('/share')}
             >
               나의 공유
             </StyledLink>
           </LnbItem>
           <LnbItem>
             <StyledLink
-              className={sub_menu_id == 'share/others' ? 'active' : ''}
+              className={sub_menu_id == '/share/others' ? 'active' : ''}
               to="/share/others"
-              onClick={() => onChangeSubMenuId('share/others')}
+              onClick={() => onChangeSubMenuId('/share/others')}
             >
               다른사용자
             </StyledLink>

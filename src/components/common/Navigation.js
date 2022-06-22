@@ -1,9 +1,8 @@
-import React from 'react';
+import React,{ useState, useEffect} from 'react';
 import styled from 'styled-components';
 import Responsive from './Responsive';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import palette from '../../lib/styles/palette';
-import { useEffect } from 'react';
 
 const NavigationBlock = styled.div`
   margin-top: 15px;
@@ -46,11 +45,42 @@ const StyledLink = styled(Link)`
 `;
 
 const Navigation = ({ menuId, onChangeMenuId, pageMenuId }) => {
+  const [locationKeys, setLocationKeys] = useState([]);
+  const history = useHistory();
   useEffect(()=>{
     if(pageMenuId != undefined && menuId !== pageMenuId){
       onChangeMenuId(pageMenuId);
     }
   },[]);
+  useEffect(() => {
+    return history.listen((location) => {
+      if (history.action === "PUSH") {
+        setLocationKeys([location.key]);
+      }
+
+      if (history.action === "POP") {
+        if (locationKeys[1] === location.key) {
+          setLocationKeys(([_, ...keys]) => keys);
+          if(history.location.pathname.startsWith("/vocab")){
+            onChangeMenuId("/vocab");
+          }else if(history.location.pathname.startsWith("/share")){
+            onChangeMenuId("/share");
+          }else{
+            onChangeMenuId("home");
+          }
+        } else {
+          setLocationKeys((keys) => [location.key, ...keys]);
+          if(history.location.pathname.startsWith("/vocab")){
+            onChangeMenuId("/vocab");
+          }else if(history.location.pathname.startsWith("/share")){
+            onChangeMenuId("/share");
+          }else{
+            onChangeMenuId("home");
+          }
+        }
+      }
+    });
+  }, [locationKeys]);
   return (
     <NavigationBlock>
       <Wrapper>
@@ -67,10 +97,10 @@ const Navigation = ({ menuId, onChangeMenuId, pageMenuId }) => {
         </div>
         <div className="item">
           <StyledLink
-            className={menuId === 'vocab' ? 'active' : ''}
+            className={menuId === '/vocab' ? 'active' : ''}
             to="/vocab"
             onClick={() => {
-              onChangeMenuId('vocab');
+              onChangeMenuId('/vocab');
             }}
           >
             영단어
@@ -78,10 +108,10 @@ const Navigation = ({ menuId, onChangeMenuId, pageMenuId }) => {
         </div>
         <div className="item">
           <StyledLink
-            className={menuId === 'share' ? 'active' : ''}
+            className={menuId === '/share' ? 'active' : ''}
             to="/share"
             onClick={() => {
-              onChangeMenuId('share');
+              onChangeMenuId('/share');
             }}
           >
             공유단어

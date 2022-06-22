@@ -28,7 +28,7 @@ const MainPage = () => {
   return (
     <PageWrapper>
       <HeaderContainer />
-      <NavigationContainer />
+      <NavigationContainer pageMenuId="home"/>
       <Wrapper>
         <MainContainer />
       </Wrapper>

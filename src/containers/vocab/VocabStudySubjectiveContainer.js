@@ -117,13 +117,13 @@ const VocabStudySubjectiveContainer = ({ history, match }) => {
 
   const moveToThePage = useCallback(() => {
     dispatch(init());
-    history.push(`/vocab/study`);
+    history.replace(`/vocab/study`);
   }, []);
 
   const moveToTheResult = useCallback(() => {
     dispatch(init());
     dispatch(changeNaviSubMenu('vocab/question/result'));
-    history.push(`/vocab/question/result/${groupcode}`);
+    history.replace(`/vocab/question/result/${groupcode}`);
   }, []);
 
   const compareAnswer = useCallback(

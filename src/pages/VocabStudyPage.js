@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import HeaderContainer from '../containers/common/HeaderContainer';
 import NavigationContainer from '../containers/common/NavigationContainer';
 import styled from 'styled-components';
 import Responsive from '../components/common/Responsive';
-import { Route, Link } from 'react-router-dom';
+import { Route, Link , useHistory } from 'react-router-dom';
 import VocabListContainer from '../containers/vocab/VocabListContainer';
 import palette from '../lib/styles/palette';
 import VocabGroupListContainer from '../containers/vocab/VocabGroupListContainer';
@@ -79,9 +79,34 @@ const StyledLink = styled(Link)`
 `;
 
 const VocabStudyPage = () => {
+  const [locationKeys, setLocationKeys] = useState([]);
+  const history = useHistory();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    return history.listen((location) => {
+      if (history.action === "PUSH") {
+        setLocationKeys([location.key]);
+      }
+
+      if (history.action === "POP") {
+        if (locationKeys[1] === location.key) {
+          setLocationKeys(([_, ...keys]) => keys);
+          dispatch(changeNaviSubMenu(history.location.pathname));
+        } else {
+          setLocationKeys((keys) => [location.key, ...keys]);
+          dispatch(changeNaviSubMenu(history.location.pathname));
+          // Handle back event
+        }
+      }
+    });
+  }, [locationKeys]);
+
   const { sub_menu_id } = useSelector(({ navigation }) => ({
     sub_menu_id: navigation.sub_menu_id,
+  }));
+  const {timer_flag} = useSelector(({ timer }) => ({
+    timer_flag: timer.flag,
   }));
   const onChangeSubMenuId = useCallback(
     (sub_menu_id) => {
@@ -92,59 +117,65 @@ const VocabStudyPage = () => {
   return (
     <PageWrapper>
       <HeaderContainer />
-      <NavigationContainer pageMenuId="vocab" />
+      <NavigationContainer pageMenuId="/vocab" />
       <Wrapper>
         <div className="lnb">
           <LnbItem>
             <StyledLink
-              className={sub_menu_id == 'vocab' ? 'active' : ''}
+              className={sub_menu_id == '/vocab' ? 'active' : ''}
               to="/vocab"
-              onClick={() => onChangeSubMenuId('vocab')}
+              onClick={() => onChangeSubMenuId('/vocab')}
+              replace={timer_flag}
             >
               단어 목록
             </StyledLink>
           </LnbItem>
           <LnbItem>
             <StyledLink
-              className={sub_menu_id == 'vocab/group' ? 'active' : ''}
+              className={sub_menu_id == '/vocab/group' ? 'active' : ''}
               to="/vocab/group"
-              onClick={() => onChangeSubMenuId('vocab/group')}
+              onClick={() => onChangeSubMenuId('/vocab/group')}
+              replace={timer_flag}
             >
               그룹 목록
             </StyledLink>
           </LnbItem>
           <LnbItem>
             <StyledLink
-              className={sub_menu_id == 'vocab/group/mapping' ? 'active' : ''}
+              className={sub_menu_id == '/vocab/group/mapping' ? 'active' : ''}
               to="/vocab/group/mapping"
-              onClick={() => onChangeSubMenuId('vocab/group/mapping')}
+              onClick={() => onChangeSubMenuId('/vocab/group/mapping')}
+              replace={timer_flag}
             >
               단어 그룹화
             </StyledLink>
           </LnbItem>
           <LnbItem>
             <StyledLink
-              className={sub_menu_id == 'vocab/study' ? 'active' : ''}
+              className={sub_menu_id == '/vocab/study' ? 'active' : ''}
               to="/vocab/study"
-              onClick={() => onChangeSubMenuId('vocab/study')}
+              onClick={() => onChangeSubMenuId('/vocab/study')}
+              replace={timer_flag}
             >
               학습하기
             </StyledLink>
           </LnbItem>
           <LnbItem>
             <StyledLink
-              className={sub_menu_id == 'vocab/question/result' ? 'active' : ''}
+              className={sub_menu_id == '/vocab/question/result' ? 'active' : ''}
               to="/vocab/question/result"
-              onClick={() => onChangeSubMenuId('vocab/question/result')}
+              onClick={() => onChangeSubMenuId('/vocab/question/result')}
+              replace={timer_flag}
             >
               학습결과
             </StyledLink>
           </LnbItem>
           <LnbItem>
             <StyledLink
-              className={sub_menu_id == 'vocab/attention' ? 'active' : ''}
+              className={sub_menu_id == '/vocab/attention' ? 'active' : ''}
               to="/vocab/attention"
-              onClick={() => onChangeSubMenuId('vocab/attention')}
+              onClick={() => onChangeSubMenuId('/vocab/attention')}
+              replace={timer_flag}
             >
               요주의 단어
             </StyledLink>
