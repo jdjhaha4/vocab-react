@@ -1,28 +1,36 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
+import { ReactComponent as HeadPhonesIcon } from '../../resources/svg/headphones.svg';
 
 const VocabStudyLookBlock = styled.div`
   .vocab_item {
     border-bottom: 1px solid ${palette.gray[4]};
     margin: 0;
-    display:flex;
-    padding:5px;
+    display: flex;
+    padding: 5px;
   }
-  .vocab_area{
-    flex-basis:40%;
-    flex-grow:0;
-    flex-shrink:0;
-    display:flex;
+  .vocab_area {
+    flex-basis: 40%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
   }
-  .mean_area{
-    display:flex;
-    align-items:center;
+  .audio_area {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+  }
+  .mean_area {
+    display: flex;
+    align-items: center;
   }
   @media (max-width: 480px) {
-    .vocab_area{
-      flex-direction:column;
+    .vocab_area {
+      flex-direction: column;
     }
   }
   .vocab_item:nth-child(10n + 6),
@@ -37,10 +45,10 @@ const VocabStudyLookBlock = styled.div`
     font-size: 1.2rem;
     font-weight: 600;
   }
-  .phonetic{
-    margin-left:5px;
-    color : ${palette.gray[6]};
-    font-size:0.9rem;
+  .phonetic {
+    margin-left: 5px;
+    color: ${palette.gray[6]};
+    font-size: 0.9rem;
     font-weight: 400;
   }
   .mean {
@@ -63,7 +71,7 @@ const VocabStudyLookBlock = styled.div`
     font-weight: 600;
   }
   .previous {
-    display:inline-block;
+    display: inline-block;
     padding: 5px;
     background: ${palette.gray[8]};
     color: white;
@@ -179,28 +187,31 @@ const VocabStudyLookBlock = styled.div`
     font-weight: 500;
   }
   .flex_con {
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-between;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
   .flex_con .flex_item {
-    flex-basis:100%;
+    flex-basis: 100%;
   }
-  .flex_con2{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-between;
-    align-items:baseline;
+  .flex_con2 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
   }
-  .flex_con2 span{
-    flex-grow:1;
+  .flex_con2 span {
+    flex-grow: 1;
   }
   @media (max-width: 580px) {
-    .flex_con2{
-      justify-content:flex-end;
+    .flex_con2 {
+      justify-content: flex-end;
     }
-    .flex_con2 span{
-      display:none;
+    .flex_con2 span {
+      display: none;
+    }
+    .phonetic {
+      display: block;
     }
   }
 `;
@@ -212,6 +223,23 @@ const StyledButton = styled(Button)`
   margin-bottom: 10px;
   line-height: normal;
 `;
+
+const StyledButton3 = styled(Button)`
+  float: right;
+  height: 30px;
+  margin-right: 16px;
+  padding: 0 3px;
+
+  @media (max-width: 1024px) {
+    margin-right: 24px;
+  }
+  @media (max-width: 768px) {
+    margin-right: 28px;
+  }
+  @media (max-width: 450px) {
+    
+  }
+`;
 const VocabStudyLook = ({
   vocabList,
   vocabGroupData,
@@ -222,6 +250,8 @@ const VocabStudyLook = ({
   onClickHideVocab,
   onClickHideMean,
 }) => {
+  const audioEl = useRef(null);
+  const audioSourceEl = useRef(null);
   return (
     <VocabStudyLookBlock hideVocab={hideVocab} hideMean={hideMean}>
       <div className="">
@@ -274,40 +304,101 @@ const VocabStudyLook = ({
         </div>
         <div className="vocab_box">
           <div className="vocab_box_list">
-            {vocabList.map((vocabItem, index) => (
-              <div className="vocab_item" key={vocabItem.id}>
-                <div
-                  className=""
-                  key={`${vocabItem.id}_id`}
-                  style={{ textAlign: 'right' }}
-                >
-                  <span className="round_char">{index + 1}</span>
+            {vocabList.map((vocabItem, index) => {
+              let phonetic = '';
+              let audioMp3 = '';
+              if (
+                vocabItem['dicArr'] != null &&
+                vocabItem['dicArr'].length > 0
+              ) {
+                for (
+                  var i = 0, len = vocabItem['dicArr'].length;
+                  i < len;
+                  i++
+                ) {
+                  if (
+                    vocabItem['dicArr'][i]['phonetics'] != null &&
+                    vocabItem['dicArr'][i]['phonetics'].length > 0
+                  ) {
+                    for (
+                      var j = 0,
+                        jlen = vocabItem['dicArr'][i]['phonetics'].length;
+                      j < jlen;
+                      j++
+                    ) {
+                      phonetic = vocabItem['dicArr'][i]['phonetics'][j].text;
+                      audioMp3 = vocabItem['dicArr'][i]['phonetics'][j].audio;
+                      if (
+                        phonetic != null &&
+                        phonetic != '' &&
+                        audioMp3 != null &&
+                        audioMp3 != ''
+                      ) {
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+              return (
+                <div className="vocab_item" key={vocabItem.id}>
+                  <div
+                    className=""
+                    key={`${vocabItem.id}_id`}
+                    style={{ textAlign: 'right' }}
+                  >
+                    <span className="round_char">{index + 1}</span>
+                  </div>
+                  <div
+                    className="vocab_area"
+                    key={`${vocabItem.id}_vocab`}
+                    onClick={(e) => onClickHideVocab(e)}
+                  >
+                    <span className="vocab">{vocabItem.vocab}</span>
+                    {phonetic != null && phonetic != '' ? (
+                      <div className="audio_area">
+                        <span className="phonetic">[{phonetic}]</span>
+                        {phonetic != null &&
+                        phonetic != '' &&
+                        audioMp3 != null &&
+                        audioMp3 != '' ? (
+                          <StyledButton3
+                            onClick={(e) => {
+                              if (
+                                phonetic != null &&
+                                phonetic != '' &&
+                                audioMp3 != null &&
+                                audioMp3 != ''
+                              ) {
+                                audioSourceEl.current.src = audioMp3;
+                                audioEl.current.pause();
+                                audioEl.current.load();
+                                audioEl.current.oncanplaythrough = function () {
+                                  audioEl.current.play();
+                                };
+                              }
+                              e.stopPropagation();
+                              e.preventDefault();
+                            }}
+                          >
+                            <HeadPhonesIcon />
+                          </StyledButton3>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                  <div
+                    className="mean_area"
+                    key={`${vocabItem.id}_mean`}
+                    onClick={(e) => {
+                      onClickHideMean(e);
+                    }}
+                  >
+                    <span className="mean">{vocabItem.mean}</span>
+                  </div>
                 </div>
-                <div
-                  className="vocab_area"
-                  key={`${vocabItem.id}_vocab`}
-                  onClick={(e) => onClickHideVocab(e)}
-                >
-                  <span className="vocab">
-                    {vocabItem.vocab}
-                  </span>
-                  {vocabItem['dicArr'] != null ? (
-                    <span className="phonetic">
-                      [{vocabItem['dicArr'][0]['phonetic']}]
-                    </span>
-                  ) : null}
-                </div>
-                <div
-                  className="mean_area"
-                  key={`${vocabItem.id}_mean`}
-                  onClick={(e) => {
-                    onClickHideMean(e);
-                  }}
-                >
-                  <span className="mean">{vocabItem.mean}</span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
             <div
               className="vocab_box_left"
               onClick={(e) => onClickHideVocab(e)}
@@ -321,6 +412,9 @@ const VocabStudyLook = ({
           </div>
         </div>
       </div>
+      <audio ref={audioEl}>
+        <source ref={audioSourceEl} src="" type="audio/mp3"></source>
+      </audio>
     </VocabStudyLookBlock>
   );
 };
