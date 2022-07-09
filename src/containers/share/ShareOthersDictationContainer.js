@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import VocabStudyMultiple from '../../components/vocab/VocabStudyMultiple';
-import { getVocabList, shuffleVocab } from '../../modules/vocab';
+import VocabStudyDictation from '../../components/vocab/VocabStudyDictation';
+import { getOthersShareVocabList, getOthersShareOneData, shuffleVocab } from '../../modules/share';
 import { withRouter } from 'react-router-dom';
 import { getVocabGroupData } from '../../modules/vocab_group';
 import {
@@ -21,15 +21,15 @@ import { cloneObject } from '../../util/arrayUtil';
 import produce from 'immer';
 import { changeNaviSubMenu } from '../../modules/navigation';
 
-const VocabStudyMultipleContainer = ({ history, match }) => {
+const ShareOthersDictationContainer = ({ history, match }) => {
 
   const { groupcode } = match.params;
   const dispatch = useDispatch();
-  const { vocabList } = useSelector(({ vocab }) => ({
-    vocabList: vocab.vocabList,
+  const { vocabList } = useSelector(({ share }) => ({
+    vocabList: share.vocabList,
   }));
-  const { vocabGroupData } = useSelector(({ vocab_group }) => ({
-    vocabGroupData: vocab_group.vocabGroupData,
+  const { vocabGroupData } = useSelector(({ share }) => ({
+    vocabGroupData: share.othersShareGroupData,
   }));
   const { question } = useSelector(({ vocab_study_multiple }) => ({
     question: vocab_study_multiple,
@@ -47,8 +47,8 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
 
   useEffect(() => {
     let group_code = groupcode;
-    dispatch(getVocabGroupData({ group_code }));
-    dispatch(getVocabList({ groupCode: groupcode }));
+    dispatch(getOthersShareOneData({ group_code }));
+    dispatch(getOthersShareVocabList({ group_code}));
     return () => {
       dispatch(init());
     };
@@ -102,7 +102,7 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
           wrong_answer_count: 0,
           complete_flag: 'F',
           study_time_seconds: 0,
-          question_type_code:'MV',
+          question_type_code:'SD',
         }),
       );
     }
@@ -127,22 +127,22 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
   }, []);
 
   const compareAnswer = useCallback(
-    ({ id, vocab, mean }) => {
+    ({ id, vocab, mean, result_flag }) => {
       if (question.vocab['id'] === id) {
         //해당 단어 정답을 맞췄음을 서버에 전달
         dispatch(
           postQuestionResult({
             vocab_question_result_id: question['vocabQuestionResultId'],
             group_code: groupcode,
-            question_type: 'multipleChoice',
-            question_value: 'vocab',
+            question_type: 'subjective',
+            question_value: 'dictation',
             vocab_id: question.vocab['id'],
             vocab: question.vocab['vocab'],
             mean: question.vocab['mean'],
             answer_vocab_id: id,
             answer_vocab: vocab,
             answer_mean: mean,
-            result_flag: 'T',
+            result_flag: result_flag,
           }),
         );
         //정답 처리
@@ -156,22 +156,22 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
           }),
         );
 
-        dispatch(goToTheNextQuestion({ delayMillis: 500 }));
+        dispatch(goToTheNextQuestion({ delayMillis: 1000 }));
       } else {
         //해당 단어 오답임을 서버에 전달
         dispatch(
           postQuestionResult({
             vocab_question_result_id: question['vocabQuestionResultId'],
             group_code: groupcode,
-            question_type: 'multipleChoice',
-            question_value: 'vocab',
+            question_type: 'subjective',
+            question_value: 'dictation',
             vocab_id: question.vocab['id'],
             vocab: question.vocab['vocab'],
             mean: question.vocab['mean'],
             answer_vocab_id: id,
             answer_vocab: vocab,
             answer_mean: mean,
-            result_flag: 'F',
+            result_flag: result_flag,
           }),
         );
         //오답 처리
@@ -191,7 +191,7 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
   );
 
   return (
-    <VocabStudyMultiple
+    <VocabStudyDictation
       vocabGroupData={vocabGroupData}
       onClickBack={onClickBack}
       question={question}
@@ -205,4 +205,4 @@ const VocabStudyMultipleContainer = ({ history, match }) => {
   );
 };
 
-export default withRouter(VocabStudyMultipleContainer);
+export default withRouter(ShareOthersDictationContainer);

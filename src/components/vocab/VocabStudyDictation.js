@@ -8,6 +8,7 @@ import QuestionResultModal from '../common/QuestionResultModal';
 import SubjectiveAnswerConfirmModal from '../common/SubjectiveAnswerConfirmModal';
 import { withRouter } from 'react-router-dom';
 import { cloneObject } from '../../util/arrayUtil';
+import {useSpeechSynthesis} from 'react-speech-kit';
 
 const CorrectBlock = styled.div`
   color: green;
@@ -21,9 +22,9 @@ const WrongBlock = styled.div`
   font-weight: 600;
   text-align: center;
 `;
-const VocabStudySubjectiveBlock = styled.div`
+const VocabStudyDictationBlock = styled.div`
   .previous {
-    display:inline-block;
+    display: inline-block;
     padding: 5px;
     background: ${palette.gray[8]};
     color: white;
@@ -83,7 +84,7 @@ const VocabStudySubjectiveBlock = styled.div`
     color: #003399;
     font-size: 2rem;
     font-weight: 600;
-    margin-top: 20px;
+    margin-top: 0px;
     text-align: center;
   }
   .multiple_box {
@@ -121,26 +122,26 @@ const VocabStudySubjectiveBlock = styled.div`
     font-weight: 500;
   }
   .flex_con {
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-between;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
   .flex_con .flex_item {
-    flex-basis:100%;
+    flex-basis: 100%;
   }
-  .flex_con2{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-between;
-    align-items:baseline;
+  .flex_con2 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
   }
-  .flex_con2 span{
-    flex-grow:1;
+  .flex_con2 span {
+    flex-grow: 1;
   }
-  
+
   @media (max-width: 500px) {
-    .flex_con2 span:nth-child(1){
-      display:none;
+    .flex_con2 span:nth-child(1) {
+      display: none;
     }
   }
 `;
@@ -185,7 +186,12 @@ const StyledButton = styled(Button)`
   margin-top: 10px;
   margin-right: 10px;
 `;
-const VocabStudySubjective = ({
+const StyledButton2 = styled(Button)`
+  height: 38px;
+  margin-top: 10px;
+  margin-right: 10px;
+`;
+const VocabStudyDictation = ({
   history,
   vocabGroupData,
   onClickBack,
@@ -197,6 +203,10 @@ const VocabStudySubjective = ({
   studyTime,
   moveToTheResult,
 }) => {
+  const { speak } = useSpeechSynthesis();
+  const audioEl = useRef(null);
+  const audioSourceEl = useRef(null);
+
   const answerInputEl = useRef(null);
   // title="영단어 보고 뜻 쓰기"
   //       visible={false}
@@ -224,6 +234,7 @@ const VocabStudySubjective = ({
 
   //question.vocab['vocab']
   useEffect(() => {
+    speak({text:question.vocab['vocab']});
     const nextState = produce(modal, (draft) => {
       draft['id'] = question.vocab['id'];
       draft['vocab'] = question.vocab['vocab'];
@@ -236,13 +247,10 @@ const VocabStudySubjective = ({
 
   const onClickConfirm = useCallback(() => {
     if (modal['answer'] != null && modal['answer'].trim() != '') {
-      if(modal['answer'].trim() == modal['mean'].trim()){
+      if (modal['answer'].trim() == modal['vocab'].trim()) {
         onClickAnswerProcess();
-      }else{
-        const nextState = produce(modal, (draft) => {
-          draft['visible'] = true;
-        });
-        setModal(nextState);
+      } else {
+        onClickWrongAnswerProcess();
       }
     } else {
       alert('뜻을 입력후에 확인 버튼을 클릭하세요.');
@@ -256,8 +264,8 @@ const VocabStudySubjective = ({
     setModal(nextState);
     let answerItem = {};
     answerItem['id'] = question.vocab['id'];
-    answerItem['vocab'] = question.vocab['vocab'];
-    answerItem['mean'] = modal['answer'];
+    answerItem['vocab'] = modal['answer'];
+    answerItem['mean'] = question.vocab['mean'];
     answerItem['result_flag'] = 'T';
 
     compareAnswer(answerItem);
@@ -270,8 +278,8 @@ const VocabStudySubjective = ({
     setModal(nextState);
     let answerItem = {};
     answerItem['id'] = -1;
-    answerItem['vocab'] = question.vocab['vocab'];
-    answerItem['mean'] = modal['answer'];
+    answerItem['vocab'] = modal['answer'];
+    answerItem['mean'] = question.vocab['mean'];
     answerItem['result_flag'] = 'F';
 
     compareAnswer(answerItem);
@@ -280,28 +288,55 @@ const VocabStudySubjective = ({
   const onClickDontKnowProcess = useCallback(() => {
     let answerItem = {};
     answerItem['id'] = -1;
-    answerItem['vocab'] = question.vocab['vocab'];
-    answerItem['mean'] = '';
+    answerItem['vocab'] = '';
+    answerItem['mean'] = question.vocab['mean'];
     answerItem['result_flag'] = 'N';
 
     compareAnswer(answerItem);
   }, [question,modal]);
 
   let keysPressed = {};
-  const onKeyDown = (e) =>{
+  const onKeyDown = (e) => {
     keysPressed[e.code] = true;
-  }
+  };
   const onKeyUp = (e) => {
-    if(keysPressed['ControlLeft'] && keysPressed['Enter']){
+    if (keysPressed['ControlLeft'] && keysPressed['Enter']) {
       onClickDontKnowProcess();
-    }else if (keysPressed['Enter']) {
+    } else if (keysPressed['Enter']) {
       onClickConfirm();
     }
     keysPressed[e.code] = undefined;
   };
-
+  let phonetic = '';
+  let audioMp3 = '';
+  if (question.vocab['dicArr'] != null && question.vocab['dicArr'].length > 0) {
+    for (var i = 0, len = question.vocab['dicArr'].length; i < len; i++) {
+      if (
+        question.vocab['dicArr'][i]['phonetics'] != null &&
+        question.vocab['dicArr'][i]['phonetics'].length > 0
+      ) {
+        for (
+          var j = 0, jlen = question.vocab['dicArr'][i]['phonetics'].length;
+          j < jlen;
+          j++
+        ) {
+          phonetic = question.vocab['dicArr'][i]['phonetics'][j].text;
+          audioMp3 = question.vocab['dicArr'][i]['phonetics'][j].audio;
+          if (
+            phonetic != null &&
+            phonetic != '' &&
+            audioMp3 != null &&
+            audioMp3 != ''
+          ) {
+            break;
+          }
+        }
+      }
+    }
+  }
+  
   return (
-    <VocabStudySubjectiveBlock>
+    <VocabStudyDictationBlock>
       <div className="">
         <div className="flex_con">
           <div className="flex_item">
@@ -314,18 +349,36 @@ const VocabStudySubjective = ({
               ({vocabGroupData.vocab_count} 단어)
             </span>
           </div>
-          <div className="type_select study_time  flex_item flex_con2">
-            <span>영단어 뜻 입력하기</span>
-            <span>시간: {studyTime.hour}시간 {studyTime.minute}분{' '}{studyTime.second}초</span>
-            <span>{question.index + 1} / {vocabGroupData.vocab_count}</span>
+          <div className="type_select study_time flex_item flex_con2">
+            <span>단어 받아쓰기</span>
+            <span>
+              학습 시간: {studyTime.hour}시간 {studyTime.minute}분{' '}
+              {studyTime.second}초
+            </span>
+            <span>
+              {question.index + 1} / {vocabGroupData.vocab_count}
+            </span>
           </div>
         </div>
         <div className="row vocab_box">
-          <div className="col-12 vocab_title">단어</div>
-          <div className="col-12 vocab">{question.vocab['vocab']}</div>
+          <div className="col-12 vocab_title">듣기</div>
+          <div className="col-12 vocab">
+          <div className="audio_area">
+            <StyledButton2
+                onClick={(e) => {
+                  speak({text:question.vocab['vocab']});
+                }}
+              >
+                다시 듣기
+              </StyledButton2>
+          </div>
+          </div>
           {question.resultFlag == 'T' || question.resultFlag == 'F' ? (
             <div className="col-12">
-              <CorrectBlock>{question.vocab['mean']}</CorrectBlock>
+              <CorrectBlock>
+                <div>{question.vocab['vocab']}</div>
+                <div>{question.vocab['mean']}</div>
+              </CorrectBlock>
             </div>
           ) : null}
           <div className="col-12">
@@ -339,7 +392,7 @@ const VocabStudySubjective = ({
             ) : null}
           </div>
           <div className="col-12 multiple_box multiple_title">
-            영단어의 뜻을 입력하세요.
+            발음을 듣고 영단어를 입력하세요.
           </div>
           <div className="col-12">
             <StyledInput
@@ -347,7 +400,7 @@ const VocabStudySubjective = ({
               groupNm="true"
               name="answer"
               type="text"
-              placeholder="영단어의 뜻을 입력하세요."
+              placeholder="영단어를 입력하세요."
               value={modal['answer']}
               onChange={onChange}
               onKeyDown={onKeyDown}
@@ -394,8 +447,11 @@ const VocabStudySubjective = ({
         onClickAnswerProcess={onClickAnswerProcess}
         onClickWrongAnswerProcess={onClickWrongAnswerProcess}
       />
-    </VocabStudySubjectiveBlock>
+      <audio ref={audioEl}>
+        <source ref={audioSourceEl} src="" type="audio/mp3"></source>
+      </audio>
+    </VocabStudyDictationBlock>
   );
 };
 
-export default withRouter(VocabStudySubjective);
+export default withRouter(VocabStudyDictation);

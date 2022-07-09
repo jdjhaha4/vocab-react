@@ -129,6 +129,13 @@ const VocabQuestionResultHistory = ({
       questionValueStr = '주관식 (뜻 보고 단어 입력)';
       questionType = 'subjective';
       questionValue = 'mean';
+    }else if (
+      vocabQuestionResultHistoryList[0]['question_type'] == 'subjective' &&
+      vocabQuestionResultHistoryList[0]['question_value'] == 'dictation'
+    ) {
+      questionValueStr = '단어 받아쓰기';
+      questionType = 'subjective';
+      questionValue = 'dictation';
     }
   }
   return (
@@ -177,7 +184,7 @@ const VocabQuestionResultHistory = ({
                     입력한 뜻 : {item.answer_mean}
                   </span>
                 ) : null}
-                {questionType === 'subjective' && questionValue === 'mean' ? (
+                {questionType === 'subjective' && (questionValue == 'mean' || questionValue == 'dictation') ? (
                   <span className="worng_answer">
                     입력한 단어 : {item.answer_vocab}
                   </span>
@@ -205,7 +212,7 @@ const VocabQuestionResultHistory = ({
                       입력한 뜻 : {item.answer_mean}
                     </span>
                   ) : null}
-                  {questionType == 'subjective' && questionValue == 'mean' ? (
+                  {questionType == 'subjective' && (questionValue == 'mean' || questionValue == 'dictation') ? (
                     <span className="worng_answer">
                       입력한 단어 : {item.answer_vocab}
                     </span>

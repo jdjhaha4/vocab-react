@@ -89,7 +89,7 @@ const VocabStudySubjectiveContainer = ({ history, match }) => {
     //타이머 시작
     dispatch(start());
     dispatch(increaseAsync());
-  }, [vocabList]);
+  }, []);
 
   useEffect(() => {
     if (!isEmpty(vocabGroupData)) {

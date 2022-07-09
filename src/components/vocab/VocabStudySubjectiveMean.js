@@ -282,7 +282,7 @@ const VocabStudySubjectiveMean = ({
     answerItem['result_flag'] = 'N';
 
     compareAnswer(answerItem);
-  }, [modal]);
+  }, [question,modal]);
 
   let keysPressed = {};
   const onKeyDown = (e) =>{

@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changeNaviSubMenu } from '../modules/navigation';
 import VocabStudyTypeContainer from '../containers/vocab/VocabStudyTypeContainer';
 import VocabStudyLookContainer from '../containers/vocab/VocabStudyLookContainer';
+import VocabStudyDictationContainer from '../containers/vocab/VocabStudyDictationContainer';
 import VocabStudyMultipleContainer from '../containers/vocab/VocabStudyMultipleContainer';
 import VocabStudyMultipleMeanContainer from '../containers/vocab/VocabStudyMultipleMeanContainer';
 import VocabQuestionResultContainer from '../containers/vocab/VocabQuestionResultContainer';
@@ -205,6 +206,10 @@ const VocabStudyPage = () => {
           <Route
             path="/vocab/study/look/:groupcode"
             component={VocabStudyLookContainer}
+          />
+          <Route
+            path="/vocab/study/dictation/:groupcode"
+            component={VocabStudyDictationContainer}
           />
           <Route
             path="/vocab/study/multiple/:groupcode"

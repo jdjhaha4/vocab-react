@@ -86,9 +86,7 @@ const VocabAttentionDetail = ({
             answer = (
               <div>
                 다음과 같이 답했습니다 :{' '}
-                <span className="wrong_answer">
-                  {vadItem.answer_mean}
-                </span>
+                <span className="wrong_answer">{vadItem.answer_mean} {vadItem.result_flag=='N'?'모름':''}</span>
               </div>
             );
             break;
@@ -97,9 +95,16 @@ const VocabAttentionDetail = ({
             answer = (
               <div>
                 다음과 같이 답했습니다 :{' '}
-                <span className="wrong_answer">
-                  {vadItem.answer_vocab}
-                </span>
+                <span className="wrong_answer">{vadItem.answer_vocab} {vadItem.result_flag=='N'?'모름':''}</span>
+              </div>
+            );
+            break;
+          case 'SD':
+            questionType = '단어 받아쓰기';
+            answer = (
+              <div>
+                다음과 같이 답했습니다 :{' '}
+                <span className="wrong_answer">{vadItem.answer_vocab} {vadItem.result_flag=='N'?'모름':''}</span>
               </div>
             );
             break;
@@ -135,6 +140,7 @@ const VocabAttentionDetail = ({
                 {vadItem.group_name} 그룹의 {questionType}에서
               </div>
               <div>{answer}</div>
+              <div>{vadItem.regist_datetime}</div>
             </div>
           </div>
         );

@@ -15,6 +15,7 @@ import ShareOthersMultipleContainer from '../containers/share/ShareOthersMultipl
 import ShareOthersMultipleMeanContainer from '../containers/share/ShareOthersMultipleMeanContainer';
 import ShareOthersSubjectiveContainer from '../containers/share/ShareOthersSubjectiveContainer';
 import ShareOthersSubjectiveMeanContainer from '../containers/share/ShareOthersSubjectiveMeanContainer';
+import ShareOthersDictationContainer from '../containers/share/ShareOthersDictationContainer';
 const PageWrapper = styled.div`
   position: relative;
 `;
@@ -142,6 +143,10 @@ const ShareStudyPage = () => {
           <Route
             path="/share/others/look/:groupcode"
             component={ShareOthersLookContainer}
+          />
+          <Route
+            path="/share/others/dictation/:groupcode"
+            component={ShareOthersDictationContainer}
           />
           <Route
             path="/share/others/multiple/:groupcode"

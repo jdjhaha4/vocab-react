@@ -88,6 +88,12 @@ const ShareOthersType = ({ history, vocabGroupData, onClickBack }) => {
     },
     [vocabGroupData],
   );
+  const onClickDictation = useCallback(
+    (group_code) => {
+      history.push(`/share/others/dictation/${group_code}`);
+    },
+    [vocabGroupData],
+  );
   const onClickMultiple = useCallback(
     (group_code) => {
       if(vocabGroupData.vocab_count >= 5){
@@ -152,6 +158,12 @@ const ShareOthersType = ({ history, vocabGroupData, onClickBack }) => {
               onClick={() => onClickLook(vocabGroupData.group_code)}
             >
               훑어보기
+            </div>
+            <div
+              className="box flex_item"
+              onClick={() => onClickDictation(vocabGroupData.group_code)}
+            >
+              단어 받아쓰기
             </div>
             <div
               className="box flex_item"
