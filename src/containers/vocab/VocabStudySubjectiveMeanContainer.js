@@ -48,7 +48,7 @@ const VocabStudySubjectiveMeanContainer = ({ history, match }) => {
   useEffect(() => {
     let group_code = groupcode;
     dispatch(getVocabGroupData({ group_code }));
-    dispatch(getVocabList({ groupCode: groupcode }));
+    //dispatch(getVocabList({ groupCode: groupcode }));
     return () => {
       dispatch(init());
     };

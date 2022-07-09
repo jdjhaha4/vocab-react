@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import VocabStudyType from '../../components/vocab/VocabStudyType';
 import { withRouter } from 'react-router-dom';
 import { getVocabGroupData } from '../../modules/vocab_group';
+import { getVocabList, shuffleVocab } from '../../modules/vocab';
 
 const VocabStudyTypeContainer = ({ history, match }) => {
   const { groupcode } = match.params;
@@ -15,6 +16,7 @@ const VocabStudyTypeContainer = ({ history, match }) => {
   useEffect(() => {
     let group_code = groupcode;
     dispatch(getVocabGroupData({ group_code }));
+    dispatch(getVocabList({ groupCode: groupcode }));
   }, [groupcode]);
 
   const onClickBack = useCallback(() => {

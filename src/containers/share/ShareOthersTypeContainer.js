@@ -2,7 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ShareOthersType from '../../components/share/ShareOthersType';
 import { withRouter } from 'react-router-dom';
-import { getOthersShareOneData } from '../../modules/share';
+import {getOthersShareVocabList, getOthersShareOneData } from '../../modules/share';
 
 const ShareOthersTypeContainer = ({ history, match }) => {
   const { groupcode } = match.params;
@@ -15,6 +15,7 @@ const ShareOthersTypeContainer = ({ history, match }) => {
   useEffect(() => {
     let group_code = groupcode;
     dispatch(getOthersShareOneData({ group_code }));
+    dispatch(getOthersShareVocabList({ group_code}));
   }, [groupcode]);
 
   const onClickBack = useCallback(() => {

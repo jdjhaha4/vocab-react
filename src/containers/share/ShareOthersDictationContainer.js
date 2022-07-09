@@ -48,7 +48,7 @@ const ShareOthersDictationContainer = ({ history, match }) => {
   useEffect(() => {
     let group_code = groupcode;
     dispatch(getOthersShareOneData({ group_code }));
-    dispatch(getOthersShareVocabList({ group_code}));
+    //dispatch(getOthersShareVocabList({ group_code}));
     return () => {
       dispatch(init());
     };

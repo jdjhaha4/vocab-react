@@ -37,7 +37,7 @@ const VocabStudyLookContainer = ({ history, match }) => {
   useEffect(() => {
     let group_code = groupcode;
     dispatch(getVocabGroupData({ group_code }));
-    dispatch(getVocabList({ groupCode: groupcode }));
+    //dispatch(getVocabList({ groupCode: groupcode }));
   }, [groupcode]);
   const onClickBack = useCallback(() => {
     history.goBack();
