@@ -8,7 +8,7 @@ import QuestionResultModal from '../common/QuestionResultModal';
 import SubjectiveAnswerConfirmModal from '../common/SubjectiveAnswerConfirmModal';
 import { withRouter } from 'react-router-dom';
 import { cloneObject } from '../../util/arrayUtil';
-import {useSpeechSynthesis} from 'react-speech-kit';
+import { useSpeechSynthesis } from 'react-speech-kit';
 
 const CorrectBlock = styled.div`
   color: green;
@@ -203,7 +203,8 @@ const VocabStudyDictation = ({
   studyTime,
   moveToTheResult,
 }) => {
-  const { speak } = useSpeechSynthesis();
+  const { speak, cancel, speaking, supported, voices } = useSpeechSynthesis();
+
   const audioEl = useRef(null);
   const audioSourceEl = useRef(null);
 
@@ -231,10 +232,42 @@ const VocabStudyDictation = ({
       setModal(nextState);
     }
   };
+  const speak2 = useCallback((text, opt_prop) => {
+    if (
+      typeof SpeechSynthesisUtterance === 'undefined' ||
+      typeof window.speechSynthesis === 'undefined'
+    ) {
+      alert('이 브라우저는 음성 합성을 지원하지 않습니다.');
+      return;
+    }
 
+    window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
+
+    const prop = opt_prop || {};
+
+    const speechMsg = new SpeechSynthesisUtterance();
+    speechMsg.rate = prop.rate || 1; // 속도: 0.1 ~ 10
+    speechMsg.pitch = prop.pitch || 1; // 음높이: 0 ~ 2
+    speechMsg.lang = prop.lang || 'ko-KR';
+    speechMsg.text = text;
+
+    // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
+    window.speechSynthesis.speak(speechMsg);
+  });
   //question.vocab['vocab']
   useEffect(() => {
-    speak({text:question.vocab['vocab']});
+    speak2(question.vocab['vocab'], {
+      rate: 1,
+      pitch: 1,
+      lang: 'en-US',
+    });
+    // speak({
+    //   text: question.vocab['vocab'],
+    //   rate: 1,
+    //   pitch: 1,
+    //   lang: 'en-US',
+    //   default: true,
+    // });
     const nextState = produce(modal, (draft) => {
       draft['id'] = question.vocab['id'];
       draft['vocab'] = question.vocab['vocab'];
@@ -293,7 +326,7 @@ const VocabStudyDictation = ({
     answerItem['result_flag'] = 'N';
 
     compareAnswer(answerItem);
-  }, [question,modal]);
+  }, [question, modal]);
 
   let keysPressed = {};
   const onKeyDown = (e) => {
@@ -334,7 +367,7 @@ const VocabStudyDictation = ({
       }
     }
   }
-  
+
   return (
     <VocabStudyDictationBlock>
       <div className="">
@@ -363,15 +396,20 @@ const VocabStudyDictation = ({
         <div className="row vocab_box">
           <div className="col-12 vocab_title">듣기</div>
           <div className="col-12 vocab">
-          <div className="audio_area">
-            <StyledButton2
+            <div className="audio_area">
+              <StyledButton2
                 onClick={(e) => {
-                  speak({text:question.vocab['vocab']});
+                  //speak({ text: question.vocab['vocab'], lang: 'en-US' });
+                  speak2(question.vocab['vocab'], {
+                    rate: 1,
+                    pitch: 1,
+                    lang: 'en-US',
+                  });
                 }}
               >
                 다시 듣기
               </StyledButton2>
-          </div>
+            </div>
           </div>
           {question.resultFlag == 'T' || question.resultFlag == 'F' ? (
             <div className="col-12">
