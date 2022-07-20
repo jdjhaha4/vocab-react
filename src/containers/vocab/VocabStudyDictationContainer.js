@@ -117,7 +117,7 @@ const VocabStudyDictationContainer = ({ history, match }) => {
 
   const moveToThePage = useCallback(() => {
     dispatch(init());
-    history.replace(`/vocab/study`);
+    history.replace(`/vocab/study/type/${groupcode}`);
   }, []);
 
   const moveToTheResult = useCallback(() => {

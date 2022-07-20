@@ -117,7 +117,7 @@ const ShareOthersDictationContainer = ({ history, match }) => {
 
   const moveToThePage = useCallback(() => {
     dispatch(init());
-    history.replace(`/vocab/study`);
+    history.replace(`/share/others/type/${groupcode}`);
   }, []);
 
   const moveToTheResult = useCallback(() => {
